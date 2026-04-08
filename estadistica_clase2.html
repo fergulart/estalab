@@ -1,0 +1,1335 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Estadística Descriptiva · Clase 2</title>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=JetBrains+Mono:wght@400;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:       #0f1117;
+    --surface:  #171b26;
+    --surface2: #1e2334;
+    --border:   #2e3450;
+    --text:     #d8dce8;
+    --muted:    #7b82a0;
+    --accent:   #e05c3a;
+    --accent2:  #4aaed9;
+    --accent3:  #6dbb8a;
+    --gold:     #e8b84b;
+    --white:    #f0f2f8;
+    --mono:     'JetBrains Mono', monospace;
+    --serif:    'Crimson Pro', Georgia, serif;
+    --display:  'DM Serif Display', Georgia, serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--serif);
+    font-size: 19px;
+    line-height: 1.75;
+    font-weight: 300;
+  }
+
+  /* ── MASTHEAD ── */
+  .masthead {
+    padding: 4rem 2rem 3.5rem;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  .masthead::after {
+    content: '2';
+    position: absolute;
+    right: -0.05em;
+    top: -0.15em;
+    font-family: var(--display);
+    font-size: clamp(12rem, 28vw, 22rem);
+    color: rgba(255,255,255,0.025);
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+  }
+  .masthead-inner { max-width: 860px; margin: 0 auto; position: relative; }
+  .course-crumb {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .course-crumb span { color: var(--muted); }
+  .masthead h1 {
+    font-family: var(--display);
+    font-size: clamp(2rem, 5.5vw, 3.5rem);
+    color: var(--white);
+    line-height: 1.08;
+    margin-bottom: 0.75rem;
+  }
+  .masthead h1 em { font-style: italic; color: var(--gold); }
+  .masthead-sub {
+    font-family: var(--serif);
+    font-size: 1.05rem;
+    color: var(--muted);
+    font-style: italic;
+    margin-bottom: 2rem;
+  }
+  .chip-row { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+  .chip {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 0.28rem 0.7rem;
+    border-radius: 2px;
+  }
+  .chip.hi { border-color: var(--accent2); color: var(--accent2); }
+
+  /* ── LAYOUT ── */
+  .wrap { max-width: 860px; margin: 0 auto; padding: 0 2rem 6rem; }
+
+  /* ── TOC ── */
+  .toc {
+    margin: 3rem 0;
+    padding: 1.75rem 2rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+  }
+  .toc-label {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1rem;
+  }
+  .toc ol {
+    padding-left: 1.2rem;
+    color: var(--text);
+    font-size: 0.95rem;
+    line-height: 2.1;
+  }
+  .toc a { color: var(--accent2); text-decoration: none; border-bottom: 1px dotted var(--accent2); }
+  .toc a:hover { color: var(--white); border-bottom-style: solid; }
+
+  /* ── SECTIONS ── */
+  .section { margin: 4rem 0; }
+  .sec-label {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+  .sec-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  h2 {
+    font-family: var(--display);
+    font-size: 1.9rem;
+    color: var(--white);
+    margin-bottom: 1.25rem;
+    line-height: 1.15;
+  }
+  h3 {
+    font-family: var(--display);
+    font-size: 1.2rem;
+    color: var(--white);
+    margin: 2.25rem 0 0.75rem;
+  }
+  p { margin-bottom: 1.1rem; }
+  strong { font-weight: 600; color: var(--white); }
+  em { font-style: italic; }
+
+  /* ── BOXES ── */
+  .def-box {
+    border-left: 3px solid var(--accent);
+    background: rgba(224,92,58,0.08);
+    padding: 1.25rem 1.5rem;
+    margin: 1.75rem 0;
+    border-radius: 0 4px 4px 0;
+  }
+  .def-box::before {
+    content: 'DEFINICIÓN';
+    font-family: var(--mono);
+    font-size: 0.58rem;
+    letter-spacing: 0.22em;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+  .def-box p:last-child { margin-bottom: 0; }
+
+  .nota-box {
+    border-left: 3px solid var(--accent3);
+    background: rgba(109,187,138,0.08);
+    padding: 1.25rem 1.5rem;
+    margin: 1.75rem 0;
+    border-radius: 0 4px 4px 0;
+  }
+  .nota-box::before {
+    content: 'NOTA IMPORTANTE';
+    font-family: var(--mono);
+    font-size: 0.58rem;
+    letter-spacing: 0.22em;
+    color: var(--accent3);
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+  .nota-box p:last-child { margin-bottom: 0; }
+
+  .ejemplo-box {
+    border: 1px solid var(--border);
+    border-top: 3px solid var(--gold);
+    background: var(--surface);
+    padding: 1.5rem;
+    margin: 1.75rem 0;
+    border-radius: 0 0 4px 4px;
+  }
+  .ejemplo-box::before {
+    content: 'EJEMPLO';
+    font-family: var(--mono);
+    font-size: 0.58rem;
+    letter-spacing: 0.22em;
+    color: var(--gold);
+    display: block;
+    margin-bottom: 0.75rem;
+  }
+  .ejemplo-box p:last-child { margin-bottom: 0; }
+
+  /* ── FORMULA ── */
+  .formula-block {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1.25rem 1.75rem;
+    margin: 1.5rem 0;
+    text-align: center;
+    font-family: var(--mono);
+    font-size: 1.05rem;
+    color: var(--accent2);
+    letter-spacing: 0.03em;
+  }
+  .formula-block .f-label {
+    display: block;
+    font-size: 0.58rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.5rem;
+    text-align: left;
+  }
+  .formula-block .f-note {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-top: 0.5rem;
+    text-align: left;
+    font-family: var(--serif);
+    font-style: italic;
+    letter-spacing: 0;
+  }
+
+  /* ── TABLA ── */
+  .table-wrap { overflow-x: auto; margin: 1.75rem 0; }
+  table { border-collapse: collapse; width: 100%; font-size: 0.92rem; }
+  thead th {
+    background: var(--surface2);
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 0.7rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  tbody tr { border-bottom: 1px solid var(--border); }
+  tbody tr:hover { background: var(--surface); }
+  tbody td { padding: 0.6rem 1rem; font-variant-numeric: tabular-nums; }
+  tbody td.num { text-align: right; font-family: var(--mono); font-size: 0.88rem; }
+  tfoot td {
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--white);
+    padding: 0.65rem 1rem;
+    border-top: 2px solid var(--accent2);
+    background: var(--surface2);
+  }
+  tfoot td.num { text-align: right; }
+
+  /* ── CHART CONTAINER ── */
+  .chart-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 1.5rem;
+    margin: 1.75rem 0;
+  }
+  .chart-title {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1rem;
+  }
+  .chart-wrap svg { display: block; width: 100%; overflow: visible; }
+
+  /* ── TOGGLE TABS ── */
+  .tabs { display: flex; gap: 0; margin-bottom: 0; }
+  .tab-btn {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 0.5rem 1.1rem;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    color: var(--muted);
+    cursor: pointer;
+    border-radius: 0;
+    transition: all 0.15s;
+  }
+  .tab-btn:first-child { border-radius: 4px 0 0 0; }
+  .tab-btn:last-child  { border-radius: 0 4px 0 0; }
+  .tab-btn.active { background: var(--accent2); color: var(--bg); border-color: var(--accent2); }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* ── STEP BOXES ── */
+  .steps { display: flex; flex-direction: column; gap: 0; margin: 1.5rem 0; }
+  .step {
+    display: grid;
+    grid-template-columns: 3rem 1fr;
+    gap: 1rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .step:last-child { border-bottom: none; }
+  .step-num {
+    font-family: var(--mono);
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1;
+    padding-top: 0.2rem;
+  }
+  .step-body { }
+  .step-body strong { display: block; margin-bottom: 0.3rem; font-size: 1rem; }
+  .step-body p { margin-bottom: 0; font-size: 0.92rem; color: var(--muted); }
+
+  /* ── EXERCISE ── */
+  .ex-block {
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    margin: 1.5rem 0;
+  }
+  .ex-head {
+    background: var(--surface2);
+    padding: 0.9rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .ex-num {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .ex-title { font-size: 1rem; color: var(--white); font-family: var(--display); }
+  .ex-body { padding: 1.25rem 1.5rem; }
+  .ex-body ol { padding-left: 1.2rem; line-height: 2.1; font-size: 0.95rem; }
+  .ex-body p { font-size: 0.95rem; margin-bottom: 0.75rem; }
+
+  /* ── INLINE CODE ── */
+  code {
+    font-family: var(--mono);
+    font-size: 0.85em;
+    background: var(--surface2);
+    padding: 1px 5px;
+    border-radius: 2px;
+    color: var(--accent2);
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem;
+    text-align: center;
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  /* Responsive */
+  @media (max-width: 560px) {
+    body { font-size: 17px; }
+    h2 { font-size: 1.5rem; }
+    .step { grid-template-columns: 2rem 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="masthead-inner">
+    <p class="course-crumb">Estadística Descriptiva <span>·</span> Módulo I <span>·</span> Clase 2</p>
+    <h1>Distribuciones<br>de <em>frecuencia</em></h1>
+    <p class="masthead-sub">Cómo organizar, resumir y visualizar los datos de una variable</p>
+    <div class="chip-row">
+      <span class="chip">Clase 2 de 8</span>
+      <span class="chip hi">Frecuencia absoluta</span>
+      <span class="chip hi">Frecuencia relativa</span>
+      <span class="chip hi">Frecuencia acumulada</span>
+      <span class="chip hi">Histograma</span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <nav class="toc">
+    <p class="toc-label">Contenidos de esta clase</p>
+    <ol>
+      <li><a href="#s1">¿Qué es una distribución de frecuencias?</a></li>
+      <li><a href="#s2">Frecuencia absoluta y tabla de frecuencias</a></li>
+      <li><a href="#s3">Frecuencia relativa</a></li>
+      <li><a href="#s4">Frecuencia acumulada</a></li>
+      <li><a href="#s5">Gráficos: barras y líneas (variable discreta)</a></li>
+      <li><a href="#s6">Datos agrupados en intervalos</a></li>
+      <li><a href="#s7">Histograma y densidad empírica</a></li>
+      <li><a href="#s8">Polígono de frecuencias</a></li>
+      <li><a href="#s9">Formas de distribución</a></li>
+      <li><a href="#s10">Ejercicios</a></li>
+    </ol>
+  </nav>
+
+  <!-- ══ S1 ══ -->
+  <section class="section" id="s1">
+    <p class="sec-label">01</p>
+    <h2>¿Qué es una distribución de frecuencias?</h2>
+
+    <p>Supongamos que tenemos los datos de la <strong>cantidad de integrantes por hogar</strong> de una muestra de 20 hogares de Montevideo:</p>
+
+    <div class="ejemplo-box">
+      <p style="font-family:var(--mono); font-size:0.88rem; color:var(--accent2); letter-spacing:0.04em;">
+        3, 1, 4, 3, 2, 4, 3, 1, 3, 1, 2, 4, 5, 3, 3, 5, 3, 2, 2, 6
+      </p>
+      <p style="margin-top:0.75rem;">Así presentados, los datos son difíciles de interpretar. ¿Cuál es el valor más frecuente? ¿Cuántos hogares tienen más de 4 integrantes? Para responder estas preguntas necesitamos <em>organizar</em> los datos.</p>
+    </div>
+
+    <div class="def-box">
+      <p>La <strong>distribución de frecuencias</strong> es un resumen ordenado que muestra cada valor posible (o intervalo de valores) que toma la variable, junto con la cantidad de veces que dicho valor aparece en los datos. Puede presentarse como tabla o gráfico.</p>
+    </div>
+
+    <p>La distribución de frecuencias es el primer gran instrumento de la Estadística Descriptiva. Todo lo que sigue en el curso —medidas de posición, dispersión, correlación— se construye sobre esta base.</p>
+  </section>
+
+  <!-- ══ S2 ══ -->
+  <section class="section" id="s2">
+    <p class="sec-label">02</p>
+    <h2>Frecuencia absoluta</h2>
+
+    <div class="def-box">
+      <p>La <strong>frecuencia absoluta</strong> del valor <em>x<sub>i</sub></em>, denotada <strong>n<sub>i</sub></strong>, es el número de veces que ese valor aparece en el conjunto de datos. Si la variable toma <em>k</em> valores distintos, se cumple:</p>
+    </div>
+
+    <div class="formula-block">
+      <span class="f-label">Propiedad fundamental</span>
+      n₁ + n₂ + ... + nₖ = Σ nᵢ = n
+      <span class="f-note">donde n es el tamaño total de la muestra o población.</span>
+    </div>
+
+    <h3>¿Cómo construir la tabla paso a paso?</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <strong>Identificar todos los valores distintos</strong>
+          <p>Recorrer los datos y listar cada valor único que aparece. Ordenarlos de menor a mayor (para variables cuantitativas).</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <strong>Contar las repeticiones</strong>
+          <p>Para cada valor, contar cuántas veces aparece en los datos originales. Usar marcas de conteo si es necesario.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <strong>Verificar la suma</strong>
+          <p>La suma de todas las frecuencias absolutas debe ser igual a <em>n</em>. Si no coincide, hay un error en el conteo.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <strong>Presentar en tabla</strong>
+          <p>Construir la tabla con columna de valores y columna de frecuencias. Agregar fila de totales.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="ejemplo-box">
+      <p><strong>Tabla de frecuencias absolutas</strong> — Número de integrantes por hogar (n = 20)</p>
+      <div class="table-wrap" style="margin-top:1rem;">
+        <table>
+          <thead>
+            <tr>
+              <th>x<sub>i</sub> — Valor</th>
+              <th>Conteo</th>
+              <th class="num">n<sub>i</sub> — Frec. absoluta</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>1 integrante</td><td style="font-family:var(--mono);font-size:0.8rem;color:var(--muted);">|||</td><td class="num">3</td></tr>
+            <tr><td>2 integrantes</td><td style="font-family:var(--mono);font-size:0.8rem;color:var(--muted);">||||</td><td class="num">4</td></tr>
+            <tr><td>3 integrantes</td><td style="font-family:var(--mono);font-size:0.8rem;color:var(--muted);">|||||||</td><td class="num">7</td></tr>
+            <tr><td>4 integrantes</td><td style="font-family:var(--mono);font-size:0.8rem;color:var(--muted);">|||</td><td class="num">3</td></tr>
+            <tr><td>5 integrantes</td><td style="font-family:var(--mono);font-size:0.8rem;color:var(--muted);">||</td><td class="num">2</td></tr>
+            <tr><td>6 integrantes</td><td style="font-family:var(--mono);font-size:0.8rem;color:var(--muted);">|</td><td class="num">1</td></tr>
+          </tbody>
+          <tfoot>
+            <tr><td colspan="2">Total</td><td class="num">20</td></tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ S3 ══ -->
+  <section class="section" id="s3">
+    <p class="sec-label">03</p>
+    <h2>Frecuencia relativa</h2>
+
+    <p>Las frecuencias absolutas tienen un problema: <em>dependen del tamaño de la muestra</em>. Si tenemos una muestra de 20 hogares y otra de 200, no podemos comparar directamente los conteos. La solución es convertirlos en proporciones.</p>
+
+    <div class="def-box">
+      <p>La <strong>frecuencia relativa</strong> del valor <em>x<sub>i</sub></em>, denotada <strong>h<sub>i</sub></strong>, es la proporción que la frecuencia absoluta representa sobre el total:</p>
+    </div>
+
+    <div class="formula-block">
+      <span class="f-label">Frecuencia relativa</span>
+      hᵢ = nᵢ / n
+      <span class="f-note">Siempre: 0 ≤ hᵢ ≤ 1 · La suma de todas las hᵢ es exactamente 1.</span>
+    </div>
+
+    <div class="nota-box">
+      <p>La frecuencia relativa se puede expresar como <strong>proporción</strong> (entre 0 y 1) o como <strong>porcentaje</strong> (multiplicando por 100). Ambas formas son válidas; en la práctica el porcentaje suele ser más intuitivo para comunicar resultados.</p>
+    </div>
+
+    <div class="ejemplo-box">
+      <p><strong>Tabla de frecuencias absolutas y relativas</strong> — n = 20 hogares</p>
+      <div class="table-wrap" style="margin-top:1rem;">
+        <table>
+          <thead>
+            <tr>
+              <th>x<sub>i</sub></th>
+              <th class="num">n<sub>i</sub></th>
+              <th class="num">h<sub>i</sub> = n<sub>i</sub>/n</th>
+              <th class="num">h<sub>i</sub> × 100 (%)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>1</td><td class="num">3</td><td class="num">3/20 = 0,150</td><td class="num">15,0%</td></tr>
+            <tr><td>2</td><td class="num">4</td><td class="num">4/20 = 0,200</td><td class="num">20,0%</td></tr>
+            <tr><td>3</td><td class="num">7</td><td class="num">7/20 = 0,350</td><td class="num">35,0%</td></tr>
+            <tr><td>4</td><td class="num">3</td><td class="num">3/20 = 0,150</td><td class="num">15,0%</td></tr>
+            <tr><td>5</td><td class="num">2</td><td class="num">2/20 = 0,100</td><td class="num">10,0%</td></tr>
+            <tr><td>6</td><td class="num">1</td><td class="num">1/20 = 0,050</td><td class="num">5,0%</td></tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td>Total</td>
+              <td class="num">20</td>
+              <td class="num">1,000</td>
+              <td class="num">100,0%</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+      <p style="margin-top:1rem;"><strong>Lectura:</strong> el 35% de los hogares tienen 3 integrantes. El 5% tienen 6 integrantes. Sólo el 20% tienen 1 o 2 integrantes combinados... espera, eso es incorrecto: 1 integrante (15%) + 2 integrantes (20%) = 35%. Verificar siempre la suma.</p>
+    </div>
+  </section>
+
+  <!-- ══ S4 ══ -->
+  <section class="section" id="s4">
+    <p class="sec-label">04</p>
+    <h2>Frecuencia acumulada</h2>
+
+    <p>Muchas veces la pregunta no es "¿cuántos tienen exactamente 3 integrantes?" sino "¿cuántos tienen <em>3 integrantes o menos</em>?". Para responder esto usamos las frecuencias acumuladas.</p>
+
+    <div class="def-box">
+      <p>La <strong>distribución de frecuencias acumuladas</strong> (o función de distribución empírica), denotada <strong>F*(x)</strong>, indica la proporción de observaciones que son <em>menores o iguales</em> que el valor <em>x</em>:</p>
+    </div>
+
+    <div class="formula-block">
+      <span class="f-label">Función de distribución empírica</span>
+      F*(x) = Σ hᵢ &nbsp;&nbsp; para todo xᵢ ≤ x
+      <span class="f-note">F* siempre toma valores entre 0 y 1 · F*(valor máximo) = 1</span>
+    </div>
+
+    <div class="ejemplo-box">
+      <p><strong>Tabla completa con frecuencias acumuladas</strong></p>
+      <div class="table-wrap" style="margin-top:1rem;">
+        <table>
+          <thead>
+            <tr>
+              <th>x<sub>i</sub></th>
+              <th class="num">n<sub>i</sub></th>
+              <th class="num">h<sub>i</sub></th>
+              <th class="num">F*(x<sub>i</sub>)</th>
+              <th class="num">Interpretación</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td><td class="num">3</td><td class="num">0,15</td><td class="num">0,15</td>
+              <td style="font-size:0.82rem;color:var(--muted);">15% tiene ≤ 1 integrante</td>
+            </tr>
+            <tr>
+              <td>2</td><td class="num">4</td><td class="num">0,20</td><td class="num">0,35</td>
+              <td style="font-size:0.82rem;color:var(--muted);">35% tiene ≤ 2 integrantes</td>
+            </tr>
+            <tr>
+              <td>3</td><td class="num">7</td><td class="num">0,35</td><td class="num">0,70</td>
+              <td style="font-size:0.82rem;color:var(--muted);">70% tiene ≤ 3 integrantes</td>
+            </tr>
+            <tr>
+              <td>4</td><td class="num">3</td><td class="num">0,15</td><td class="num">0,85</td>
+              <td style="font-size:0.82rem;color:var(--muted);">85% tiene ≤ 4 integrantes</td>
+            </tr>
+            <tr>
+              <td>5</td><td class="num">2</td><td class="num">0,10</td><td class="num">0,95</td>
+              <td style="font-size:0.82rem;color:var(--muted);">95% tiene ≤ 5 integrantes</td>
+            </tr>
+            <tr>
+              <td>6</td><td class="num">1</td><td class="num">0,05</td><td class="num">1,00</td>
+              <td style="font-size:0.82rem;color:var(--muted);">100% tiene ≤ 6 integrantes</td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr><td>Total</td><td class="num">20</td><td class="num">1,00</td><td class="num">—</td><td></td></tr>
+          </tfoot>
+        </table>
+      </div>
+      <p style="margin-top:1rem;"><strong>Ejemplo de lectura:</strong> F*(3) = 0,70 significa que el 70% de los hogares tiene 3 integrantes o menos, es decir, 14 de los 20 hogares.</p>
+    </div>
+
+    <div class="nota-box">
+      <p><strong>Propiedad clave:</strong> la frecuencia acumulada es <em>no decreciente</em>: nunca puede bajar al pasar al siguiente valor. Siempre F*(x<sub>i</sub>) ≥ F*(x<sub>i-1</sub>). Si baja, hay un error en los cálculos.</p>
+    </div>
+  </section>
+
+  <!-- ══ S5 ══ -->
+  <section class="section" id="s5">
+    <p class="sec-label">05</p>
+    <h2>Gráficos para variable discreta</h2>
+
+    <p>Los datos de la tabla cobran vida en un gráfico. Para variables discretas (o cualitativas) usamos principalmente dos tipos:</p>
+
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('barras','tab1')">Gráfico de barras</button>
+      <button class="tab-btn" onclick="switchTab('lineas','tab1')">Gráfico de líneas</button>
+      <button class="tab-btn" onclick="switchTab('acum','tab1')">F* acumulada</button>
+    </div>
+
+    <div id="barras" class="tab-content active chart-wrap" style="border-radius: 0 4px 4px 4px; margin-top:0;">
+      <p class="chart-title">Frecuencia relativa — N° de integrantes por hogar</p>
+      <svg id="svg-barras" viewBox="0 0 680 280"></svg>
+      <p style="font-size:0.82rem;color:var(--muted);margin-top:0.75rem;margin-bottom:0;">Las <strong style="color:var(--white);">alturas</strong> de las barras representan las frecuencias relativas. Las barras no se tocan entre sí (los valores son discretos).</p>
+    </div>
+
+    <div id="lineas" class="tab-content chart-wrap" style="border-radius: 0 4px 4px 4px; margin-top:0;">
+      <p class="chart-title">Gráfico de líneas — Frecuencia relativa por valor</p>
+      <svg id="svg-lineas" viewBox="0 0 680 280"></svg>
+      <p style="font-size:0.82rem;color:var(--muted);margin-top:0.75rem;margin-bottom:0;">Equivalente al de barras. Se usa cuando queremos enfatizar la forma de la distribución.</p>
+    </div>
+
+    <div id="acum" class="tab-content chart-wrap" style="border-radius: 0 4px 4px 4px; margin-top:0;">
+      <p class="chart-title">Función de distribución acumulada F*(x)</p>
+      <svg id="svg-acum" viewBox="0 0 680 280"></svg>
+      <p style="font-size:0.82rem;color:var(--muted);margin-top:0.75rem;margin-bottom:0;">La función escalera sube en cada valor x<sub>i</sub> una altura igual a h<sub>i</sub>. Es no decreciente y llega a 1 en el valor máximo.</p>
+    </div>
+  </section>
+
+  <!-- ══ S6 ══ -->
+  <section class="section" id="s6">
+    <p class="sec-label">06</p>
+    <h2>Datos agrupados en intervalos</h2>
+
+    <p>Cuando la variable toma muchos valores distintos —como ocurre con las variables continuas— listar cada valor individualmente resulta ineficiente. La solución es <strong>agrupar los datos en intervalos</strong>.</p>
+
+    <h3>Notación de intervalos</h3>
+    <p>Usamos intervalos <strong>cerrados por la izquierda y abiertos por la derecha</strong>: [a, b). Esto significa que el intervalo incluye al valor <em>a</em> pero no al valor <em>b</em>. De esta manera, cada dato cae en exactamente un intervalo (propiedad de exclusión mutua).</p>
+
+    <div class="formula-block">
+      <span class="f-label">Notación general de intervalos</span>
+      [x'ᵢ₋₁ , x'ᵢ)  &nbsp;→&nbsp;  incluye x'ᵢ₋₁ pero no x'ᵢ
+      <span class="f-note">x'ᵢ₋₁ = límite inferior del intervalo i · x'ᵢ = límite superior · xᵢ = marca de clase (punto medio)</span>
+    </div>
+
+    <div class="nota-box">
+      <p><strong>¿Cuántos intervalos usar?</strong> La elección depende del tamaño de la muestra <em>n</em>. Una regla práctica muy usada es la <em>Regla de Sturges</em>: <code>k ≈ 1 + 3.3 × log₁₀(n)</code>. Para n=20: k ≈ 5. Para n=100: k ≈ 7. Para n=1000: k ≈ 11. Pocos intervalos pierden información; demasiados generan celdas vacías.</p>
+    </div>
+
+    <div class="ejemplo-box">
+      <p><strong>Consumo de celular mensual</strong> — Encuesta a clientes de una compañía telefónica</p>
+      <p style="margin-top:0.5rem;">La variable es el consumo en minutos por mes. Al ser continua, se agrupa en intervalos:</p>
+      <div class="table-wrap" style="margin-top:1rem;">
+        <table>
+          <thead>
+            <tr>
+              <th>Intervalo [x'ᵢ₋₁, x'ᵢ)</th>
+              <th class="num">Amplitud (x'ᵢ − x'ᵢ₋₁)</th>
+              <th class="num">Marca de clase xᵢ</th>
+              <th class="num">h<sub>i</sub></th>
+              <th class="num">F*(x'ᵢ)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>[0, 20)</td><td class="num">20</td><td class="num">10</td><td class="num">0,33</td><td class="num">0,33</td></tr>
+            <tr><td>[20, 40)</td><td class="num">20</td><td class="num">30</td><td class="num">0,38</td><td class="num">0,71</td></tr>
+            <tr><td>[40, 60)</td><td class="num">20</td><td class="num">50</td><td class="num">0,16</td><td class="num">0,87</td></tr>
+            <tr><td>[60, 100)</td><td class="num">40</td><td class="num">80</td><td class="num">0,08</td><td class="num">0,95</td></tr>
+            <tr><td>[100, 200)</td><td class="num">100</td><td class="num">150</td><td class="num">0,05</td><td class="num">1,00</td></tr>
+          </tbody>
+          <tfoot>
+            <tr><td>Total</td><td class="num">—</td><td class="num">—</td><td class="num">1,00</td><td class="num">—</td></tr>
+          </tfoot>
+        </table>
+      </div>
+      <p style="margin-top:1rem;"><strong>Nota:</strong> los últimos dos intervalos tienen mayor amplitud. Esto es frecuente cuando los datos tienen cola larga (pocos valores muy grandes).</p>
+    </div>
+
+    <div class="nota-box">
+      <p><strong>Pérdida de información:</strong> al agrupar en intervalos, perdemos los valores exactos. No podemos saber cuántos usuarios consumen entre 75 y 80 minutos; solo sabemos cuántos están en [60, 100). Este es el precio de la simplificación. Por eso la distribución de frecuencias es un <em>resumen</em>, no los datos originales.</p>
+    </div>
+  </section>
+
+  <!-- ══ S7 ══ -->
+  <section class="section" id="s7">
+    <p class="sec-label">07</p>
+    <h2>Histograma y densidad empírica</h2>
+
+    <p>Para datos agrupados en intervalos, el gráfico adecuado es el <strong>histograma</strong>. A diferencia del gráfico de barras, en el histograma las frecuencias se representan mediante <em>áreas</em>, no alturas.</p>
+
+    <p>¿Por qué áreas? Porque los intervalos pueden tener distintas amplitudes, y sería engañoso usar la misma altura para intervalos de diferente ancho. El área de cada rectángulo debe ser igual a la frecuencia relativa del intervalo.</p>
+
+    <div class="formula-block">
+      <span class="f-label">Densidad empírica</span>
+      f*(x) = hᵢ / (x'ᵢ − x'ᵢ₋₁)  &nbsp;&nbsp;  para todo x ∈ [x'ᵢ₋₁, x'ᵢ)
+      <span class="f-note">Área del rectángulo = f*(x) × amplitud = hᵢ · La suma de todas las áreas = 1.</span>
+    </div>
+
+    <div class="ejemplo-box">
+      <p><strong>Cálculo de la densidad empírica</strong> para el ejemplo de consumo de celular:</p>
+      <div class="table-wrap" style="margin-top:1rem;">
+        <table>
+          <thead>
+            <tr>
+              <th>Intervalo</th>
+              <th class="num">h<sub>i</sub></th>
+              <th class="num">Amplitud</th>
+              <th class="num">f*(x) = h<sub>i</sub>/amplitud</th>
+              <th class="num">Verificación: área</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>[0, 20)</td><td class="num">0,33</td><td class="num">20</td><td class="num">0,0165</td><td class="num">0,0165×20 = 0,33 ✓</td></tr>
+            <tr><td>[20, 40)</td><td class="num">0,38</td><td class="num">20</td><td class="num">0,0190</td><td class="num">0,0190×20 = 0,38 ✓</td></tr>
+            <tr><td>[40, 60)</td><td class="num">0,16</td><td class="num">20</td><td class="num">0,0080</td><td class="num">0,0080×20 = 0,16 ✓</td></tr>
+            <tr><td>[60, 100)</td><td class="num">0,08</td><td class="num">40</td><td class="num">0,0020</td><td class="num">0,0020×40 = 0,08 ✓</td></tr>
+            <tr><td>[100, 200)</td><td class="num">0,05</td><td class="num">100</td><td class="num">0,0005</td><td class="num">0,0005×100 = 0,05 ✓</td></tr>
+          </tbody>
+          <tfoot>
+            <tr><td>Total</td><td class="num">1,00</td><td class="num">—</td><td class="num">—</td><td class="num">Suma áreas = 1,00 ✓</td></tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+
+    <div class="chart-wrap">
+      <p class="chart-title">Histograma — Consumo de celular mensual (minutos)</p>
+      <svg id="svg-histo" viewBox="0 0 680 300"></svg>
+      <p style="font-size:0.82rem;color:var(--muted);margin-top:0.75rem;margin-bottom:0;">
+        El eje vertical muestra la <strong style="color:var(--white);">densidad empírica</strong>, no la frecuencia relativa. El área de cada barra es la frecuencia relativa del intervalo.
+        <br>El intervalo [20,40) tiene la barra más alta: el 38% de los usuarios consume entre 20 y 40 minutos/mes.
+      </p>
+    </div>
+
+    <div class="nota-box">
+      <p><strong>Interpretación de la altura:</strong> la densidad empírica f*(x) indica el porcentaje de observaciones por unidad de la variable. Por ejemplo, f*([0,20)) = 0,0165 significa que el 1,65% de los usuarios consume aproximadamente 1 minuto por mes (o 2, o 3, etc., asumiendo distribución uniforme dentro del intervalo).</p>
+    </div>
+
+    <div class="nota-box">
+      <p><strong>Caso especial — intervalos de igual amplitud:</strong> cuando todos los intervalos tienen la misma amplitud, las alturas son proporcionales a las frecuencias relativas. En ese caso, el histograma puede graficarse con la frecuencia relativa en el eje vertical directamente, sin calcular densidad.</p>
+    </div>
+  </section>
+
+  <!-- ══ S8 ══ -->
+  <section class="section" id="s8">
+    <p class="sec-label">08</p>
+    <h2>Polígono de frecuencias</h2>
+
+    <p>El <strong>polígono de frecuencias</strong> es una variante del histograma que resulta especialmente útil cuando queremos comparar varias distribuciones en el mismo gráfico.</p>
+
+    <div class="def-box">
+      <p>El <strong>polígono de frecuencias</strong> se construye uniendo con segmentos de recta las marcas de clase (puntos medios de los intervalos) a las alturas correspondientes de las barras del histograma. Se cierra con dos intervalos ficticios de frecuencia cero a ambos extremos.</p>
+    </div>
+
+    <div class="chart-wrap">
+      <p class="chart-title">Polígono de frecuencias — Consumo de celular mensual</p>
+      <svg id="svg-poligono" viewBox="0 0 680 300"></svg>
+      <p style="font-size:0.82rem;color:var(--muted);margin-top:0.75rem;margin-bottom:0;">Los puntos corresponden a las marcas de clase (xᵢ = punto medio de cada intervalo). El área bajo el polígono es igual a 1, igual que en el histograma.</p>
+    </div>
+  </section>
+
+  <!-- ══ S9 ══ -->
+  <section class="section" id="s9">
+    <p class="sec-label">09</p>
+    <h2>Formas de distribución</h2>
+
+    <p>El histograma revela visualmente la <em>forma</em> de la distribución. Reconocer estos patrones es fundamental para elegir las medidas estadísticas apropiadas en clases siguientes.</p>
+
+    <div class="chart-wrap">
+      <p class="chart-title">Patrones frecuentes de distribución</p>
+      <svg id="svg-formas" viewBox="0 0 680 340"></svg>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Patrón</th>
+            <th>Descripción</th>
+            <th>Ejemplos típicos</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong style="color:var(--accent2);">Unimodal simétrica</strong></td>
+            <td>Un solo pico, distribución espejada a ambos lados. Media = mediana = moda.</td>
+            <td>Alturas de personas adultas, errores de medición</td>
+          </tr>
+          <tr>
+            <td><strong style="color:var(--gold);">Asimetría positiva</strong></td>
+            <td>Cola larga a la derecha. La mayoría de los valores son bajos, pocos son muy altos.</td>
+            <td>Ingresos, salarios, precios de inmuebles</td>
+          </tr>
+          <tr>
+            <td><strong style="color:var(--accent);">Asimetría negativa</strong></td>
+            <td>Cola larga a la izquierda. La mayoría de los valores son altos, pocos son muy bajos.</td>
+            <td>Edad al momento de jubilarse, notas en prueba fácil</td>
+          </tr>
+          <tr>
+            <td><strong style="color:var(--accent3);">Bimodal</strong></td>
+            <td>Dos picos. Suele indicar que los datos provienen de dos grupos distintos mezclados.</td>
+            <td>Alturas de hombres y mujeres juntos, mezcla de turnos</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ══ S10 ══ -->
+  <section class="section" id="s10">
+    <p class="sec-label">10</p>
+    <h2>Ejercicios de la Clase 2</h2>
+
+    <div class="ex-block">
+      <div class="ex-head">
+        <span class="ex-num">Ejercicio 1</span>
+        <span class="ex-title">Servicio de recolección de residuos</span>
+      </div>
+      <div class="ex-body">
+        <p>Una consultora encuestó a 20 montevideanos sobre el servicio de recolección de residuos. La escala usada fue: Malo (M), Bueno (B), Muy Bueno (MB), Excelente (E). Los resultados fueron:</p>
+        <p style="font-family:var(--mono);font-size:0.82rem;color:var(--accent2);margin:0.75rem 0 1rem;">B, E, M, MB, B, E, MB, B, B, M, M, M, E, MB, MB, B, MB, B, M, M</p>
+        <ol>
+          <li>Construir la tabla de frecuencias absolutas (ordenar: M, B, MB, E).</li>
+          <li>Calcular las frecuencias relativas y porcentuales.</li>
+          <li>Calcular las frecuencias acumuladas. ¿Qué significa F*(B)?</li>
+          <li>Representar gráficamente las frecuencias relativas.</li>
+          <li>¿Qué porcentaje de los encuestados evaluó el servicio como Muy Bueno o Excelente?</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="ex-block">
+      <div class="ex-head">
+        <span class="ex-num">Ejercicio 2</span>
+        <span class="ex-title">Ganancias de supermercados</span>
+      </div>
+      <div class="ex-body">
+        <p>Las ganancias anuales (en miles de dólares) de las sucursales de una cadena de supermercados están agrupadas:</p>
+        <div class="table-wrap" style="margin:0.75rem 0;">
+          <table>
+            <thead><tr><th>Intervalo [miles USD]</th><th class="num">N° de sucursales</th></tr></thead>
+            <tbody>
+              <tr><td>[0, 100)</td><td class="num">5</td></tr>
+              <tr><td>[100, 200)</td><td class="num">10</td></tr>
+              <tr><td>[200, 400)</td><td class="num">6</td></tr>
+              <tr><td>[400, 1000)</td><td class="num">4</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <ol>
+          <li>Construir la tabla completa: h<sub>i</sub>, densidad empírica f*(x) y F*.</li>
+          <li>Graficar el histograma. ¿Por qué no se puede usar la frecuencia relativa directamente en el eje vertical?</li>
+          <li>¿Qué porcentaje de sucursales tiene ganancias menores a 250 mil dólares? (Suponer distribución uniforme dentro del intervalo.)</li>
+          <li>Graficar F* e interpretar F*(200).</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="ex-block">
+      <div class="ex-head">
+        <span class="ex-num">Ejercicio 3</span>
+        <span class="ex-title">Velocidad de vehículos multados</span>
+      </div>
+      <div class="ex-body">
+        <p>Completar la siguiente tabla de frecuencias para la velocidad (km/h) de 1200 vehículos multados en enero en Montevideo. Se conoce que h<sub>[70,80)</sub> = 0,025 y que el 90% de los vehículos circulaba a menos de 100 km/h.</p>
+        <div class="table-wrap" style="margin:0.75rem 0;">
+          <table>
+            <thead>
+              <tr>
+                <th>Intervalo</th>
+                <th class="num">n<sub>i</sub></th>
+                <th class="num">h<sub>i</sub></th>
+                <th class="num">f*(x)</th>
+                <th class="num">F*(x)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>[60, 70)</td><td class="num">?</td><td class="num">0,625</td><td class="num">?</td><td class="num">?</td></tr>
+              <tr><td>[70, 80)</td><td class="num">?</td><td class="num">0,025</td><td class="num">?</td><td class="num">?</td></tr>
+              <tr><td>[80, 100)</td><td class="num">?</td><td class="num">0,15</td><td class="num">?</td><td class="num">0,90</td></tr>
+              <tr><td>[100, 150)</td><td class="num">?</td><td class="num">?</td><td class="num">?</td><td class="num">1,00</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <ol>
+          <li>Completar toda la tabla (frecuencias absolutas, relativas, densidad empírica y acumulada).</li>
+          <li>El 40% de los vehículos circulaba a más de ______ km/h.</li>
+          <li>¿Cuál es el intervalo modal?</li>
+          <li>Interpretar el área del rectángulo correspondiente al intervalo [70, 80).</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="ex-block">
+      <div class="ex-head">
+        <span class="ex-num">Ejercicio 4 · Desafío</span>
+        <span class="ex-title">Ingresos de una localidad</span>
+      </div>
+      <div class="ex-body">
+        <p>La única información disponible sobre los ingresos de los hogares de una pequeña localidad es:</p>
+        <ul style="padding-left:1.2rem; margin:0.5rem 0 1rem; line-height:2; font-size:0.95rem;">
+          <li>El 45% de los hogares tiene ingreso menor a $20.000.</li>
+          <li>El 30% tiene ingreso entre $30.000 y $40.000.</li>
+          <li>No hay ningún hogar con ingreso mayor a $40.000.</li>
+        </ul>
+        <ol>
+          <li>Construir la tabla de frecuencias relativas y acumuladas.</li>
+          <li>Si hay 500 hogares en la localidad, calcular las frecuencias absolutas.</li>
+          <li>¿Qué porcentaje de hogares tiene ingreso entre $25.000 y $35.000? Justificar el procedimiento.</li>
+          <li>Realizar el polígono de frecuencias.</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESUMEN -->
+  <section class="section">
+    <p class="sec-label">Resumen</p>
+    <h2>Lo que aprendimos hoy</h2>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:1.75rem 2rem;font-family:var(--mono);font-size:0.82rem;line-height:2.3;">
+      <div style="color:var(--white);font-weight:700;font-size:0.9rem;margin-bottom:0.5rem;">CLASE 2 · Distribuciones de frecuencia</div>
+      <div style="color:var(--accent);padding-left:1rem;">✦ nᵢ = frecuencia absoluta → cuenta repeticiones</div>
+      <div style="color:var(--accent2);padding-left:1rem;">✦ hᵢ = nᵢ/n → frecuencia relativa (proporción)</div>
+      <div style="color:var(--accent3);padding-left:1rem;">✦ F*(x) = Σhᵢ para xᵢ ≤ x → acumulada, entre 0 y 1</div>
+      <div style="color:var(--gold);padding-left:1rem;">✦ Datos agrupados → intervalos [a, b) cerrados izq., abiertos der.</div>
+      <div style="color:var(--muted);padding-left:1rem;">✦ f*(x) = hᵢ/amplitud → densidad empírica (altura del histograma)</div>
+      <div style="color:var(--muted);padding-left:1rem;">✦ Área de cada barra del histograma = hᵢ (¡no la altura!)</div>
+      <div style="color:var(--muted);padding-left:1rem;">✦ Polígono de frecuencias → une marcas de clase con segmentos</div>
+    </div>
+    <div class="nota-box" style="margin-top:1.5rem;">
+      <p><strong>Próxima clase:</strong> Medidas de posición central — la media aritmética, la mediana y la moda. Aprenderemos a resumir <em>toda</em> la distribución en un único número representativo, y cuándo usar cada medida.</p>
+    </div>
+  </section>
+
+</div><!-- /wrap -->
+
+<footer>
+  Estadística Descriptiva · Clase 2 · Distribuciones de Frecuencia
+</footer>
+
+<script>
+// ── DATOS BASE ──────────────────────────────────────────────────
+const vals   = [1, 2, 3, 4, 5, 6];
+const freqAb = [3, 4, 7, 3, 2, 1];
+const n      = 20;
+const freqRel = freqAb.map(v => v/n);
+const freqAcum = freqRel.reduce((acc, h, i) => {
+  acc.push((acc[i-1] || 0) + h);
+  return acc;
+}, []);
+
+const C = {
+  bg: '#0f1117', surface: '#171b26', border: '#2e3450',
+  text: '#d8dce8', muted: '#7b82a0',
+  accent: '#e05c3a', accent2: '#4aaed9', accent3: '#6dbb8a', gold: '#e8b84b'
+};
+
+function svgEl(tag, attrs) {
+  const el = document.createElementNS('http://www.w3.org/2000/svg', tag);
+  for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, v);
+  return el;
+}
+
+function addText(svg, x, y, txt, opts = {}) {
+  const el = svgEl('text', {
+    x, y,
+    'font-family': opts.mono ? "'JetBrains Mono', monospace" : "'Crimson Pro', serif",
+    'font-size': opts.size || 11,
+    fill: opts.color || C.muted,
+    'text-anchor': opts.anchor || 'middle',
+    'dominant-baseline': opts.base || 'auto'
+  });
+  el.textContent = txt;
+  svg.appendChild(el);
+  return el;
+}
+
+function drawAxes(svg, mx, my, W, H) {
+  // Y axis
+  svg.appendChild(svgEl('line', {x1:mx, y1:my, x2:mx, y2:my+H, stroke:C.border, 'stroke-width':1}));
+  // X axis
+  svg.appendChild(svgEl('line', {x1:mx, y1:my+H, x2:mx+W, y2:my+H, stroke:C.border, 'stroke-width':1}));
+}
+
+// ── GRÁFICO DE BARRAS ────────────────────────────────────────────
+(function() {
+  const svg = document.getElementById('svg-barras');
+  const mx=60, my=20, W=580, H=210;
+  drawAxes(svg, mx, my, W, H);
+
+  const maxH = 0.40;
+  const bw = W / vals.length;
+  const gap = bw * 0.25;
+
+  // Grid lines
+  [0.1,0.2,0.3,0.4].forEach(v => {
+    const y = my + H - (v/maxH)*H;
+    svg.appendChild(svgEl('line', {x1:mx, y1:y, x2:mx+W, y2:y, stroke:C.border, 'stroke-width':0.5, 'stroke-dasharray':'4,4'}));
+    addText(svg, mx-6, y, (v*100)+'%', {anchor:'end', base:'middle', size:10, mono:true});
+  });
+
+  vals.forEach((v, i) => {
+    const h = freqRel[i];
+    const barH = (h/maxH) * H;
+    const x = mx + i*bw + gap/2;
+    const bW = bw - gap;
+    const y = my + H - barH;
+
+    const bar = svgEl('rect', {x, y, width:bW, height:barH, fill:C.accent2, opacity:'0.8', rx:'2'});
+    svg.appendChild(bar);
+
+    // value label on top
+    addText(svg, x + bW/2, y - 5, (h*100).toFixed(0)+'%', {size:10, color:C.text, mono:true});
+    // x label
+    addText(svg, x + bW/2, my+H+16, v, {size:11, color:C.muted});
+  });
+
+  addText(svg, mx+W/2, my+H+32, 'Número de integrantes por hogar', {size:11});
+  addText(svg, 14, my+H/2, 'Frec. relativa', {anchor:'middle', size:10, color:C.muted});
+})();
+
+// ── GRÁFICO DE LÍNEAS ────────────────────────────────────────────
+(function() {
+  const svg = document.getElementById('svg-lineas');
+  const mx=60, my=20, W=580, H=210;
+  drawAxes(svg, mx, my, W, H);
+
+  const maxH = 0.40;
+  const bw = W / vals.length;
+
+  [0.1,0.2,0.3,0.4].forEach(v => {
+    const y = my + H - (v/maxH)*H;
+    svg.appendChild(svgEl('line', {x1:mx, y1:y, x2:mx+W, y2:y, stroke:C.border, 'stroke-width':0.5, 'stroke-dasharray':'4,4'}));
+    addText(svg, mx-6, y, (v*100)+'%', {anchor:'end', base:'middle', size:10, mono:true});
+  });
+
+  const pts = vals.map((v, i) => {
+    const cx = mx + (i + 0.5) * bw;
+    const cy = my + H - (freqRel[i]/maxH)*H;
+    return {cx, cy};
+  });
+
+  pts.forEach((p, i) => {
+    if (i < pts.length-1) {
+      svg.appendChild(svgEl('line', {
+        x1:p.cx, y1:p.cy, x2:pts[i+1].cx, y2:pts[i+1].cy,
+        stroke:C.gold, 'stroke-width':2
+      }));
+    }
+    // stem
+    svg.appendChild(svgEl('line', {x1:p.cx, y1:my+H, x2:p.cx, y2:p.cy, stroke:C.gold, 'stroke-width':1.5, 'stroke-dasharray':'3,3'}));
+    svg.appendChild(svgEl('circle', {cx:p.cx, cy:p.cy, r:5, fill:C.gold, stroke:C.bg, 'stroke-width':1.5}));
+    addText(svg, p.cx, p.cy-10, (freqRel[i]*100).toFixed(0)+'%', {size:10, color:C.text, mono:true});
+    addText(svg, p.cx, my+H+16, vals[i], {size:11, color:C.muted});
+  });
+
+  addText(svg, mx+W/2, my+H+32, 'Número de integrantes por hogar', {size:11});
+})();
+
+// ── GRÁFICO ACUMULADO ────────────────────────────────────────────
+(function() {
+  const svg = document.getElementById('svg-acum');
+  const mx=60, my=20, W=580, H=210;
+  drawAxes(svg, mx, my, W, H);
+
+  const bw = W / vals.length;
+
+  [0.2,0.4,0.6,0.8,1.0].forEach(v => {
+    const y = my + H - v*H;
+    svg.appendChild(svgEl('line', {x1:mx, y1:y, x2:mx+W, y2:y, stroke:C.border, 'stroke-width':0.5, 'stroke-dasharray':'4,4'}));
+    addText(svg, mx-6, y, v.toFixed(1), {anchor:'end', base:'middle', size:10, mono:true});
+  });
+
+  // Step function
+  let prevY = my+H;
+  vals.forEach((v, i) => {
+    const cx  = mx + (i+1)*bw;
+    const cy  = my + H - freqAcum[i]*H;
+    // horizontal line
+    const startX = i===0 ? mx : mx + i*bw;
+    svg.appendChild(svgEl('line', {x1:startX, y1:prevY, x2:cx, y2:prevY, stroke:C.accent3, 'stroke-width':2.5}));
+    // vertical jump
+    svg.appendChild(svgEl('line', {x1:cx, y1:prevY, x2:cx, y2:cy, stroke:C.accent3, 'stroke-width':1, 'stroke-dasharray':'3,3'}));
+    svg.appendChild(svgEl('circle', {cx, cy, r:4.5, fill:C.accent3, stroke:C.bg, 'stroke-width':1.5}));
+    addText(svg, cx+6, cy-2, freqAcum[i].toFixed(2), {anchor:'start', size:9, mono:true, color:C.text});
+    addText(svg, mx + (i+0.5)*bw, my+H+16, v, {size:11, color:C.muted});
+    prevY = cy;
+  });
+  // last horizontal
+  svg.appendChild(svgEl('line', {x1:mx+vals.length*bw, y1:prevY, x2:mx+W+10, y2:prevY, stroke:C.accent3, 'stroke-width':2.5}));
+
+  addText(svg, mx+W/2, my+H+32, 'Número de integrantes por hogar', {size:11});
+  addText(svg, 14, my+H/2, 'F*(x)', {anchor:'middle', size:11, color:C.muted});
+})();
+
+// ── HISTOGRAMA ───────────────────────────────────────────────────
+(function() {
+  const svg = document.getElementById('svg-histo');
+  const mx=70, my=20, W=580, H=230;
+  drawAxes(svg, mx, my, W, H);
+
+  const intervals = [
+    {a:0,   b:20,  h:0.33, density:0.0165, label:'[0,20)'},
+    {a:20,  b:40,  h:0.38, density:0.0190, label:'[20,40)'},
+    {a:40,  b:60,  h:0.16, density:0.0080, label:'[40,60)'},
+    {a:60,  b:100, h:0.08, density:0.0020, label:'[60,100)'},
+    {a:100, b:200, h:0.05, density:0.0005, label:'[100,200)'},
+  ];
+
+  const xMax = 200, dMax = 0.022;
+  const scaleX = v => mx + (v/xMax)*W;
+  const scaleD = d => my + H - (d/dMax)*H;
+
+  // Grid
+  [0.005,0.010,0.015,0.020].forEach(d => {
+    const y = scaleD(d);
+    svg.appendChild(svgEl('line', {x1:mx, y1:y, x2:mx+W, y2:y, stroke:C.border, 'stroke-width':0.5, 'stroke-dasharray':'4,4'}));
+    addText(svg, mx-6, y, d.toFixed(4), {anchor:'end', base:'middle', size:9, mono:true});
+  });
+
+  // X ticks
+  [0,20,40,60,100,200].forEach(v => {
+    const x = scaleX(v);
+    svg.appendChild(svgEl('line', {x1:x, y1:my+H, x2:x, y2:my+H+5, stroke:C.border}));
+    addText(svg, x, my+H+16, v, {size:10, mono:true});
+  });
+
+  const colors = [C.accent2, C.gold, C.accent3, C.accent, '#9b8ec4'];
+
+  intervals.forEach((iv, i) => {
+    const x1 = scaleX(iv.a);
+    const x2 = scaleX(iv.b);
+    const y  = scaleD(iv.density);
+    const bw = x2 - x1;
+    const bh = my+H - y;
+
+    svg.appendChild(svgEl('rect', {x:x1, y, width:bw, height:bh, fill:colors[i], opacity:'0.75', rx:'1'}));
+    svg.appendChild(svgEl('rect', {x:x1, y, width:bw, height:bh, fill:'none', stroke:C.bg, 'stroke-width':'1'}));
+
+    // area label inside bar if big enough
+    if (bh > 30) {
+      addText(svg, x1+bw/2, y+bh/2, (iv.h*100).toFixed(0)+'%', {size:11, color:C.bg, base:'middle', mono:true});
+    }
+    // density label above
+    if (iv.density > 0.0005) {
+      addText(svg, x1+bw/2, y-8, iv.density.toFixed(4), {size:9, color:C.text, mono:true});
+    }
+  });
+
+  addText(svg, mx+W/2, my+H+32, 'Consumo de celular (minutos/mes)', {size:11});
+  addText(svg, 14, my+H/2, 'Densidad empírica', {anchor:'middle', size:10, color:C.muted});
+})();
+
+// ── POLÍGONO ─────────────────────────────────────────────────────
+(function() {
+  const svg = document.getElementById('svg-poligono');
+  const mx=70, my=20, W=580, H=230;
+  drawAxes(svg, mx, my, W, H);
+
+  const intervals = [
+    {mid:10,  density:0.0165},
+    {mid:30,  density:0.0190},
+    {mid:50,  density:0.0080},
+    {mid:80,  density:0.0020},
+    {mid:150, density:0.0005},
+  ];
+
+  const xMax=200, dMax=0.022;
+  const scaleX = v => mx + (v/xMax)*W;
+  const scaleD = d => my + H - (d/dMax)*H;
+
+  [0.005,0.010,0.015,0.020].forEach(d => {
+    const y = scaleD(d);
+    svg.appendChild(svgEl('line', {x1:mx, y1:y, x2:mx+W, y2:y, stroke:C.border, 'stroke-width':0.5, 'stroke-dasharray':'4,4'}));
+    addText(svg, mx-6, y, d.toFixed(4), {anchor:'end', base:'middle', size:9, mono:true});
+  });
+
+  [0,20,40,60,100,200].forEach(v => {
+    const x = scaleX(v);
+    addText(svg, x, my+H+16, v, {size:10, mono:true});
+  });
+
+  // Ghost histograma
+  const ivs = [{a:0,b:20,d:0.0165},{a:20,b:40,d:0.0190},{a:40,b:60,d:0.0080},{a:60,b:100,d:0.0020},{a:100,b:200,d:0.0005}];
+  ivs.forEach(iv => {
+    const x1=scaleX(iv.a), x2=scaleX(iv.b), y=scaleD(iv.d);
+    svg.appendChild(svgEl('rect', {x:x1, y, width:x2-x1, height:my+H-y, fill:C.accent2, opacity:'0.1', rx:'1'}));
+    svg.appendChild(svgEl('rect', {x:x1, y, width:x2-x1, height:my+H-y, fill:'none', stroke:C.border, 'stroke-width':'0.5'}));
+  });
+
+  // Poly points: add fictitious ends
+  const pts = [
+    {x:scaleX(-10), y:my+H},
+    ...intervals.map(iv => ({x:scaleX(iv.mid), y:scaleD(iv.density)})),
+    {x:scaleX(200+20), y:my+H}
+  ];
+
+  const d = pts.map((p,i) => `${i===0?'M':'L'}${p.x},${p.y}`).join(' ');
+
+  // Area fill
+  const areaPath = svgEl('path', {
+    d: d + ` L${pts[pts.length-1].x},${my+H} L${pts[0].x},${my+H} Z`,
+    fill: C.gold, opacity:'0.12'
+  });
+  svg.appendChild(areaPath);
+
+  const linePath = svgEl('path', {d, fill:'none', stroke:C.gold, 'stroke-width':'2.5', 'stroke-linejoin':'round'});
+  svg.appendChild(linePath);
+
+  intervals.forEach(iv => {
+    svg.appendChild(svgEl('circle', {cx:scaleX(iv.mid), cy:scaleD(iv.density), r:5, fill:C.gold, stroke:C.bg, 'stroke-width':1.5}));
+    addText(svg, scaleX(iv.mid), scaleD(iv.density)-12, 'x='+iv.mid, {size:9, mono:true, color:C.muted});
+  });
+
+  addText(svg, mx+W/2, my+H+32, 'Consumo de celular (minutos/mes) · Marcas de clase', {size:11});
+})();
+
+// ── FORMAS ───────────────────────────────────────────────────────
+(function() {
+  const svg = document.getElementById('svg-formas');
+  const configs = [
+    {
+      label:'(a) Unimodal simétrica', x0:10, y0:10, w:310, h:130,
+      color: C.accent2,
+      pts: [0,0.01,0.03,0.08,0.14,0.20,0.22,0.20,0.14,0.08,0.03,0.01,0]
+    },
+    {
+      label:'(b) Asimetría positiva', x0:340, y0:10, w:310, h:130,
+      color: C.gold,
+      pts: [0,0.18,0.24,0.20,0.14,0.09,0.06,0.04,0.02,0.01,0.01,0.005,0]
+    },
+    {
+      label:'(c) Asimetría negativa', x0:10, y0:185, w:310, h:130,
+      color: C.accent,
+      pts: [0,0.005,0.01,0.02,0.04,0.06,0.09,0.14,0.20,0.24,0.18,0.05,0]
+    },
+    {
+      label:'(d) Bimodal', x0:340, y0:185, w:310, h:130,
+      color: C.accent3,
+      pts: [0,0.02,0.10,0.18,0.14,0.06,0.06,0.14,0.18,0.10,0.02,0]
+    }
+  ];
+
+  configs.forEach(cfg => {
+    // Box
+    svg.appendChild(svgEl('rect', {x:cfg.x0, y:cfg.y0, width:cfg.w, height:cfg.h, fill:C.surface, rx:4, stroke:C.border}));
+
+    const pad = 20;
+    const innerW = cfg.w - 2*pad;
+    const innerH = cfg.h - 35;
+    const baseY = cfg.y0 + cfg.h - 15;
+    const maxP = Math.max(...cfg.pts);
+
+    const pts = cfg.pts.map((p, i) => ({
+      x: cfg.x0 + pad + (i/(cfg.pts.length-1))*innerW,
+      y: baseY - (p/maxP)*innerH
+    }));
+
+    const d = pts.map((p,i)=>`${i===0?'M':'L'}${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ');
+
+    svg.appendChild(svgEl('path', {
+      d: d + ` L${pts[pts.length-1].x},${baseY} L${pts[0].x},${baseY} Z`,
+      fill: cfg.color, opacity:'0.2'
+    }));
+    svg.appendChild(svgEl('path', {d, fill:'none', stroke:cfg.color, 'stroke-width':'2.5', 'stroke-linejoin':'round', 'stroke-linecap':'round'}));
+
+    // Baseline
+    svg.appendChild(svgEl('line', {x1:cfg.x0+pad, y1:baseY, x2:cfg.x0+cfg.w-pad, y2:baseY, stroke:C.border}));
+
+    // Label
+    addText(svg, cfg.x0+cfg.w/2, cfg.y0+15, cfg.label, {size:11, color:cfg.color, mono:false, anchor:'middle'});
+  });
+})();
+
+// ── TABS ─────────────────────────────────────────────────────────
+function switchTab(id, group) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+}
+</script>
+</body>
+</html>
