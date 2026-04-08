@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Estadística Descriptiva · Clase 1</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:wght@400;600&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1208;
+    --paper: #f5f0e8;
+    --cream: #ede7d5;
+    --accent: #c0392b;
+    --accent2: #2c6e49;
+    --gold: #b5860d;
+    --muted: #7a6f5e;
+    --rule: #c8bfa8;
+    --highlight: #fff3b0;
+    --mono: 'IBM Plex Mono', monospace;
+    --serif: 'Source Serif 4', Georgia, serif;
+    --display: 'Playfair Display', Georgia, serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--serif);
+    font-size: 18px;
+    line-height: 1.75;
+    font-weight: 300;
+  }
+
+  /* ── HEADER ── */
+  .masthead {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 3.5rem 2rem 3rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .masthead::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 14px,
+      rgba(255,255,255,0.03) 14px,
+      rgba(255,255,255,0.03) 15px
+    );
+  }
+  .masthead-inner {
+    max-width: 820px;
+    margin: 0 auto;
+    position: relative;
+  }
+  .course-label {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1rem;
+  }
+  .masthead h1 {
+    font-family: var(--display);
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 0.5rem;
+  }
+  .masthead h1 em {
+    font-style: italic;
+    color: var(--gold);
+  }
+  .masthead-sub {
+    font-family: var(--serif);
+    font-size: 1.05rem;
+    color: #c8bfa8;
+    font-style: italic;
+    margin-top: 0.8rem;
+  }
+  .badge-row {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: 2rem;
+  }
+  .badge {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    border: 1px solid rgba(255,255,255,0.25);
+    padding: 0.3rem 0.75rem;
+    border-radius: 2px;
+    color: #c8bfa8;
+  }
+
+  /* ── LAYOUT ── */
+  .body-wrap {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 3rem 2rem 6rem;
+  }
+
+  /* ── SECTION ── */
+  .section {
+    margin-bottom: 3.5rem;
+  }
+
+  .section-label {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--rule);
+  }
+
+  h2 {
+    font-family: var(--display);
+    font-size: 1.7rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 1.25rem;
+    color: var(--ink);
+  }
+
+  h3 {
+    font-family: var(--display);
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin: 2rem 0 0.75rem;
+    color: var(--ink);
+  }
+
+  p { margin-bottom: 1rem; }
+
+  strong { font-weight: 600; }
+  em { font-style: italic; }
+
+  /* ── DEFINICIÓN ── */
+  .def-box {
+    border-left: 3px solid var(--accent);
+    background: var(--cream);
+    padding: 1.25rem 1.5rem;
+    margin: 1.75rem 0;
+    border-radius: 0 4px 4px 0;
+    position: relative;
+  }
+  .def-box::before {
+    content: 'DEFINICIÓN';
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+  .def-box p { margin-bottom: 0; }
+
+  /* ── NOTA ── */
+  .nota-box {
+    border-left: 3px solid var(--accent2);
+    background: #edf5f1;
+    padding: 1.25rem 1.5rem;
+    margin: 1.75rem 0;
+    border-radius: 0 4px 4px 0;
+  }
+  .nota-box::before {
+    content: 'NOTA';
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    color: var(--accent2);
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+  .nota-box p { margin-bottom: 0; }
+
+  /* ── EJEMPLO ── */
+  .ejemplo-box {
+    border: 1px solid var(--rule);
+    border-top: 3px solid var(--gold);
+    background: #fdfaf3;
+    padding: 1.5rem;
+    margin: 1.75rem 0;
+    border-radius: 0 0 4px 4px;
+  }
+  .ejemplo-box::before {
+    content: 'EJEMPLO';
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    display: block;
+    margin-bottom: 0.75rem;
+  }
+  .ejemplo-box p:last-child { margin-bottom: 0; }
+
+  /* ── TABLA ── */
+  .table-wrap {
+    overflow-x: auto;
+    margin: 1.75rem 0;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 0.92rem;
+    font-family: var(--serif);
+  }
+  thead th {
+    background: var(--ink);
+    color: var(--paper);
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.65rem 1rem;
+    text-align: left;
+    font-weight: 600;
+  }
+  tbody tr:nth-child(even) { background: var(--cream); }
+  tbody tr:nth-child(odd)  { background: var(--paper); }
+  tbody td {
+    padding: 0.6rem 1rem;
+    border-bottom: 1px solid var(--rule);
+    font-variant-numeric: tabular-nums;
+  }
+  tfoot td {
+    font-weight: 600;
+    border-top: 2px solid var(--ink);
+    padding: 0.6rem 1rem;
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    background: var(--cream);
+  }
+
+  /* ── ESQUEMA CONCEPTUAL ── */
+  .tree-box {
+    background: var(--cream);
+    border: 1px solid var(--rule);
+    padding: 2rem;
+    margin: 1.75rem 0;
+    border-radius: 4px;
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    line-height: 2;
+  }
+  .tree-root { color: var(--ink); font-weight: 600; font-size: 0.9rem; }
+  .tree-l1   { color: var(--accent); padding-left: 1.5rem; }
+  .tree-l2   { color: var(--accent2); padding-left: 3rem; }
+  .tree-l2b  { color: var(--gold); padding-left: 3rem; }
+  .tree-l3   { color: var(--muted); padding-left: 4.5rem; font-size: 0.76rem; }
+
+  /* ── FORMULA ── */
+  .formula {
+    background: var(--ink);
+    color: var(--paper);
+    font-family: var(--mono);
+    font-size: 1rem;
+    padding: 1rem 1.5rem;
+    border-radius: 4px;
+    margin: 1.25rem 0;
+    text-align: center;
+    letter-spacing: 0.05em;
+  }
+  .formula .comment {
+    display: block;
+    font-size: 0.65rem;
+    color: var(--gold);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 0.3rem;
+  }
+
+  /* ── PREGUNTAS ── */
+  .preguntas {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 2rem 2rem 2rem;
+    border-radius: 4px;
+    margin: 2rem 0;
+  }
+  .preguntas h3 {
+    color: var(--gold);
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-top: 0;
+    margin-bottom: 1rem;
+  }
+  .preguntas ol {
+    padding-left: 1.2rem;
+    font-size: 0.95rem;
+    line-height: 1.9;
+    color: #e0d8c8;
+  }
+  .preguntas ol li { margin-bottom: 0.4rem; }
+
+  /* ── HIGHLIGHT ── */
+  mark {
+    background: var(--highlight);
+    color: var(--ink);
+    padding: 0 3px;
+    border-radius: 2px;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--rule);
+    padding: 2rem;
+    text-align: center;
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  /* ── NAV ANCHORS ── */
+  .toc {
+    background: var(--cream);
+    border: 1px solid var(--rule);
+    padding: 1.5rem 2rem;
+    margin-bottom: 3rem;
+    border-radius: 4px;
+  }
+  .toc h4 {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.75rem;
+  }
+  .toc ol {
+    padding-left: 1.2rem;
+    font-size: 0.9rem;
+    color: var(--ink);
+    line-height: 2;
+  }
+  .toc a {
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px dotted var(--accent);
+  }
+  .toc a:hover { border-bottom-style: solid; }
+
+  /* ── VARIABLE CARD ── */
+  .var-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+  @media (max-width: 580px) { .var-grid { grid-template-columns: 1fr; } }
+
+  .var-card {
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: 1.25rem;
+    background: #fdfaf3;
+  }
+  .var-card .card-tag {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.4rem;
+  }
+  .var-card h4 {
+    font-family: var(--display);
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    color: var(--ink);
+  }
+  .var-card p { font-size: 0.88rem; color: var(--muted); margin-bottom: 0.4rem; }
+  .var-card ul { padding-left: 1.1rem; font-size: 0.85rem; color: var(--ink); }
+  .var-card .accent-tag {
+    display: inline-block;
+    margin-top: 0.5rem;
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    padding: 2px 7px;
+    border-radius: 2px;
+    letter-spacing: 0.1em;
+  }
+  .tag-cual { background: #fde8e6; color: var(--accent); }
+  .tag-cuan { background: #e6f2ed; color: var(--accent2); }
+
+  /* ── ESCALA VISUAL ── */
+  .escalas {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin: 1.5rem 0;
+  }
+  .escala-row {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 1rem;
+    align-items: center;
+  }
+  .escala-name {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-align: right;
+    color: var(--muted);
+  }
+  .escala-bar {
+    height: 10px;
+    border-radius: 2px;
+    position: relative;
+  }
+  .e1 { background: #c0392b; width: 25%; }
+  .e2 { background: #e67e22; width: 50%; }
+  .e3 { background: #2c6e49; width: 75%; }
+  .e4 { background: #1a1208; width: 100%; }
+  .escala-desc {
+    font-size: 0.78rem;
+    color: var(--muted);
+    font-style: italic;
+    margin-top: 0.1rem;
+    padding-left: 140px;
+    padding-left: calc(140px + 1rem);
+  }
+
+  @media (max-width: 500px) {
+    .escala-row { grid-template-columns: 90px 1fr; }
+    .escala-desc { padding-left: calc(90px + 1rem); }
+  }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="masthead-inner">
+    <p class="course-label">Estadística Descriptiva · Módulo I</p>
+    <h1>El arte de <em>leer</em> los datos</h1>
+    <p class="masthead-sub">Clase 1 — Fundamentos: población, muestra, variable y escalas de medición</p>
+    <div class="badge-row">
+      <span class="badge">Clase 1 de 8</span>
+      <span class="badge">Estadística Descriptiva</span>
+      <span class="badge">Nivel inicial</span>
+    </div>
+  </div>
+</header>
+
+<div class="body-wrap">
+
+  <nav class="toc">
+    <h4>Contenidos de esta clase</h4>
+    <ol>
+      <li><a href="#s1">¿Qué es la Estadística y para qué sirve?</a></li>
+      <li><a href="#s2">Población, muestra y censo</a></li>
+      <li><a href="#s3">Unidad de análisis y unidad de relevamiento</a></li>
+      <li><a href="#s4">Variable: el corazón del análisis</a></li>
+      <li><a href="#s5">Tipos de variable</a></li>
+      <li><a href="#s6">Escalas de medición</a></li>
+      <li><a href="#s7">La matriz de datos</a></li>
+      <li><a href="#s8">Primeros ejercicios</a></li>
+    </ol>
+  </nav>
+
+  <!-- ══ SECCIÓN 1 ══ -->
+  <section class="section" id="s1">
+    <p class="section-label">01</p>
+    <h2>¿Qué es la Estadística y para qué sirve?</h2>
+
+    <p>Vivimos rodeados de datos. El precio del tomate en la feria, la tasa de desempleo, la temperatura de hoy, la cantidad de goles que convirtió un delantero en el campeonato. Pero los datos solos no dicen nada: necesitamos herramientas para <strong>resumirlos, organizarlos e interpretarlos</strong>. De eso se ocupa la Estadística.</p>
+
+    <div class="def-box">
+      <p>La <strong>Estadística</strong> es la ciencia que se ocupa de recopilar, organizar, presentar, analizar e interpretar datos numéricos con el propósito de tomar decisiones más fundamentadas.</p>
+    </div>
+
+    <p>Dentro de la Estadística distinguimos dos grandes ramas, y es importante entender desde el principio cuál es el alcance de cada una:</p>
+
+    <div class="var-grid" style="margin-top:1.5rem;">
+      <div class="var-card">
+        <div class="card-tag">Rama 1</div>
+        <h4>Estadística Descriptiva</h4>
+        <p>Describe y resume los datos de una población o muestra <em>sin ir más allá de esos datos</em>. Usa tablas, gráficos y medidas numéricas (media, desvío, etc.).</p>
+        <span class="accent-tag tag-cual">Este curso</span>
+      </div>
+      <div class="var-card">
+        <div class="card-tag">Rama 2</div>
+        <h4>Estadística Inferencial</h4>
+        <p>A partir de los datos de una <em>muestra</em>, extrae conclusiones válidas para toda la <em>población</em>. Requiere teoría de probabilidades.</p>
+        <span class="accent-tag" style="background:#f0eee8;color:var(--muted);">Cursos avanzados</span>
+      </div>
+    </div>
+
+    <div class="nota-box">
+      <p>En este curso trabajaremos <strong>exclusivamente Estadística Descriptiva</strong>. Nuestro objetivo es aprender a leer, organizar y resumir datos con rigor. Esto es, en sí mismo, una herramienta enormemente poderosa para cualquier profesional.</p>
+    </div>
+  </section>
+
+  <!-- ══ SECCIÓN 2 ══ -->
+  <section class="section" id="s2">
+    <p class="section-label">02</p>
+    <h2>Población, muestra y censo</h2>
+
+    <p>Toda investigación estadística comienza con una pregunta sobre un conjunto de elementos. A ese conjunto lo llamamos <strong>población</strong>.</p>
+
+    <div class="def-box">
+      <p>La <strong>población</strong> (o universo) es el conjunto completo de elementos sobre los cuales deseamos obtener información. Una población debe estar acotada en el <em>espacio</em> y en el <em>tiempo</em>.</p>
+    </div>
+
+    <div class="ejemplo-box">
+      <p><strong>Ejemplos de poblaciones bien definidas:</strong></p>
+      <ul style="padding-left:1.2rem; margin-top:0.5rem; line-height:2;">
+        <li>Los trabajadores de la empresa <em>XYZ S.A.</em> al 31 de diciembre de 2024.</li>
+        <li>Los hogares del departamento de Rocha en el Censo 2023.</li>
+        <li>Los automóviles multados en Montevideo durante enero de 2025.</li>
+        <li>Los 1.200 estudiantes matriculados en la Licenciatura en Relaciones Laborales en 2024.</li>
+      </ul>
+      <p style="margin-top:0.75rem;"><strong>Población mal definida</strong> (¡evitar!): <em>"Los trabajadores uruguayos"</em> — ¿en qué año? ¿formales e informales? ¿mayores de qué edad?</p>
+    </div>
+
+    <p>Muchas veces es imposible o muy costoso estudiar a <em>todos</em> los elementos de la población. En ese caso, seleccionamos un subconjunto.</p>
+
+    <div class="def-box">
+      <p>Una <strong>muestra</strong> es un subconjunto de elementos seleccionados de la población. Si la selección se realiza con criterios adecuados de aleatoriedad, la muestra puede considerarse <em>representativa</em> de la población.</p>
+    </div>
+
+    <div class="def-box">
+      <p>Un <strong>censo</strong> es el relevamiento de <em>todos</em> los elementos de la población. Es el caso límite en que la muestra coincide con la población entera.</p>
+    </div>
+
+    <div class="nota-box">
+      <p><strong>En este curso trabajaremos siempre bajo el supuesto de censo</strong>, es decir, supondremos que tenemos datos de todos los elementos de la población. Esto nos libera de la necesidad de usar la teoría de probabilidades para generalizar resultados.</p>
+    </div>
+  </section>
+
+  <!-- ══ SECCIÓN 3 ══ -->
+  <section class="section" id="s3">
+    <p class="section-label">03</p>
+    <h2>Unidad de análisis y unidad de relevamiento</h2>
+
+    <div class="def-box">
+      <p>La <strong>unidad de análisis</strong> es el elemento mínimo de la población: aquello sobre lo que queremos conocer algo. Es el "quién" o el "qué" de nuestro estudio.</p>
+    </div>
+
+    <div class="def-box">
+      <p>La <strong>unidad de relevamiento</strong> es quien proporciona la información. Muchas veces coincide con la unidad de análisis, pero no siempre.</p>
+    </div>
+
+    <div class="ejemplo-box">
+      <p>Queremos estudiar los <strong>ingresos de los hogares</strong> de Montevideo.</p>
+      <ul style="padding-left:1.2rem; margin-top:0.5rem; line-height:2;">
+        <li><strong>Unidad de análisis:</strong> el hogar (es lo que queremos describir).</li>
+        <li><strong>Unidad de relevamiento:</strong> los integrantes del hogar (quienes responden la encuesta).</li>
+      </ul>
+      <p style="margin-top:0.75rem;">Preguntamos a cada persona por sus ingresos individuales, pero luego <em>sumamos</em> esa información para caracterizar al hogar. El dato final pertenece al hogar, no a la persona.</p>
+    </div>
+  </section>
+
+  <!-- ══ SECCIÓN 4 ══ -->
+  <section class="section" id="s4">
+    <p class="section-label">04</p>
+    <h2>Variable: el corazón del análisis</h2>
+
+    <p>Una vez que tenemos clara la población y la unidad de análisis, debemos decidir <em>qué</em> queremos saber sobre cada unidad. Eso nos lleva al concepto central de toda la estadística.</p>
+
+    <div class="def-box">
+      <p>Una <strong>variable</strong> es una característica, propiedad o atributo de la unidad de análisis que puede tomar distintos valores o categorías. Se denota usualmente con letras mayúsculas: <strong>X</strong>, <strong>Y</strong>, <strong>Z</strong>.</p>
+    </div>
+
+    <p>Al conjunto de todos los valores posibles que puede tomar una variable <strong>X</strong> se lo llama <strong>recorrido</strong>, denotado Rec(<strong>X</strong>).</p>
+
+    <p>Al valor que toma la variable en una unidad particular se lo llama <strong>dato</strong>, y se denota con la letra minúscula correspondiente: <em>x<sub>i</sub></em> es el valor de <strong>X</strong> en el elemento <em>i</em>-ésimo.</p>
+
+    <div class="ejemplo-box">
+      <p>Consideremos la población de 20 hogares de Montevideo. Definimos:</p>
+      <ul style="padding-left:1.2rem; margin-top:0.5rem; line-height:2;">
+        <li><strong>X</strong> = número de integrantes del hogar. Rec(X) = {1, 2, 3, 4, 5, 6, ...}</li>
+        <li><strong>Y</strong> = ingreso mensual del hogar (en pesos). Rec(Y) = [0, +∞)</li>
+        <li><strong>Z</strong> = tipo de vivienda. Rec(Z) = {Casa, Apartamento, Pensión, Otro}</li>
+      </ul>
+      <p style="margin-top:0.75rem;">Si el hogar número 5 tiene 3 integrantes, entonces <em>x</em><sub>5</sub> = 3.</p>
+    </div>
+
+    <h3>Sistema de categorías</h3>
+    <p>Los valores posibles de una variable forman su <strong>sistema de categorías</strong>. Para que un sistema de categorías sea válido, debe cumplir dos propiedades fundamentales:</p>
+
+    <div class="var-grid">
+      <div class="var-card">
+        <div class="card-tag">Propiedad 1</div>
+        <h4>Mutuamente excluyentes</h4>
+        <p>Cada unidad de análisis debe poder clasificarse en <em>una y sólo una</em> categoría. No puede haber ambigüedad.</p>
+      </div>
+      <div class="var-card">
+        <div class="card-tag">Propiedad 2</div>
+        <h4>Exhaustivas</h4>
+        <p>El sistema debe cubrir <em>todos</em> los valores posibles que aparecen en la población. Ninguna unidad puede quedar sin categoría.</p>
+      </div>
+    </div>
+
+    <div class="ejemplo-box">
+      <p><strong>Sistema inválido</strong> para "ingresos del hogar" (en pesos):</p>
+      <p style="font-family:var(--mono); font-size:0.85rem; margin:0.5rem 0;">[5.000, 10.000) · [10.000, 40.000) · [40.000, 70.000)</p>
+      <p>❌ <em>No exhaustivo</em>: un hogar con $2.000 no cabe en ninguna categoría.<br>
+         ❌ <em>Ambigüedad potencial</em>: un hogar con exactamente $10.000 podría ir en la primera o la segunda.</p>
+      <p style="margin-top:0.75rem;"><strong>Sistema válido:</strong></p>
+      <p style="font-family:var(--mono); font-size:0.85rem; margin:0.5rem 0;">[0, 10.000) · [10.000, 40.000) · [40.000, 70.000) · [70.000, +∞)</p>
+      <p>✓ Cubre todos los valores posibles. ✓ Intervalos cerrados a izquierda, abiertos a derecha: sin ambigüedad.</p>
+    </div>
+  </section>
+
+  <!-- ══ SECCIÓN 5 ══ -->
+  <section class="section" id="s5">
+    <p class="section-label">05</p>
+    <h2>Tipos de variable</h2>
+
+    <p>Las variables se clasifican según la naturaleza de los valores que toman. Esta clasificación es fundamental porque <mark>determina qué herramientas estadísticas podemos aplicar</mark>.</p>
+
+    <div class="tree-box">
+      <div class="tree-root">VARIABLE</div>
+      <div class="tree-l1">├── Cualitativa (categórica)</div>
+      <div class="tree-l2">│   ├── Nominal → sin orden entre categorías</div>
+      <div class="tree-l3">│   │       ej: sexo, nacionalidad, tipo de contrato</div>
+      <div class="tree-l2">│   └── Ordinal → con orden jerárquico</div>
+      <div class="tree-l3">│           ej: nivel educativo, satisfacción laboral</div>
+      <div class="tree-l1">└── Cuantitativa (numérica)</div>
+      <div class="tree-l2b">    ├── Discreta → valores enteros o contables</div>
+      <div class="tree-l3">    │       ej: n° de hijos, n° de empleados</div>
+      <div class="tree-l2b">    └── Continua → cualquier valor en un intervalo</div>
+      <div class="tree-l3">            ej: peso, salario, tiempo de espera</div>
+    </div>
+
+    <div class="var-grid">
+      <div class="var-card">
+        <div class="card-tag">Cualitativa Nominal</div>
+        <h4>Sin orden</h4>
+        <p>Las categorías son nombres. No tiene sentido preguntar cuál es "mayor".</p>
+        <ul>
+          <li>Sexo: {Femenino, Masculino}</li>
+          <li>Departamento: {Montevideo, Rocha, ...}</li>
+          <li>Tipo de contrato: {Fijo, Temporal, ...}</li>
+        </ul>
+        <span class="accent-tag tag-cual">Cualitativa · Nominal</span>
+      </div>
+      <div class="var-card">
+        <div class="card-tag">Cualitativa Ordinal</div>
+        <h4>Con jerarquía</h4>
+        <p>Las categorías tienen un orden natural pero las distancias entre ellas no son medibles.</p>
+        <ul>
+          <li>Nivel educativo: {Primaria, Secundaria, Terciaria}</li>
+          <li>Satisfacción: {Malo, Bueno, Muy bueno, Excelente}</li>
+        </ul>
+        <span class="accent-tag tag-cual">Cualitativa · Ordinal</span>
+      </div>
+      <div class="var-card">
+        <div class="card-tag">Cuantitativa Discreta</div>
+        <h4>Conteos</h4>
+        <p>Toma valores enteros (o contables). No puede asumir valores intermedios entre dos valores consecutivos.</p>
+        <ul>
+          <li>N° de hijos: {0, 1, 2, 3, ...}</li>
+          <li>N° de empleados: {0, 1, 2, ...}</li>
+          <li>N° de presidentes</li>
+        </ul>
+        <span class="accent-tag tag-cuan">Cuantitativa · Discreta</span>
+      </div>
+      <div class="var-card">
+        <div class="card-tag">Cuantitativa Continua</div>
+        <h4>Mediciones</h4>
+        <p>Puede tomar <em>cualquier</em> valor dentro de un intervalo. El recorrido es un conjunto infinito no numerable.</p>
+        <ul>
+          <li>Ingreso mensual ($ uruguayos)</li>
+          <li>Tiempo de espera (minutos)</li>
+          <li>Peso de una persona (kg)</li>
+        </ul>
+        <span class="accent-tag tag-cuan">Cuantitativa · Continua</span>
+      </div>
+    </div>
+
+    <div class="nota-box">
+      <p><strong>Regla práctica:</strong> si la respuesta a la pregunta "¿cuánto?" tiene sentido y puede tomar decimales, es continua. Si la respuesta es un conteo entero ("¿cuántos?"), es discreta. Si la respuesta es un nombre o categoría ("¿cuál?" o "¿qué tipo?"), es cualitativa.</p>
+    </div>
+  </section>
+
+  <!-- ══ SECCIÓN 6 ══ -->
+  <section class="section" id="s6">
+    <p class="section-label">06</p>
+    <h2>Escalas de medición</h2>
+
+    <p>Podemos refinar aún más la clasificación de las variables preguntándonos: ¿qué operaciones matemáticas son válidas con sus valores? La respuesta nos da las <strong>escalas de medición</strong>, concepto desarrollado por S.S. Stevens (1946).</p>
+
+    <p>Hay cuatro escalas, ordenadas de menor a mayor riqueza de información:</p>
+
+    <div class="escalas">
+      <div>
+        <div class="escala-row">
+          <span class="escala-name">Nominal</span>
+          <div class="escala-bar e1"></div>
+        </div>
+        <div class="escala-desc">Solo clasifica. Los números son etiquetas.</div>
+      </div>
+      <div>
+        <div class="escala-row">
+          <span class="escala-name">Ordinal</span>
+          <div class="escala-bar e2"></div>
+        </div>
+        <div class="escala-desc">Clasifica y ordena. Las distancias no son comparables.</div>
+      </div>
+      <div>
+        <div class="escala-row">
+          <span class="escala-name">Intervalo</span>
+          <div class="escala-bar e3"></div>
+        </div>
+        <div class="escala-desc">Clasifica, ordena y mide distancias. El cero es arbitrario.</div>
+      </div>
+      <div>
+        <div class="escala-row">
+          <span class="escala-name">Razón</span>
+          <div class="escala-bar e4"></div>
+        </div>
+        <div class="escala-desc">Todas las anteriores más cero absoluto. Se pueden hacer proporciones.</div>
+      </div>
+    </div>
+
+    <div class="tabla-escalas" style="margin-top:1.5rem;">
+    <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Escala</th>
+          <th>Operaciones válidas</th>
+          <th>Ejemplo</th>
+          <th>Estadísticos aplicables</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Nominal</strong></td>
+          <td>= y ≠</td>
+          <td>Sexo, tipo de empresa, departamento</td>
+          <td>Moda, frecuencias, conteos</td>
+        </tr>
+        <tr>
+          <td><strong>Ordinal</strong></td>
+          <td>= ≠ &lt; &gt;</td>
+          <td>Nivel educativo, satisfacción, rango en competencia</td>
+          <td>Moda, mediana, percentiles</td>
+        </tr>
+        <tr>
+          <td><strong>Intervalo</strong></td>
+          <td>= ≠ &lt; &gt; + −</td>
+          <td>Temperatura (°C), año calendario, escala IQ</td>
+          <td>Media, desvío estándar</td>
+        </tr>
+        <tr>
+          <td><strong>Razón</strong></td>
+          <td>= ≠ &lt; &gt; + − × ÷</td>
+          <td>Salario, peso, n° de empleados, edad</td>
+          <td>Todos (incluso media geométrica, CV)</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+    </div>
+
+    <div class="ejemplo-box">
+      <p><strong>¿Por qué importa la diferencia entre Intervalo y Razón?</strong></p>
+      <p>La temperatura en escala Celsius no tiene cero absoluto (0°C no significa "ausencia de temperatura"). Por eso, no podemos decir que 20°C es "el doble de caliente" que 10°C. Pero sí podemos decir que la diferencia entre 20°C y 10°C es la misma que entre 30°C y 20°C.</p>
+      <p style="margin-top:0.75rem;">En cambio, el ingreso mensual sí tiene cero absoluto ($0 = ausencia de ingreso). Entonces podemos afirmar válidamente que alguien que gana $60.000 gana el doble que alguien que gana $30.000.</p>
+    </div>
+
+    <div class="nota-box">
+      <p><strong>Atención práctica:</strong> en ciencias sociales, los puntajes de tests y exámenes suelen tratarse como escala de intervalo cuando en realidad son ordinales. La diferencia entre 8 y 9 puntos no es necesariamente igual a la diferencia entre 4 y 5. Esto es una limitación que los investigadores reconocen pero aceptan por conveniencia.</p>
+    </div>
+  </section>
+
+  <!-- ══ SECCIÓN 7 ══ -->
+  <section class="section" id="s7">
+    <p class="section-label">07</p>
+    <h2>La matriz de datos</h2>
+
+    <p>Una vez definidas la población, las unidades y las variables, organizamos toda la información en una <strong>matriz de datos</strong>: la "fotografía" completa de nuestra población.</p>
+
+    <div class="def-box">
+      <p>La <strong>matriz de datos</strong> es una tabla donde cada <em>fila</em> corresponde a una unidad de análisis, cada <em>columna</em> a una variable, y cada <em>celda</em> contiene el valor (dato) que toma esa variable en esa unidad. Un dato tiene siempre <strong>estructura tripartita</strong>: refiere simultáneamente a una unidad, una variable y un valor.</p>
+    </div>
+
+    <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Unidad</th>
+          <th>X: N° integrantes</th>
+          <th>Y: Ingreso ($ miles)</th>
+          <th>Z: Tipo de vivienda</th>
+          <th>W: Nivel educativo jefe</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Hogar 1</td><td>3</td><td>42</td><td>Casa</td><td>Secundaria</td></tr>
+        <tr><td>Hogar 2</td><td>1</td><td>95</td><td>Apartamento</td><td>Terciaria</td></tr>
+        <tr><td>Hogar 3</td><td>5</td><td>28</td><td>Casa</td><td>Primaria</td></tr>
+        <tr><td>Hogar 4</td><td>2</td><td>67</td><td>Apartamento</td><td>Terciaria</td></tr>
+        <tr><td style="color:var(--muted); font-style:italic;">...</td><td style="color:var(--muted);">...</td><td style="color:var(--muted);">...</td><td style="color:var(--muted);">...</td><td style="color:var(--muted);">...</td></tr>
+      </tbody>
+      <tfoot>
+        <tr><td colspan="5">n filas (unidades) × k columnas (variables)</td></tr>
+      </tfoot>
+    </table>
+    </div>
+
+    <p>Esta matriz es la <em>materia prima</em> de toda la Estadística Descriptiva. En las próximas clases aprenderemos a resumirla mediante tablas de frecuencias, gráficos y medidas numéricas.</p>
+  </section>
+
+  <!-- ══ SECCIÓN 8 ══ -->
+  <section class="section" id="s8">
+    <p class="section-label">08</p>
+    <h2>Ejercicios de la Clase 1</h2>
+
+    <div class="preguntas">
+      <h3>Ejercicio 1 — Clasificación de variables</h3>
+      <p style="color:#c8bfa8; font-size:0.92rem; margin-bottom:1rem;">Para cada variable, indicar: tipo (cualitativa/cuantitativa), subtipo (nominal/ordinal o discreta/continua), y proponer un sistema de categorías válido si corresponde.</p>
+      <ol>
+        <li>El curso favorito de los alumnos de una carrera universitaria.</li>
+        <li>Cantidad de libros en un anaquel.</li>
+        <li>Diámetro de una esfera producida en una fábrica (en mm).</li>
+        <li>Lugar que ocupa un nadador en una competencia.</li>
+        <li>Grado de satisfacción laboral en una empresa.</li>
+        <li>Número de televisores en una casa.</li>
+        <li>Tiempo requerido para responder llamadas en un call center.</li>
+        <li>Candidato al que apoyan los votantes en elecciones presidenciales.</li>
+        <li>Peso de una persona (en kg).</li>
+        <li>Años de educación formal cursados.</li>
+      </ol>
+    </div>
+
+    <div class="preguntas" style="margin-top:1.5rem; background:#2c6e49;">
+      <h3>Ejercicio 2 — Diseño de estudio</h3>
+      <p style="color:#c8f0d8; font-size:0.92rem; margin-bottom:1rem;">Se quiere estudiar el perfil de los trabajadores de una empresa comercial de supermercadismo.</p>
+      <ol>
+        <li>Definir la población con precisión (espacio y tiempo).</li>
+        <li>¿Cuál es la unidad de análisis?</li>
+        <li>Proponer al menos 5 variables de interés con sus sistemas de categorías.</li>
+        <li>Indicar el tipo y escala de medición de cada variable.</li>
+        <li>Construir un esquema de la matriz de datos con las primeras 3 unidades.</li>
+      </ol>
+    </div>
+
+    <div class="preguntas" style="margin-top:1.5rem; background:#b5860d;">
+      <h3>Ejercicio 3 — Sistema de categorías</h3>
+      <p style="color:#fff9e6; font-size:0.92rem; margin-bottom:1rem;">Para la variable "ingreso mensual del trabajador" (en pesos uruguayos):</p>
+      <ol>
+        <li>Identifica el tipo y escala de medición.</li>
+        <li>Propone un sistema de categorías en tramos. Verifica que sea exhaustivo y mutuamente excluyente.</li>
+        <li>Si un trabajador gana exactamente $25.000, ¿en qué tramo queda según tu sistema? ¿Hay ambigüedad?</li>
+        <li>¿Qué información se pierde cuando agrupamos el ingreso en tramos en vez de usar los valores exactos?</li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ══ RESUMEN ══ -->
+  <section class="section">
+    <p class="section-label">Resumen</p>
+    <h2>Lo que aprendimos hoy</h2>
+
+    <div class="tree-box" style="line-height:2.2;">
+      <div class="tree-root">CLASE 1 · Conceptos clave</div>
+      <div class="tree-l1">✦ Estadística Descriptiva vs. Inferencial</div>
+      <div class="tree-l1">✦ Población = conjunto acotado en espacio y tiempo</div>
+      <div class="tree-l1">✦ Muestra = subconjunto de la población</div>
+      <div class="tree-l1">✦ Unidad de análisis ≠ unidad de relevamiento (a veces)</div>
+      <div class="tree-l1">✦ Variable = característica medible de la unidad</div>
+      <div class="tree-l2">├── Cualitativa: Nominal | Ordinal</div>
+      <div class="tree-l2b">└── Cuantitativa: Discreta | Continua</div>
+      <div class="tree-l1">✦ Escalas: Nominal → Ordinal → Intervalo → Razón</div>
+      <div class="tree-l1">✦ Matriz de datos: filas=unidades, columnas=variables</div>
+    </div>
+
+    <div class="nota-box" style="margin-top:1.5rem;">
+      <p><strong>Próxima clase:</strong> Distribuciones de frecuencia. Aprenderemos a resumir los datos de una variable en tablas y gráficos: frecuencias absolutas, relativas, acumuladas, histogramas y polígonos de frecuencia.</p>
+    </div>
+  </section>
+
+</div><!-- /body-wrap -->
+
+<footer>
+  Estadística Descriptiva · Clase 1 · Módulo I &nbsp;·&nbsp; Conceptos fundamentales
+</footer>
+
+</body>
+</html>
