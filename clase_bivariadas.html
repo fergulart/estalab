@@ -127,13 +127,14 @@ em { font-style: italic; }
 
 .tabla-wrap { overflow-x: auto; margin: 1.5rem 0; -webkit-overflow-scrolling: touch; }
 table { border-collapse: collapse; width: 100%; min-width: 360px; font-size: 0.9rem; }
-thead th { background: var(--ink); color: var(--paper); font-family: var(--code); font-size: 0.6rem; letter-spacing: 0.14em; text-transform: uppercase; padding: 0.65rem 0.9rem; text-align: left; border-bottom: 1px solid var(--rule); }
+thead th { background: var(--ink); color: var(--paper); font-family: var(--code); font-size: 0.62rem; letter-spacing: 0.08em; padding: 0.65rem 0.9rem; text-align: left; border-bottom: 1px solid var(--rule); white-space: nowrap; }
 tbody tr { border-bottom: 1px solid var(--rule); }
 tbody tr:nth-child(even) { background: var(--paper2); }
 tbody td { padding: 0.55rem 0.9rem; vertical-align: top; }
-td.num, th.num { text-align: right; font-family: var(--code); font-size: 0.85rem; font-variant-numeric: tabular-nums; }
+td.num { text-align: right; font-family: var(--code); font-size: 0.85rem; font-variant-numeric: tabular-nums; }
+th.num { text-align: center; font-family: var(--code); font-size: 0.85rem; font-variant-numeric: tabular-nums; }
 td.hi { color: var(--red); font-weight: 600; }
-td.lbl { background: var(--paper2); font-family: var(--code); font-size: 0.85rem; }
+td.lbl { background: var(--paper2); font-family: var(--code); font-size: 0.85rem; white-space: nowrap; }
 tfoot td { font-family: var(--code); font-size: 0.82rem; font-weight: 500; padding: 0.6rem 0.9rem; border-top: 2px solid var(--ink); background: var(--paper2); }
 
 .pasos { margin: 1.5rem 0; }
@@ -423,7 +424,7 @@ code { font-family: var(--code); font-size: 0.85em; background: var(--paper2); p
         <tr>
           <th>X \ Y</th>
           <th class="num">y<sub>1</sub> = Sociales</th>
-          <th class="num">y<sub>2</sub> = Humanid.</th>
+          <th class="num">y<sub>2</sub> = Humanidades</th>
           <th class="num">y<sub>3</sub> = Exactas</th>
           <th class="num">y<sub>4</sub> = Salud</th>
         </tr>
@@ -612,6 +613,40 @@ code { font-family: var(--code); font-size: 0.85em; background: var(--paper2); p
     </p>
   </div>
 
+  <div class="ejemplo">
+    <span class="ejemplo-label">Ejemplo — Calculando n<sub>3·</sub> y n<sub>·4</sub></span>
+    <p>
+      Tomemos dos casos concretos sobre la tabla de Lucía para fijar la notación.
+    </p>
+    <p style="margin-top:0.6rem;">
+      <strong>n<sub>3·</sub></strong> es la marginal absoluta del tercer valor de X.
+      En nuestra tabla, x<sub>3</sub> = Agregado. Sumamos toda la fila de los Agregados
+      (i = 3, j recorre de 1 a 4):
+    </p>
+    <p style="font-family:var(--code); font-size:0.9rem; text-align:center; margin: 0.5rem 0;">
+      n<sub>3·</sub> = n<sub>31</sub> + n<sub>32</sub> + n<sub>33</sub> + n<sub>34</sub> = 12 + 8 + 15 + 10 = <strong>45</strong>
+    </p>
+    <p>
+      Es decir, hay 45 docentes con cargo de Agregado, sumando todas las áreas.
+    </p>
+    <p style="margin-top:0.8rem;">
+      <strong>n<sub>·4</sub></strong> es la marginal absoluta del cuarto valor de Y.
+      En nuestra tabla, y<sub>4</sub> = Salud. Sumamos toda la columna de Salud
+      (j = 4, i recorre de 1 a 4):
+    </p>
+    <p style="font-family:var(--code); font-size:0.9rem; text-align:center; margin: 0.5rem 0;">
+      n<sub>·4</sub> = n<sub>14</sub> + n<sub>24</sub> + n<sub>34</sub> + n<sub>44</sub> = 12 + 12 + 10 + 6 = <strong>40</strong>
+    </p>
+    <p>
+      Hay 40 docentes que trabajan en Salud, sumando todos los cargos.
+    </p>
+    <p style="margin-top:0.6rem; margin-bottom:0;">
+      Notá cómo cambia el papel de los subíndices: en <strong>n<sub>3·</sub></strong>
+      fijamos i = 3 y dejamos correr j; en <strong>n<sub>·4</sub></strong> fijamos j = 4
+      y dejamos correr i. <em>El punto marca cuál es el índice que se mueve.</em>
+    </p>
+  </div>
+
   <h3>La tabla ampliada</h3>
 
   <p>Calculamos todas las marginales de Lucía:</p>
@@ -622,7 +657,7 @@ code { font-family: var(--code); font-size: 0.85em; background: var(--paper2); p
         <tr>
           <th>X \ Y</th>
           <th class="num">Sociales</th>
-          <th class="num">Humanid.</th>
+          <th class="num">Humanidades</th>
           <th class="num">Exactas</th>
           <th class="num">Salud</th>
           <th class="num">n<sub>i·</sub></th>
@@ -743,7 +778,7 @@ code { font-family: var(--code); font-size: 0.85em; background: var(--paper2); p
         <tr>
           <th>X \ Y</th>
           <th class="num">Sociales</th>
-          <th class="num">Humanid.</th>
+          <th class="num">Humanidades</th>
           <th class="num">Exactas</th>
           <th class="num">Salud</th>
           <th class="num">h<sub>i·</sub></th>
@@ -871,6 +906,57 @@ code { font-family: var(--code); font-size: 0.85em; background: var(--paper2); p
       errores más comunes en análisis bivariado.
     </p>
   </div>
+
+  <h3>Las dos direcciones, lado a lado</h3>
+
+  <p>
+    Para que la diferencia quede totalmente clara, veamos las dos condicionales sobre el
+    mismo punto de la tabla. Tomemos la celda (Agregado, Humanidades): hay
+    <strong>n<sub>32</sub> = 8 docentes</strong> que son Agregados en Humanidades.
+    Calculamos las dos proporciones posibles:
+  </p>
+
+  <div class="tabla-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Pregunta</th>
+          <th>Fórmula</th>
+          <th class="num">Cálculo</th>
+          <th class="num">Resultado</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Entre los <em>de Humanidades</em>, ¿qué proporción es Agregado?</td>
+          <td style="white-space:nowrap;">n<sub>32</sub> / n<sub>·2</sub></td>
+          <td class="num">8/40</td>
+          <td class="num"><strong>0,200</strong></td>
+        </tr>
+        <tr>
+          <td>Entre los <em>Agregados</em>, ¿qué proporción está en Humanidades?</td>
+          <td style="white-space:nowrap;">n<sub>32</sub> / n<sub>3·</sub></td>
+          <td class="num">8/45</td>
+          <td class="num"><strong>0,178</strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p style="font-size:0.92rem; color:var(--ink2); margin-top:0.7rem;">
+    En la <strong>primera</strong> fila dividimos por <strong>n<sub>·2</sub> = 40</strong>
+    (total de la columna Humanidades). En la <strong>segunda</strong> dividimos por
+    <strong>n<sub>3·</sub> = 45</strong> (total de la fila Agregados). El numerador
+    es el mismo — los 8 docentes de la celda — pero el denominador cambia según
+    hacia dónde estemos condicionando.
+  </p>
+
+  <p>
+    Aunque ambas operaciones parten de la <em>misma</em> celda con 8 docentes,
+    dan números distintos — porque están respondiendo preguntas distintas.
+    Una mira <em>hacia abajo</em> en la columna; la otra mira <em>hacia los lados</em>
+    en la fila.
+  </p>
 </section>
 
 <!-- ══ CASO B ══ -->
@@ -916,11 +1002,30 @@ code { font-family: var(--code); font-size: 0.85em; background: var(--paper2); p
     </p>
   </div>
 
+  <h3>Cómo se calcula una media condicional</h3>
+
+  <p>
+    Veámoslo con un cálculo mínimo. Supongamos que cinco docentes de Sociales tienen
+    los siguientes salarios mensuales (miles $): <code>72, 80, 88, 95, 92</code>.
+    La media condicional del salario para Sociales sería:
+  </p>
+
+  <p style="font-family:var(--code); font-size:0.92rem; text-align:center; margin: 0.6rem 0;">
+    ȳ<sub>Sociales</sub> = (72 + 80 + 88 + 95 + 92) / 5 = 427 / 5 = <strong>85,4</strong>
+  </p>
+
+  <p>
+    Es decir, <em>exactamente lo mismo que una media común</em> — pero calculada solo
+    sobre los individuos de un subgrupo. La fórmula general, cuando tenemos los datos
+    agrupados de Y dentro de cada categoría de X, es la que veremos formalmente en
+    el Caso C, porque ahí los datos estarán típicamente en intervalos.
+  </p>
+
   <h3>Ejemplo de Lucía</h3>
 
   <p>
-    Lucía calcula la media salarial por área. El resultado, en miles de pesos uruguayos
-    mensuales:
+    Lucía calcula la media salarial por área usando todos sus datos. El resultado,
+    en miles de pesos uruguayos mensuales:
   </p>
 
   <div class="tabla-wrap">
@@ -948,7 +1053,21 @@ code { font-family: var(--code); font-size: 0.85em; background: var(--paper2); p
     <p style="margin-bottom:0;">
       Comparar medias condicionales es la forma más natural de detectar relaciones entre
       una variable cualitativa y una cuantitativa. Si todas las medias condicionales son
-      <em>iguales</em>, no hay relación. Si difieren entre sí, hay relación.
+      <em>iguales</em>, no hay relación. Si difieren entre sí, hay relación —
+      y cuanto mayor la diferencia, más fuerte es la asociación entre las dos variables.
+    </p>
+  </div>
+
+  <div class="advertencia">
+    <span class="advertencia-label">No solo la media — también la dispersión</span>
+    <p style="margin-bottom:0;">
+      La media condicional resume cada subgrupo en un solo número, pero no captura
+      la <em>dispersión</em> interna del grupo. Dos áreas pueden tener la misma media
+      salarial pero comportamientos muy distintos: en una, los salarios pueden estar
+      todos pegados a la media; en la otra, repartidos entre muy bajos y muy altos.
+      Por eso es habitual reportar también la <strong>varianza condicional</strong>
+      o el <strong>desvío estándar condicional</strong> de Y para cada categoría de X.
+      Lo veremos en detalle en la Clase 5, cuando estudiemos dispersión a fondo.
     </p>
   </div>
 </section>
@@ -1307,6 +1426,106 @@ code { font-family: var(--code); font-size: 0.85em; background: var(--paper2); p
       El paso más grande está entre [20, 30) y [30, 50), con un salto de unos 30 m².
       Hay una <strong>relación claramente positiva</strong> entre ingreso y superficie:
       a mayor ingreso, mayor tamaño de la vivienda.
+    </p>
+  </div>
+</section>
+
+<!-- ══ Glosario de notación ══ -->
+<section class="seccion" id="glosario">
+  <p class="sec-num">10 &mdash; Referencia rápida</p>
+  <h2>Glosario de notación bivariada</h2>
+
+  <p>
+    Toda la notación nueva que aprendimos hoy, en una sola tabla para consultar rápido:
+  </p>
+
+  <div class="tabla-wrap">
+    <table>
+      <thead>
+        <tr><th>Símbolo</th><th>Nombre</th><th>Cómo se lee</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="font-family:var(--code);"><strong>X, Y</strong></td>
+          <td>Las dos variables que estudiamos</td>
+          <td>X (filas) e Y (columnas)</td>
+        </tr>
+        <tr>
+          <td style="font-family:var(--code);"><strong>x<sub>i</sub>, y<sub>j</sub></strong></td>
+          <td>Valores que toman las variables</td>
+          <td>"x sub i", "y sub j"</td>
+        </tr>
+        <tr>
+          <td style="font-family:var(--code);"><strong>I, J</strong></td>
+          <td>Cantidad de categorías de X y de Y</td>
+          <td>"i mayúscula", "j mayúscula"</td>
+        </tr>
+        <tr>
+          <td style="font-family:var(--code);"><strong>n</strong></td>
+          <td>Tamaño total de la muestra</td>
+          <td>"n"</td>
+        </tr>
+        <tr>
+          <td style="font-family:var(--code);"><strong>n<sub>ij</sub></strong></td>
+          <td>Frecuencia absoluta conjunta</td>
+          <td>"n sub i j" — individuos con X = x<sub>i</sub> e Y = y<sub>j</sub></td>
+        </tr>
+        <tr>
+          <td style="font-family:var(--code);"><strong>h<sub>ij</sub></strong></td>
+          <td>Frecuencia relativa conjunta</td>
+          <td>"h sub i j" — proporción n<sub>ij</sub>/n</td>
+        </tr>
+        <tr>
+          <td style="font-family:var(--code);"><strong>n<sub>i·</sub></strong></td>
+          <td>Marginal absoluta de X (total fila i)</td>
+          <td>"n sub i punto"</td>
+        </tr>
+        <tr>
+          <td style="font-family:var(--code);"><strong>n<sub>·j</sub></strong></td>
+          <td>Marginal absoluta de Y (total columna j)</td>
+          <td>"n sub punto j"</td>
+        </tr>
+        <tr>
+          <td style="font-family:var(--code);"><strong>h<sub>i·</sub>, h<sub>·j</sub></strong></td>
+          <td>Marginales relativas</td>
+          <td>"h sub i punto", "h sub punto j"</td>
+        </tr>
+        <tr>
+          <td style="font-family:var(--code);"><strong>h<sub>i|j</sub></strong></td>
+          <td>Frecuencia condicional de X dado Y = y<sub>j</sub></td>
+          <td>"h sub i barra j" — divide por la columna</td>
+        </tr>
+        <tr>
+          <td style="font-family:var(--code);"><strong>h<sub>j|i</sub></strong></td>
+          <td>Frecuencia condicional de Y dado X = x<sub>i</sub></td>
+          <td>"h sub j barra i" — divide por la fila</td>
+        </tr>
+        <tr>
+          <td style="font-family:var(--code);"><strong>ȳ<sub>i</sub></strong></td>
+          <td>Media de Y condicionada a X = x<sub>i</sub></td>
+          <td>"y barra sub i"</td>
+        </tr>
+        <tr>
+          <td style="font-family:var(--code);"><strong>Σ</strong></td>
+          <td>Sumatoria simple</td>
+          <td>"sumatoria"</td>
+        </tr>
+        <tr>
+          <td style="font-family:var(--code);"><strong>ΣΣ</strong></td>
+          <td>Doble sumatoria (sobre todas las celdas)</td>
+          <td>"doble sumatoria"</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="nota">
+    <span class="nota-label">El truco del punto</span>
+    <p style="margin-bottom:0;">
+      Cada vez que veas un punto en un subíndice, pensá: <em>"sumamos sobre esa variable"</em>.
+      Si el punto está en el lugar de <strong>j</strong> (como en n<sub>i·</sub>), sumamos
+      sobre todos los valores de j — es decir, sumamos toda la fila i. Si está en el lugar
+      de <strong>i</strong> (como en n<sub>·j</sub>), sumamos toda la columna j.
     </p>
   </div>
 </section>
