@@ -1,0 +1,1339 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<title>Estadística · Análisis bivariado · Curso base</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400;1,600&family=Fira+Code:wght@400;500&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --paper:    #faf8f3;
+  --paper2:   #f2ede3;
+  --ink:      #1c1a17;
+  --ink2:     #3d3a34;
+  --muted:    #8a8178;
+  --rule:     #d6cfc2;
+  --red:      #b5281c;
+  --blue:     #1a4a8a;
+  --green:    #1a6b3a;
+  --gold:     #9a6f00;
+  --lora:     'Lora', Georgia, serif;
+  --bask:     'Libre Baskerville', Georgia, serif;
+  --code:     'Fira Code', 'Courier New', monospace;
+}
+
+html { font-size: 17px; scroll-behavior: smooth; background: var(--paper); color: var(--ink); }
+body { font-family: var(--lora); font-weight: 400; line-height: 1.8; -webkit-font-smoothing: antialiased; }
+
+h1 { font-family: var(--bask); font-size: clamp(1.9rem, 6vw, 3rem); font-weight: 700; line-height: 1.1; letter-spacing: -0.02em; color: var(--ink); }
+h2 { font-family: var(--bask); font-size: clamp(1.3rem, 4vw, 1.7rem); font-weight: 700; line-height: 1.2; color: var(--ink); margin-top: 3rem; margin-bottom: 1rem; }
+h3 { font-family: var(--lora); font-size: 1.1rem; font-weight: 600; font-style: italic; color: var(--ink2); margin-top: 2rem; margin-bottom: 0.6rem; }
+h4 { font-family: var(--lora); font-size: 1.02rem; font-weight: 600; color: var(--ink2); margin-top: 1.5rem; margin-bottom: 0.5rem; }
+
+p { margin-bottom: 1rem; }
+strong { font-weight: 600; }
+em { font-style: italic; }
+
+.header {
+  background: var(--ink); color: var(--paper);
+  padding: clamp(2rem, 8vw, 4rem) clamp(1.2rem, 6vw, 3rem);
+  position: relative; overflow: hidden;
+}
+.header::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size: 40px 40px; pointer-events: none;
+}
+.header-inner { max-width: 760px; margin: 0 auto; position: relative; }
+.clase-tag {
+  font-family: var(--code); font-size: 0.65rem; letter-spacing: 0.25em;
+  text-transform: uppercase; color: #c8bfa8; margin-bottom: 1.2rem; display: block;
+}
+.header h1 { color: var(--paper); margin-bottom: 0.8rem; }
+.header h1 em { color: #d4a84b; font-style: italic; }
+.header-sub { font-family: var(--lora); font-size: 1rem; color: #9a9280; font-style: italic; margin-bottom: 2rem; line-height: 1.6; }
+.header-meta { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.5rem; }
+.tag { font-family: var(--code); font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase; border: 1px solid rgba(255,255,255,0.2); color: #9a9280; padding: 0.25rem 0.6rem; border-radius: 2px; }
+
+.contenido { max-width: 760px; margin: 0 auto; padding: clamp(1.5rem, 5vw, 3rem) clamp(1.2rem, 5vw, 2rem) 5rem; }
+.seccion { margin-bottom: 3.5rem; }
+
+.sec-num {
+  font-family: var(--code); font-size: 0.6rem; letter-spacing: 0.25em;
+  text-transform: uppercase; color: var(--red);
+  display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.4rem;
+}
+.sec-num::after { content: ''; flex: 1; height: 1px; background: var(--rule); }
+
+.caso-banner {
+  background: linear-gradient(90deg, var(--ink) 0%, var(--ink2) 100%);
+  color: var(--paper); padding: 1.5rem 1.8rem; border-radius: 4px;
+  margin: 2.5rem 0 1.5rem 0; border-left: 4px solid #d4a84b;
+}
+.caso-banner-label {
+  font-family: var(--code); font-size: 0.62rem; letter-spacing: 0.22em;
+  text-transform: uppercase; color: #d4a84b; display: block; margin-bottom: 0.5rem;
+}
+.caso-banner h2 { color: var(--paper); margin-top: 0; margin-bottom: 0.5rem; font-size: 1.45rem; }
+.caso-banner p { color: #c8bfa8; font-size: 0.95rem; margin-bottom: 0; font-style: italic; line-height: 1.6; }
+
+.problema { background: var(--ink); color: var(--paper); padding: clamp(1.2rem, 4vw, 2rem); border-radius: 4px; margin: 2rem 0; }
+.problema-label { font-family: var(--code); font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: #d4a84b; margin-bottom: 0.8rem; display: block; }
+.problema p { color: #d0c8b8; font-size: 0.97rem; line-height: 1.75; margin-bottom: 0.8rem; }
+.problema p:last-child { margin-bottom: 0; }
+.problema strong { color: var(--paper); }
+
+.def { border-left: 3px solid var(--red); padding: 1rem 1.25rem; margin: 1.5rem 0; background: #fdf5f4; }
+.def-label { font-family: var(--code); font-size: 0.58rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--red); display: block; margin-bottom: 0.5rem; }
+.def p:last-child { margin-bottom: 0; }
+
+.nota { border-left: 3px solid var(--blue); padding: 1rem 1.25rem; margin: 1.5rem 0; background: #f4f6fd; }
+.nota-label { font-family: var(--code); font-size: 0.58rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--blue); display: block; margin-bottom: 0.5rem; }
+.nota p:last-child { margin-bottom: 0; }
+
+.ejemplo { border: 1px solid var(--rule); border-top: 3px solid var(--gold); padding: 1.2rem 1.25rem; margin: 1.5rem 0; background: var(--paper2); border-radius: 0 0 3px 3px; }
+.ejemplo-label { font-family: var(--code); font-size: 0.58rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); display: block; margin-bottom: 0.75rem; }
+.ejemplo p:last-child { margin-bottom: 0; }
+
+.advertencia { border-left: 3px solid var(--gold); padding: 1rem 1.25rem; margin: 1.5rem 0; background: #fdf9ed; }
+.advertencia-label { font-family: var(--code); font-size: 0.58rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); display: block; margin-bottom: 0.5rem; }
+.advertencia p:last-child { margin-bottom: 0; }
+
+.aplicacion { border: 2px solid var(--green); padding: 1.2rem 1.25rem; margin: 1.8rem 0; background: #f3f9f5; border-radius: 3px; }
+.aplicacion-label { font-family: var(--code); font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--green); display: block; margin-bottom: 0.6rem; font-weight: 700; }
+.aplicacion p:last-child { margin-bottom: 0; }
+
+.formula {
+  background: var(--ink); color: #7ec8e3;
+  font-family: var(--code); font-size: clamp(0.82rem, 2.3vw, 0.97rem);
+  padding: 1rem 1.25rem; border-radius: 3px; margin: 1.25rem 0;
+  text-align: center; overflow-x: auto; white-space: nowrap; letter-spacing: 0.02em;
+}
+.formula-label { display: block; font-size: 0.58rem; letter-spacing: 0.2em; text-transform: uppercase; color: #9a9280; text-align: left; margin-bottom: 0.4rem; }
+.formula-note { display: block; font-size: 0.72rem; color: #7a7060; text-align: left; margin-top: 0.5rem; white-space: normal; font-family: var(--lora); font-style: italic; letter-spacing: 0; line-height: 1.5; }
+
+/* Sumatoria estilizada */
+.sum {
+  display: inline-flex; flex-direction: column; align-items: center;
+  vertical-align: middle; margin: 0 0.15em; line-height: 1;
+}
+.sum-top { font-size: 0.6em; line-height: 1; margin-bottom: 0.08em; font-family: var(--code); color: #9a9080; }
+.sum-sym { font-size: 1.7em; line-height: 1; color: #d4a84b; font-family: var(--lora); }
+.sum-bot { font-size: 0.6em; line-height: 1; margin-top: 0.08em; font-family: var(--code); color: #9a9080; }
+
+.tabla-wrap { overflow-x: auto; margin: 1.5rem 0; -webkit-overflow-scrolling: touch; }
+table { border-collapse: collapse; width: 100%; min-width: 360px; font-size: 0.9rem; }
+thead th { background: var(--ink); color: var(--paper); font-family: var(--code); font-size: 0.6rem; letter-spacing: 0.14em; text-transform: uppercase; padding: 0.65rem 0.9rem; text-align: left; border-bottom: 1px solid var(--rule); }
+tbody tr { border-bottom: 1px solid var(--rule); }
+tbody tr:nth-child(even) { background: var(--paper2); }
+tbody td { padding: 0.55rem 0.9rem; vertical-align: top; }
+td.num, th.num { text-align: right; font-family: var(--code); font-size: 0.85rem; font-variant-numeric: tabular-nums; }
+td.hi { color: var(--red); font-weight: 600; }
+td.lbl { background: var(--paper2); font-family: var(--code); font-size: 0.85rem; }
+tfoot td { font-family: var(--code); font-size: 0.82rem; font-weight: 500; padding: 0.6rem 0.9rem; border-top: 2px solid var(--ink); background: var(--paper2); }
+
+.pasos { margin: 1.5rem 0; }
+.paso { display: grid; grid-template-columns: 2.5rem 1fr; gap: 0.75rem; padding: 1rem 0; border-bottom: 1px solid var(--rule); }
+.paso:last-child { border-bottom: none; }
+.paso-num { font-family: var(--code); font-size: 1.3rem; font-weight: 700; color: var(--red); line-height: 1; padding-top: 0.1rem; }
+.paso-body strong { display: block; margin-bottom: 0.2rem; color: var(--ink); font-size: 0.97rem; }
+.paso-body p { margin-bottom: 0; font-size: 0.92rem; color: var(--ink2); line-height: 1.6; }
+
+.resumen { background: var(--ink); color: var(--paper); padding: clamp(1.2rem, 4vw, 2rem); border-radius: 4px; margin-top: 3rem; }
+.resumen-label { font-family: var(--code); font-size: 0.6rem; letter-spacing: 0.25em; text-transform: uppercase; color: #9a9280; display: block; margin-bottom: 1rem; }
+.resumen ul { padding-left: 1.2rem; font-size: 0.93rem; line-height: 2; color: #c8bfa8; }
+.resumen li strong { color: var(--paper); }
+
+footer { border-top: 1px solid var(--rule); padding: 1.5rem clamp(1.2rem, 5vw, 2rem); text-align: center; font-family: var(--code); font-size: 0.58rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); }
+
+code { font-family: var(--code); font-size: 0.85em; background: var(--paper2); padding: 1px 5px; border-radius: 2px; color: var(--ink2); }
+
+.print-btn { position: fixed; top: 1rem; right: 1rem; z-index: 1000; background: var(--ink); color: var(--paper); border: none; padding: 0.55rem 1rem; border-radius: 3px; font-family: var(--code); font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.15); transition: transform 0.15s, box-shadow 0.15s; }
+.print-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(0,0,0,0.2); }
+.print-btn::before { content: "⎙ "; color: var(--gold); margin-right: 0.25rem; }
+
+@media print {
+  @page { margin: 1.8cm 1.5cm; }
+  html { font-size: 10.5pt; }
+  body { background: white !important; color: #000 !important; line-height: 1.5; }
+  .print-btn { display: none !important; }
+  .header { background: white !important; color: #000 !important; padding: 0 0 1rem 0 !important; border-bottom: 2px solid #000; page-break-after: avoid; }
+  .header::before, .header::after { display: none !important; }
+  .header h1 { color: #000 !important; font-size: 22pt; }
+  .header h1 em { color: #b5281c !important; }
+  .header-sub { color: #444 !important; }
+  .clase-tag { color: #b5281c !important; }
+  .tag { border-color: #888 !important; color: #444 !important; }
+  .contenido { padding: 0 !important; max-width: 100% !important; }
+  .seccion { page-break-inside: avoid; margin-bottom: 1.5rem; }
+  h2 { page-break-after: avoid; font-size: 14pt; }
+  h3 { page-break-after: avoid; font-size: 12pt; }
+  .sec-num { color: #b5281c !important; }
+  .caso-banner { background: #f0f0f0 !important; color: #000 !important; border-left: 4px solid #9a6f00 !important; }
+  .caso-banner h2 { color: #000 !important; }
+  .caso-banner p { color: #444 !important; }
+  .caso-banner-label { color: #9a6f00 !important; }
+  .problema { background: #f5f5f5 !important; color: #000 !important; border: 1.5px solid #000; page-break-inside: avoid; }
+  .problema p, .problema strong { color: #000 !important; }
+  .problema-label { color: #9a6f00 !important; }
+  .def, .nota, .ejemplo, .advertencia, .resumen, .aplicacion { page-break-inside: avoid; }
+  .resumen { background: #f5f5f5 !important; color: #000 !important; border: 1.5px solid #000; }
+  .resumen ul, .resumen li, .resumen li strong { color: #000 !important; }
+  .resumen-label { color: #9a6f00 !important; }
+  .aplicacion { background: #f0f8f0 !important; border-color: #1a6b3a !important; }
+  table { page-break-inside: avoid; }
+  thead th { background: #333 !important; color: white !important; }
+  tbody tr:nth-child(even) { background: #f5f5f5 !important; }
+  tbody tr:nth-child(odd) { background: white !important; }
+  .formula { background: #f0f0f0 !important; color: #1a4a8a !important; }
+  .formula-note { color: #555 !important; }
+  .formula-label { color: #888 !important; }
+  .sum-sym { color: #b5281c !important; }
+  .sum-top, .sum-bot { color: #666 !important; }
+  footer { border-top: 1px solid #888; color: #666 !important; }
+}
+
+@media (max-width: 480px) { .paso { grid-template-columns: 2rem 1fr; gap: 0.6rem; } }
+</style>
+</head>
+<body>
+
+<button onclick="window.print()" class="print-btn">Imprimir</button>
+
+<header class="header">
+  <div class="header-inner">
+    <span class="clase-tag">Estadística Descriptiva &nbsp;·&nbsp; Análisis bivariado</span>
+    <h1>Cuando dos variables<br>se <em>encuentran</em></h1>
+    <p class="header-sub">
+      Construcción desde cero del análisis bivariado. Tres casos según el tipo de variables.
+      Notación, fórmulas y aplicación completa al Ejercicio 1 del práctico.
+    </p>
+    <div class="header-meta">
+      <span class="tag">Tablas de contingencia</span>
+      <span class="tag">Marginales y condicionales</span>
+      <span class="tag">Tres casos</span>
+    </div>
+  </div>
+</header>
+
+<main class="contenido">
+
+<!-- ── INTRO ── -->
+<div class="problema">
+  <span class="problema-label">El contexto</span>
+  <p>
+    <strong>Lucía Bermúdez</strong> es socióloga del trabajo en la Facultad de Ciencias Sociales
+    de la Udelar. Está armando un informe sobre las condiciones laborales del personal
+    académico en las universidades uruguayas. Para eso encuestó a 200 docentes
+    investigadores activos en 2024, registrando para cada uno varias características:
+    su <strong>área de conocimiento</strong>, su <strong>cargo</strong>, su
+    <strong>dedicación horaria semanal</strong>, su <strong>antigüedad</strong>, y
+    su <strong>salario mensual</strong>.
+  </p>
+  <p>
+    Hasta ahora, en este curso, Lucía solo podría haber estudiado <em>cada variable
+    por separado</em>: la distribución de los salarios, la distribución de los cargos,
+    cuántos hay por área. Pero las preguntas verdaderamente interesantes de su investigación
+    no son esas.
+  </p>
+  <p>
+    Lucía quiere saber <strong>cómo se relacionan las variables entre sí</strong>:
+    ¿los cargos más altos están concentrados en alguna área? ¿la dedicación horaria
+    se asocia al salario? ¿hay diferencias salariales entre áreas?
+    Para responder estas preguntas necesita estudiar dos variables al mismo tiempo —
+    el <strong>análisis bivariado</strong>.
+  </p>
+</div>
+
+<!-- ══ S1 ══ -->
+<section class="seccion" id="s1">
+  <p class="sec-num">01 &mdash; Punto de partida</p>
+  <h2>De una variable a dos</h2>
+
+  <p>
+    Hasta este punto del curso, cuando estudiábamos una variable, organizábamos los datos
+    así: en una <strong>tabla de frecuencias de una sola variable</strong>. Por ejemplo,
+    si miramos solo el cargo de los 200 docentes de la encuesta de Lucía:
+  </p>
+
+  <div class="tabla-wrap">
+    <table>
+      <thead>
+        <tr><th>Cargo</th><th class="num">Cantidad</th><th class="num">Proporción</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Asistente</td><td class="num">70</td><td class="num">0,35</td></tr>
+        <tr><td>Adjunto</td><td class="num">60</td><td class="num">0,30</td></tr>
+        <tr><td>Agregado</td><td class="num">45</td><td class="num">0,225</td></tr>
+        <tr><td>Titular</td><td class="num">25</td><td class="num">0,125</td></tr>
+      </tbody>
+      <tfoot><tr><td>Total</td><td class="num">200</td><td class="num">1,000</td></tr></tfoot>
+    </table>
+  </div>
+
+  <p>
+    Una columna por cada cosa que nos interesa contar. Una fila por cada valor que
+    toma la variable. La cuenta total al pie. Eso lo dominamos.
+  </p>
+
+  <p>
+    Ahora vamos a dar un paso más: <strong>queremos estudiar dos variables a la vez</strong>.
+    Por ejemplo, no solo el cargo, sino el cargo cruzado con el área de conocimiento.
+    Para eso necesitamos una estructura nueva, que se llama
+    <strong>tabla de doble entrada</strong> o <strong>tabla bivariada</strong>.
+  </p>
+
+  <h3>Los tres casos posibles</h3>
+
+  <p>
+    El análisis bivariado tiene tres situaciones distintas, según el tipo de las
+    variables que estemos cruzando. Cada caso requiere herramientas un poco diferentes,
+    y por eso los vamos a ver uno por uno:
+  </p>
+
+  <div class="def">
+    <span class="def-label">Los tres casos</span>
+    <p>
+      <strong>Caso A — Dos variables cualitativas.</strong> Las dos variables son
+      categorías (nominales u ordinales). Por ejemplo: cargo × área de conocimiento.
+    </p>
+    <p>
+      <strong>Caso B — Una cualitativa y una cuantitativa.</strong> Una es categoría,
+      la otra se mide en una escala numérica. Por ejemplo: área de conocimiento × salario.
+    </p>
+    <p style="margin-bottom:0;">
+      <strong>Caso C — Dos variables cuantitativas.</strong> Las dos son numéricas. Por ejemplo:
+      antigüedad × salario. O — como en el Ejercicio 1 del práctico — ingreso × superficie de la vivienda.
+    </p>
+  </div>
+
+  <p>
+    Empezamos por el Caso A — el más simple — y avanzamos hasta el Caso C, que es donde
+    están concentradas las herramientas más poderosas del análisis bivariado.
+  </p>
+</section>
+
+<!-- ══ CASO A ══ -->
+<div class="caso-banner">
+  <span class="caso-banner-label">Caso A</span>
+  <h2>Dos variables cualitativas</h2>
+  <p>Cargo del docente × Área de conocimiento</p>
+</div>
+
+<!-- ══ S2 ══ -->
+<section class="seccion" id="s2">
+  <p class="sec-num">02 &mdash; Caso A · Construcción de la tabla</p>
+  <h2>Cruzando dos variables categóricas</h2>
+
+  <p>
+    Lucía quiere ver si los cargos académicos se distribuyen de manera distinta según
+    el área de conocimiento. Para eso necesita una tabla que cruce las dos variables.
+  </p>
+
+  <p>
+    Tiene cuatro <strong>cargos</strong>: Asistente, Adjunto, Agregado, Titular.<br>
+    Y cuatro <strong>áreas</strong>: Sociales, Humanidades, Exactas, Salud.
+  </p>
+
+  <p>
+    La idea es construir una tabla que tenga las cuatro categorías de la primera variable
+    en las filas, las cuatro de la segunda en las columnas, y en cada <em>celda</em>
+    el número de docentes que cumplen simultáneamente las dos condiciones.
+  </p>
+
+  <h3>La tabla cruzada</h3>
+
+  <p>Después de procesar las 200 encuestas, Lucía obtiene esta tabla:</p>
+
+  <div class="tabla-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Cargo &nbsp;\&nbsp; Área</th>
+          <th class="num">Sociales</th>
+          <th class="num">Humanidades</th>
+          <th class="num">Exactas</th>
+          <th class="num">Salud</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="lbl">Asistente</td><td class="num">25</td><td class="num">15</td><td class="num">18</td><td class="num">12</td></tr>
+        <tr><td class="lbl">Adjunto</td><td class="num">20</td><td class="num">13</td><td class="num">15</td><td class="num">12</td></tr>
+        <tr><td class="lbl">Agregado</td><td class="num">12</td><td class="num">8</td><td class="num">15</td><td class="num">10</td></tr>
+        <tr><td class="lbl">Titular</td><td class="num">5</td><td class="num">4</td><td class="num">10</td><td class="num">6</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>
+    Cada número de la tabla representa la cantidad de docentes que tienen
+    <em>simultáneamente</em> el cargo de la fila y el área de la columna. Por ejemplo:
+    <strong>15 docentes son Asistentes en Humanidades</strong>. Otros 12 son Adjuntos en Salud.
+  </p>
+
+  <h3>Notación: el primer paso formal</h3>
+
+  <p>
+    Hasta acá los nombres "Cargo" y "Área" funcionan para hablar. Pero cuando queremos
+    escribir <em>fórmulas generales</em> que sirvan para cualquier tabla bivariada —
+    no solo esta — necesitamos una notación más compacta. Vamos a llamar:
+  </p>
+
+  <ul style="padding-left:1.3rem; line-height:2; font-size:0.94rem; margin: 0.5rem 0 1.2rem;">
+    <li><strong>X</strong> a la primera variable (filas). En este caso, el cargo.</li>
+    <li><strong>Y</strong> a la segunda variable (columnas). En este caso, el área.</li>
+    <li><strong>x<sub>1</sub>, x<sub>2</sub>, ..., x<sub>I</sub></strong> a los valores que toma X. Acá <em>I = 4</em> (cuatro cargos).</li>
+    <li><strong>y<sub>1</sub>, y<sub>2</sub>, ..., y<sub>J</sub></strong> a los valores que toma Y. Acá <em>J = 4</em> (cuatro áreas).</li>
+  </ul>
+
+  <p>
+    Las letras <em>I</em> y <em>J</em> son simplemente "cuántas categorías hay en cada variable".
+    En esta tabla particular ambas valen 4, pero pueden ser distintas — por ejemplo, si
+    tuviéramos 5 áreas y 3 cargos, sería I = 3, J = 5.
+  </p>
+
+  <div class="def">
+    <span class="def-label">Definición 1 — Frecuencia absoluta conjunta</span>
+    <p>
+      Llamamos <strong>frecuencia absoluta conjunta</strong> de la combinación (x<sub>i</sub>, y<sub>j</sub>)
+      al número de individuos que toman simultáneamente el valor x<sub>i</sub> en la variable X
+      y el valor y<sub>j</sub> en la variable Y. Lo escribimos:
+    </p>
+    <p style="text-align:center; font-family:var(--code); font-size:1rem; margin: 0.6rem 0;">
+      n<sub>ij</sub>
+    </p>
+    <p style="margin-bottom:0;">
+      Los dos subíndices <em>ij</em> identifican la celda: <em>i</em> es la fila,
+      <em>j</em> es la columna. En nuestro ejemplo, <strong>n<sub>23</sub> = 15</strong>
+      significa: "15 docentes son Adjuntos (fila 2) en Exactas (columna 3)".
+    </p>
+  </div>
+
+  <p>
+    Volvamos a la tabla con la notación nueva:
+  </p>
+
+  <div class="tabla-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>X \ Y</th>
+          <th class="num">y<sub>1</sub> = Sociales</th>
+          <th class="num">y<sub>2</sub> = Humanid.</th>
+          <th class="num">y<sub>3</sub> = Exactas</th>
+          <th class="num">y<sub>4</sub> = Salud</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="lbl">x<sub>1</sub> = Asistente</td><td class="num">n<sub>11</sub> = 25</td><td class="num">n<sub>12</sub> = 15</td><td class="num">n<sub>13</sub> = 18</td><td class="num">n<sub>14</sub> = 12</td></tr>
+        <tr><td class="lbl">x<sub>2</sub> = Adjunto</td><td class="num">n<sub>21</sub> = 20</td><td class="num">n<sub>22</sub> = 13</td><td class="num">n<sub>23</sub> = 15</td><td class="num">n<sub>24</sub> = 12</td></tr>
+        <tr><td class="lbl">x<sub>3</sub> = Agregado</td><td class="num">n<sub>31</sub> = 12</td><td class="num">n<sub>32</sub> = 8</td><td class="num">n<sub>33</sub> = 15</td><td class="num">n<sub>34</sub> = 10</td></tr>
+        <tr><td class="lbl">x<sub>4</sub> = Titular</td><td class="num">n<sub>41</sub> = 5</td><td class="num">n<sub>42</sub> = 4</td><td class="num">n<sub>43</sub> = 10</td><td class="num">n<sub>44</sub> = 6</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>
+    Si querés saber, por ejemplo, <em>n<sub>31</sub></em>, leés la fila 3 (Agregado) y
+    la columna 1 (Sociales): hay 12 docentes Agregados en Sociales. La notación con dos
+    subíndices es <strong>universal</strong> en estadística bivariada — vas a verla
+    en todos los libros.
+  </p>
+</section>
+
+<!-- ══ S3 ══ -->
+<section class="seccion" id="s3">
+  <p class="sec-num">03 &mdash; Caso A · Introducimos la sumatoria</p>
+  <h2>Una forma compacta de escribir sumas largas</h2>
+
+  <p>
+    Antes de seguir, necesitamos parar y aprender una notación que vamos a usar
+    mucho de ahora en adelante: la <strong>sumatoria</strong>. Hasta ahora, cuando
+    queríamos sumar varios números, escribíamos:
+  </p>
+
+  <p style="font-family:var(--code); font-size:0.92rem; text-align:center; margin: 0.6rem 0;">
+    n<sub>11</sub> + n<sub>12</sub> + n<sub>13</sub> + n<sub>14</sub>
+  </p>
+
+  <p>
+    Eso funciona bien cuando hay pocos términos. Pero ¿y si queremos sumar 100 términos?
+    ¿O un número genérico, llamémoslo <em>J</em>? Ahí la notación larga se vuelve
+    impracticable. Por eso los matemáticos inventaron la sumatoria — un símbolo que
+    abrevia sumas largas usando una <em>regla</em>.
+  </p>
+
+  <div class="def">
+    <span class="def-label">La sumatoria, explicada</span>
+    <p>El símbolo de sumatoria es la letra griega sigma mayúscula:</p>
+    <p style="text-align:center; font-size:2rem; color:var(--red); margin: 0.6rem 0;">∑</p>
+    <p>
+      Para usarla, necesitamos especificar tres cosas: qué estamos sumando, sobre qué
+      variable, y entre qué valores. La estructura es:
+    </p>
+    <p style="text-align:center; margin: 0.75rem 0;">
+      <span class="sum">
+        <span class="sum-top">final</span>
+        <span class="sum-sym">∑</span>
+        <span class="sum-bot">inicial</span>
+      </span>
+      &nbsp;(qué sumar)
+    </p>
+    <p style="margin-bottom:0;">
+      Abajo del símbolo va el valor inicial; arriba, el valor final; a la derecha,
+      la expresión que cambia con la variable de suma.
+    </p>
+  </div>
+
+  <h3>Ejemplo concreto</h3>
+
+  <p>Si queremos escribir la suma <strong>n<sub>11</sub> + n<sub>12</sub> + n<sub>13</sub> + n<sub>14</sub></strong>
+  usando sumatoria, lo hacemos así:</p>
+
+  <div class="formula">
+    n<sub>11</sub> + n<sub>12</sub> + n<sub>13</sub> + n<sub>14</sub> &nbsp;=&nbsp;
+    <span class="sum">
+      <span class="sum-top">4</span>
+      <span class="sum-sym">∑</span>
+      <span class="sum-bot">j=1</span>
+    </span>
+    &nbsp;n<sub>1j</sub>
+    <span class="formula-note">
+      Se lee: "sumatoria, para j que va de 1 a 4, de n sub 1j".
+      Es decir, dejamos fijo el primer índice (el 1, que es la fila) y vamos
+      cambiando el segundo (j) desde 1 hasta 4.
+    </span>
+  </div>
+
+  <p>
+    Cuando j = 1, el sumando es n<sub>11</sub>.<br>
+    Cuando j = 2, el sumando es n<sub>12</sub>.<br>
+    Cuando j = 3, el sumando es n<sub>13</sub>.<br>
+    Cuando j = 4, el sumando es n<sub>14</sub>.<br>
+    Y todo se suma.
+  </p>
+
+  <div class="nota">
+    <span class="nota-label">¿Por qué este ahorro de notación importa?</span>
+    <p style="margin-bottom:0;">
+      No es solo por escribir menos. La sumatoria nos permite escribir fórmulas
+      <strong>generales</strong>, válidas para cualquier número de términos.
+      Si en lugar de 4 áreas tuviéramos 100, escribir la suma a mano sería absurdo —
+      pero con la sumatoria simplemente cambiamos el 4 por un 100, o por una letra J,
+      y la fórmula sigue funcionando.
+    </p>
+  </div>
+</section>
+
+<!-- ══ S4 ══ -->
+<section class="seccion" id="s4">
+  <p class="sec-num">04 &mdash; Caso A · Frecuencias marginales</p>
+  <h2>Recuperando las variables individuales</h2>
+
+  <p>
+    Cuando hablamos de "marginal", nos referimos a lo siguiente: la tabla bivariada
+    contiene la información <em>cruzada</em> de las dos variables, pero a veces queremos
+    olvidarnos de una y mirar solo la otra.
+  </p>
+
+  <p>
+    Por ejemplo, ¿cuántos docentes son Asistentes <em>en total</em>, sin importar el área?
+    Para responder esto sumamos toda la fila de los Asistentes:
+  </p>
+
+  <p style="font-family:var(--code); font-size:0.92rem; text-align:center; margin: 0.6rem 0;">
+    25 + 15 + 18 + 12 = 70 docentes Asistentes en total
+  </p>
+
+  <p>Y este número se obtiene sumando los n<sub>1j</sub> para todos los valores de j:</p>
+
+  <div class="formula">
+    Total de Asistentes &nbsp;=&nbsp;
+    <span class="sum">
+      <span class="sum-top">4</span>
+      <span class="sum-sym">∑</span>
+      <span class="sum-bot">j=1</span>
+    </span>
+    &nbsp;n<sub>1j</sub> &nbsp;=&nbsp; 70
+  </div>
+
+  <p>
+    Esta cantidad se llama <strong>frecuencia absoluta marginal</strong> del cargo
+    "Asistente" — porque aparece en el <em>margen</em> derecho de la tabla cuando hacemos
+    los totales por fila. La notamos con un punto en el lugar del subíndice que sumamos:
+  </p>
+
+  <div class="def">
+    <span class="def-label">Definición 2 — Frecuencia absoluta marginal de X</span>
+    <p>
+      La <strong>frecuencia absoluta marginal</strong> del valor x<sub>i</sub> se obtiene
+      sumando toda la fila i:
+    </p>
+    <div class="formula" style="margin: 0.6rem 0;">
+      n<sub>i·</sub> &nbsp;=&nbsp;
+      <span class="sum">
+        <span class="sum-top">J</span>
+        <span class="sum-sym">∑</span>
+        <span class="sum-bot">j=1</span>
+      </span>
+      &nbsp;n<sub>ij</sub>
+    </div>
+    <p style="margin-bottom:0;">
+      El <strong>punto</strong> en el subíndice <em>i·</em> reemplaza a la variable
+      que sumamos. Es la notación universal: "n<sub>i punto</sub>" significa
+      "tomé la fila i y sumé sobre todos los valores posibles de j".
+    </p>
+  </div>
+
+  <p>De manera completamente análoga, podemos sumar columnas:</p>
+
+  <div class="def">
+    <span class="def-label">Definición 3 — Frecuencia absoluta marginal de Y</span>
+    <p>
+      La <strong>frecuencia absoluta marginal</strong> del valor y<sub>j</sub> se obtiene
+      sumando toda la columna j:
+    </p>
+    <div class="formula" style="margin: 0.6rem 0;">
+      n<sub>·j</sub> &nbsp;=&nbsp;
+      <span class="sum">
+        <span class="sum-top">I</span>
+        <span class="sum-sym">∑</span>
+        <span class="sum-bot">i=1</span>
+      </span>
+      &nbsp;n<sub>ij</sub>
+    </div>
+    <p style="margin-bottom:0;">
+      Ahora el punto está en el primer lugar: "n<sub>punto j</sub>" significa
+      "tomé la columna j y sumé sobre todos los valores posibles de i".
+    </p>
+  </div>
+
+  <h3>La tabla ampliada</h3>
+
+  <p>Calculamos todas las marginales de Lucía:</p>
+
+  <div class="tabla-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>X \ Y</th>
+          <th class="num">Sociales</th>
+          <th class="num">Humanid.</th>
+          <th class="num">Exactas</th>
+          <th class="num">Salud</th>
+          <th class="num">n<sub>i·</sub></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="lbl">Asistente</td><td class="num">25</td><td class="num">15</td><td class="num">18</td><td class="num">12</td><td class="num hi">70</td></tr>
+        <tr><td class="lbl">Adjunto</td><td class="num">20</td><td class="num">13</td><td class="num">15</td><td class="num">12</td><td class="num hi">60</td></tr>
+        <tr><td class="lbl">Agregado</td><td class="num">12</td><td class="num">8</td><td class="num">15</td><td class="num">10</td><td class="num hi">45</td></tr>
+        <tr><td class="lbl">Titular</td><td class="num">5</td><td class="num">4</td><td class="num">10</td><td class="num">6</td><td class="num hi">25</td></tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td><strong>n<sub>·j</sub></strong></td>
+          <td class="num hi">62</td>
+          <td class="num hi">40</td>
+          <td class="num hi">58</td>
+          <td class="num hi">40</td>
+          <td class="num"><strong>n = 200</strong></td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+  <p>
+    Notá que tenemos <em>dos formas distintas</em> de llegar al total general <strong>n = 200</strong>:
+    sumando la columna de la derecha (70 + 60 + 45 + 25), o sumando la fila inferior
+    (62 + 40 + 58 + 40). Las dos deben dar el mismo resultado. Es un buen control
+    de consistencia: si no coinciden, hay un error de cálculo en algún lado.
+  </p>
+
+  <h3>Una sola fórmula para el total general</h3>
+
+  <p>
+    Con la notación de sumatoria también podemos escribir el total <em>n</em> de manera
+    elegante. Para sumar todas las celdas necesitamos sumar sobre filas <em>y</em>
+    sobre columnas — una <strong>doble sumatoria</strong>:
+  </p>
+
+  <div class="formula">
+    n &nbsp;=&nbsp;
+    <span class="sum">
+      <span class="sum-top">I</span>
+      <span class="sum-sym">∑</span>
+      <span class="sum-bot">i=1</span>
+    </span>
+    <span class="sum">
+      <span class="sum-top">J</span>
+      <span class="sum-sym">∑</span>
+      <span class="sum-bot">j=1</span>
+    </span>
+    &nbsp;n<sub>ij</sub>
+    <span class="formula-note">
+      Se lee: "sumatoria sobre i, sumatoria sobre j, de n sub ij". Significa: recorremos
+      todas las filas con i, y para cada fila recorremos todas las columnas con j, sumando todo.
+      Equivale exactamente a sumar todas las celdas de la tabla.
+    </span>
+  </div>
+</section>
+
+<!-- ══ S5 ══ -->
+<section class="seccion" id="s5">
+  <p class="sec-num">05 &mdash; Caso A · Frecuencias relativas</p>
+  <h2>De cantidades a proporciones</h2>
+
+  <p>
+    Igual que en una variable, podemos pasar de cantidades absolutas a proporciones
+    dividiendo por n. Esto nos permite comparar y leer la tabla en términos porcentuales —
+    mucho más intuitivos.
+  </p>
+
+  <div class="def">
+    <span class="def-label">Definición 4 — Frecuencia relativa conjunta</span>
+    <p>
+      La <strong>frecuencia relativa conjunta</strong> de la combinación (x<sub>i</sub>, y<sub>j</sub>)
+      es la proporción de individuos que toman <em>simultáneamente</em> el valor x<sub>i</sub>
+      en X y el valor y<sub>j</sub> en Y:
+    </p>
+    <div class="formula" style="margin: 0.6rem 0;">
+      h<sub>ij</sub> &nbsp;=&nbsp; n<sub>ij</sub> / n
+    </div>
+  </div>
+
+  <p>
+    Por ejemplo, en la tabla de Lucía la frecuencia relativa conjunta de los Asistentes
+    en Sociales es <em>h<sub>11</sub> = 25/200 = 0,125</em>. El 12,5% de los
+    docentes son Asistentes en Sociales.
+  </p>
+
+  <p>
+    De manera análoga definimos las marginales relativas — dividimos los totales
+    de fila o columna por n:
+  </p>
+
+  <div class="def">
+    <span class="def-label">Definición 5 — Frecuencias relativas marginales</span>
+    <p>Para X, la marginal relativa del valor x<sub>i</sub>:</p>
+    <div class="formula" style="margin: 0.6rem 0;">
+      h<sub>i·</sub> &nbsp;=&nbsp; n<sub>i·</sub> / n
+    </div>
+    <p>Para Y, la marginal relativa del valor y<sub>j</sub>:</p>
+    <div class="formula" style="margin: 0.6rem 0;">
+      h<sub>·j</sub> &nbsp;=&nbsp; n<sub>·j</sub> / n
+    </div>
+    <p style="margin-bottom:0;">
+      Las marginales relativas suman 1, igual que las frecuencias relativas de
+      cualquier distribución univariada.
+    </p>
+  </div>
+
+  <h3>Tabla de frecuencias relativas de Lucía</h3>
+
+  <p>Si dividimos cada celda por n = 200 obtenemos la versión relativa de la tabla:</p>
+
+  <div class="tabla-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>X \ Y</th>
+          <th class="num">Sociales</th>
+          <th class="num">Humanid.</th>
+          <th class="num">Exactas</th>
+          <th class="num">Salud</th>
+          <th class="num">h<sub>i·</sub></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="lbl">Asistente</td><td class="num">0,125</td><td class="num">0,075</td><td class="num">0,090</td><td class="num">0,060</td><td class="num hi">0,350</td></tr>
+        <tr><td class="lbl">Adjunto</td><td class="num">0,100</td><td class="num">0,065</td><td class="num">0,075</td><td class="num">0,060</td><td class="num hi">0,300</td></tr>
+        <tr><td class="lbl">Agregado</td><td class="num">0,060</td><td class="num">0,040</td><td class="num">0,075</td><td class="num">0,050</td><td class="num hi">0,225</td></tr>
+        <tr><td class="lbl">Titular</td><td class="num">0,025</td><td class="num">0,020</td><td class="num">0,050</td><td class="num">0,030</td><td class="num hi">0,125</td></tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td><strong>h<sub>·j</sub></strong></td>
+          <td class="num hi">0,310</td>
+          <td class="num hi">0,200</td>
+          <td class="num hi">0,290</td>
+          <td class="num hi">0,200</td>
+          <td class="num"><strong>1,000</strong></td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+  <p>
+    Lectura directa: el 12,5% de los docentes son Asistentes en Sociales; el 31% trabaja
+    en Sociales (sin importar el cargo); el 35% es Asistente (sin importar el área).
+    Acá <strong>cada lectura responde una pregunta diferente</strong> sobre la población.
+  </p>
+</section>
+
+<!-- ══ S6 ══ -->
+<section class="seccion" id="s6">
+  <p class="sec-num">06 &mdash; Caso A · Distribuciones condicionales</p>
+  <h2>Estudiar una variable dentro de una categoría de la otra</h2>
+
+  <p>
+    Volvamos a las preguntas que Lucía quería responder al principio:
+    <em>¿los cargos más altos están concentrados en alguna área?</em>
+  </p>
+
+  <p>
+    Para contestar esto necesitamos una idea nueva. No nos basta con saber la
+    distribución general de cargos — queremos saber cómo se distribuye <em>el cargo</em>
+    <strong>dentro de cada área</strong>. ¿Hay más Titulares en Exactas que en Sociales?
+    ¿La proporción de Asistentes varía mucho de un área a otra?
+  </p>
+
+  <p>
+    Esto se llama <strong>distribución condicional</strong> — la distribución
+    de una variable <em>condicionada</em> a un valor fijo de la otra.
+  </p>
+
+  <h3>Construcción intuitiva</h3>
+
+  <p>
+    Pensemos solo en los docentes de Exactas. Son 58 personas (la marginal n<sub>·3</sub> = 58).
+    Mirando la columna de Exactas:
+  </p>
+
+  <ul style="padding-left:1.3rem; line-height:2; font-size:0.94rem; margin: 0.5rem 0;">
+    <li>18 son Asistentes (de los 58)</li>
+    <li>15 son Adjuntos</li>
+    <li>15 son Agregados</li>
+    <li>10 son Titulares</li>
+  </ul>
+
+  <p>
+    Si quisiéramos las <em>proporciones dentro de Exactas</em>, dividimos cada uno
+    por el total de Exactas (58), no por el total general (200):
+  </p>
+
+  <div class="tabla-wrap">
+    <table>
+      <thead>
+        <tr><th>Cargo</th><th class="num">Cantidad en Exactas</th><th class="num">Proporción dentro de Exactas</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Asistente</td><td class="num">18</td><td class="num">18/58 = 0,310</td></tr>
+        <tr><td>Adjunto</td><td class="num">15</td><td class="num">15/58 = 0,259</td></tr>
+        <tr><td>Agregado</td><td class="num">15</td><td class="num">15/58 = 0,259</td></tr>
+        <tr><td>Titular</td><td class="num">10</td><td class="num">10/58 = 0,172</td></tr>
+      </tbody>
+      <tfoot><tr><td>Total</td><td class="num">58</td><td class="num"><strong>1,000</strong></td></tr></tfoot>
+    </table>
+  </div>
+
+  <p>
+    Esta tabla es la <strong>distribución del cargo condicionada a Exactas</strong>.
+    Es una distribución univariada como cualquier otra — sus frecuencias relativas suman 1 —,
+    pero solo describe a los docentes de Exactas. Otras áreas tendrán otras distribuciones.
+  </p>
+
+  <h3>Definición formal</h3>
+
+  <div class="def">
+    <span class="def-label">Definición 6 — Frecuencia relativa condicional</span>
+    <p>
+      La <strong>frecuencia relativa de X = x<sub>i</sub> condicionada a Y = y<sub>j</sub></strong>
+      es la proporción que representa la celda (i, j) <em>dentro</em> de su columna j:
+    </p>
+    <div class="formula" style="margin: 0.6rem 0;">
+      h<sub>i | j</sub> &nbsp;=&nbsp; n<sub>ij</sub> / n<sub>·j</sub>
+    </div>
+    <p>
+      Análogamente, la frecuencia relativa de Y = y<sub>j</sub> condicionada a
+      X = x<sub>i</sub> es la proporción dentro de la fila i:
+    </p>
+    <div class="formula" style="margin: 0.6rem 0;">
+      h<sub>j | i</sub> &nbsp;=&nbsp; n<sub>ij</sub> / n<sub>i·</sub>
+    </div>
+    <p style="margin-bottom:0;">
+      El símbolo <strong>|</strong> se lee <em>"condicionado a"</em> o
+      <em>"dado que"</em>. Así, <strong>h<sub>i|j</sub></strong> se lee
+      "frecuencia relativa de X = x<sub>i</sub> dado Y = y<sub>j</sub>".
+    </p>
+  </div>
+
+  <div class="advertencia">
+    <span class="advertencia-label">¡Cuidado con el orden!</span>
+    <p style="margin-bottom:0;">
+      <strong>h<sub>i|j</sub></strong> y <strong>h<sub>j|i</sub></strong>
+      son cosas distintas. La primera divide por la columna (varía dentro de una columna);
+      la segunda divide por la fila (varía dentro de una fila). Confundirlas es uno de los
+      errores más comunes en análisis bivariado.
+    </p>
+  </div>
+</section>
+
+<!-- ══ CASO B ══ -->
+<div class="caso-banner">
+  <span class="caso-banner-label">Caso B</span>
+  <h2>Una cualitativa y una cuantitativa</h2>
+  <p>Área de conocimiento × Salario mensual</p>
+</div>
+
+<!-- ══ S7 ══ -->
+<section class="seccion" id="s7">
+  <p class="sec-num">07 &mdash; Caso B · La situación natural</p>
+  <h2>Cuando una variable es categoría y la otra es número</h2>
+
+  <p>
+    Ahora Lucía quiere preguntarse: <strong>¿hay diferencias salariales entre áreas
+    de conocimiento?</strong> Su variable X sigue siendo el área (categórica), pero
+    Y ahora es el salario mensual — una variable cuantitativa.
+  </p>
+
+  <p>
+    En este caso la tabla bivariada no es la herramienta natural, porque el salario
+    no tiene "categorías" sino infinitos valores posibles. Lo que hacemos en cambio
+    es <strong>calcular estadísticos del salario para cada categoría del área</strong>:
+    la media salarial de los sociólogos, la media salarial de los químicos, etc.
+  </p>
+
+  <div class="def">
+    <span class="def-label">Definición 7 — Media condicional</span>
+    <p>
+      Sea X una variable categórica con valores x<sub>1</sub>, ..., x<sub>I</sub>, y sea
+      Y una variable cuantitativa. La <strong>media de Y condicionada a X = x<sub>i</sub></strong>
+      es la media de Y calculada <em>solo</em> entre los individuos que tienen X = x<sub>i</sub>.
+      La denotamos:
+    </p>
+    <div class="formula" style="margin: 0.6rem 0;">
+      ȳ<sub>i</sub> &nbsp;=&nbsp; promedio de Y entre los que tienen X = x<sub>i</sub>
+    </div>
+    <p style="margin-bottom:0;">
+      También podemos calcular la varianza condicional, la mediana condicional, etc.
+      Cada una se calcula igual que su versión univariada — pero usando solo los datos
+      del subgrupo correspondiente.
+    </p>
+  </div>
+
+  <h3>Ejemplo de Lucía</h3>
+
+  <p>
+    Lucía calcula la media salarial por área. El resultado, en miles de pesos uruguayos
+    mensuales:
+  </p>
+
+  <div class="tabla-wrap">
+    <table>
+      <thead>
+        <tr><th>Área</th><th class="num">Cantidad</th><th class="num">Salario promedio (miles $)</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Sociales</td><td class="num">62</td><td class="num">85,3</td></tr>
+        <tr><td>Humanidades</td><td class="num">40</td><td class="num">78,6</td></tr>
+        <tr><td>Exactas</td><td class="num">58</td><td class="num">102,4</td></tr>
+        <tr><td>Salud</td><td class="num">40</td><td class="num">96,7</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>
+    Al primer vistazo, los docentes de Exactas y Salud tienen salarios promedio más altos
+    que los de Sociales y Humanidades. La variable cualitativa (área) "explica" — al menos
+    parcialmente — la variabilidad de la variable cuantitativa (salario).
+  </p>
+
+  <div class="nota">
+    <span class="nota-label">Idea clave</span>
+    <p style="margin-bottom:0;">
+      Comparar medias condicionales es la forma más natural de detectar relaciones entre
+      una variable cualitativa y una cuantitativa. Si todas las medias condicionales son
+      <em>iguales</em>, no hay relación. Si difieren entre sí, hay relación.
+    </p>
+  </div>
+</section>
+
+<!-- ══ CASO C ══ -->
+<div class="caso-banner">
+  <span class="caso-banner-label">Caso C</span>
+  <h2>Dos variables cuantitativas</h2>
+  <p>Antigüedad × Salario — y en el Ejercicio 1: Ingreso × Superficie</p>
+</div>
+
+<!-- ══ S8 ══ -->
+<section class="seccion" id="s8">
+  <p class="sec-num">08 &mdash; Caso C · Datos cuantitativos agrupados</p>
+  <h2>Cuando ambas variables son numéricas</h2>
+
+  <p>
+    Llegamos al caso que más nos interesa: <strong>dos variables cuantitativas</strong>,
+    típicamente continuas, que se cruzan en una tabla. Es la situación del Ejercicio 1
+    del práctico — donde cruzamos ingreso del hogar (X) con superficie de la vivienda (Y).
+  </p>
+
+  <p>
+    Si las dos variables toman <em>muchos</em> valores posibles, no podemos hacer una tabla
+    con un valor por fila y un valor por columna — sería enorme y vacía. La solución es la
+    misma que para el caso univariado: <strong>agrupamos en intervalos</strong>.
+  </p>
+
+  <p>
+    Veamos cómo. Volvamos a Lucía: ahora cruza antigüedad (X, en años) con salario
+    (Y, en miles de pesos), agrupando ambos en intervalos:
+  </p>
+
+  <div class="tabla-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Antigüedad \ Salario</th>
+          <th class="num">[40, 60)</th>
+          <th class="num">[60, 90)</th>
+          <th class="num">[90, 120)</th>
+          <th class="num">[120, 200)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="lbl">[0, 5)</td><td class="num">18</td><td class="num">12</td><td class="num">3</td><td class="num">0</td></tr>
+        <tr><td class="lbl">[5, 10)</td><td class="num">12</td><td class="num">25</td><td class="num">8</td><td class="num">2</td></tr>
+        <tr><td class="lbl">[10, 20)</td><td class="num">5</td><td class="num">18</td><td class="num">22</td><td class="num">7</td></tr>
+        <tr><td class="lbl">[20, 40)</td><td class="num">1</td><td class="num">6</td><td class="num">15</td><td class="num">16</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>
+    Cada celda se construye igual: cuenta cuántos docentes caen simultáneamente en el
+    intervalo de antigüedad de la fila y el intervalo de salario de la columna. Por
+    ejemplo, hay 22 docentes con antigüedad entre 10 y 20 años cuyo salario está entre 90
+    y 120 mil pesos.
+  </p>
+
+  <h3>Las marcas de clase: el truco para "convertir intervalos en números"</h3>
+
+  <p>
+    Como ya vimos en la Clase 3, cuando los datos están agrupados en intervalos no
+    conocemos los valores exactos. El procedimiento estándar es asumir que cada valor
+    es el <strong>punto medio del intervalo</strong> — la <em>marca de clase</em>.
+  </p>
+
+  <div class="def">
+    <span class="def-label">Definición 8 — Marca de clase</span>
+    <p>
+      La <strong>marca de clase</strong> del intervalo [x'<sub>i&minus;1</sub>, x'<sub>i</sub>)
+      es su punto medio:
+    </p>
+    <div class="formula" style="margin: 0.6rem 0;">
+      x<sub>i</sub> &nbsp;=&nbsp; (x'<sub>i&minus;1</sub> + x'<sub>i</sub>) / 2
+    </div>
+    <p style="margin-bottom:0;">
+      Cuando hacemos cálculos numéricos (media, varianza, etc.) con datos agrupados,
+      usamos esta marca como "el valor representativo" de todo el intervalo.
+    </p>
+  </div>
+
+  <p>
+    Para la tabla de Lucía, las marcas son: 2,5 / 7,5 / 15 / 30 para la antigüedad;
+    50 / 75 / 105 / 160 para el salario.
+  </p>
+
+  <h3>Las herramientas del Caso A vuelven a aparecer</h3>
+
+  <p>
+    Lo notable del Caso C es que <strong>todo lo que hicimos en el Caso A sigue valiendo</strong>.
+    Tenemos n<sub>ij</sub>, h<sub>ij</sub>, marginales (n<sub>i·</sub>, n<sub>·j</sub>) y
+    sus relativas, y condicionales. La única diferencia es que los "valores" x<sub>i</sub>
+    e y<sub>j</sub> ya no son categorías sino marcas de clase numéricas.
+  </p>
+
+  <p>
+    Y esto trae una ventaja enorme: como ahora los valores son números, podemos
+    calcular <strong>medias, varianzas, etc.</strong> usando esas marcas. Y podemos
+    calcularlos para las marginales o para las condicionales — exactamente como en
+    la Clase 3.
+  </p>
+
+  <h3>Media de cada variable usando las marginales</h3>
+
+  <p>
+    Para calcular la media de X usamos solo la marginal de X (la columna derecha), y
+    aplicamos la fórmula de datos agrupados que ya conocemos:
+  </p>
+
+  <div class="formula">
+    <span class="formula-label">Media de X — desde la tabla bivariada</span>
+    x̄ &nbsp;=&nbsp; (1/n) ·
+    <span class="sum">
+      <span class="sum-top">I</span>
+      <span class="sum-sym">∑</span>
+      <span class="sum-bot">i=1</span>
+    </span>
+    &nbsp;x<sub>i</sub> · n<sub>i·</sub>
+    <span class="formula-note">
+      Multiplicamos cada marca de clase x<sub>i</sub> por su frecuencia marginal,
+      sumamos todo, dividimos por n. Idéntico al caso univariado — solo que ahora
+      la frecuencia es la marginal.
+    </span>
+  </div>
+
+  <p>Análogamente para Y, sumando con la marginal de Y.</p>
+
+  <h3>Medias condicionales</h3>
+
+  <p>
+    Y como en el Caso B, podemos también calcular la <strong>media de Y condicionada a cada
+    valor de X</strong>. Pero ahora "cada valor de X" significa "cada intervalo de X".
+    La fórmula es:
+  </p>
+
+  <div class="formula">
+    <span class="formula-label">Media condicional de Y dado X = x<sub>i</sub></span>
+    ȳ<sub>i</sub> &nbsp;=&nbsp; (1/n<sub>i·</sub>) ·
+    <span class="sum">
+      <span class="sum-top">J</span>
+      <span class="sum-sym">∑</span>
+      <span class="sum-bot">j=1</span>
+    </span>
+    &nbsp;y<sub>j</sub> · n<sub>ij</sub>
+    <span class="formula-note">
+      Para cada fila i de la tabla, multiplicamos las marcas de clase de Y por las
+      frecuencias n<sub>ij</sub> de esa fila, sumamos, y dividimos por el total
+      de la fila n<sub>i·</sub>. Es la media de Y calculada solo entre los individuos
+      que están en la fila i.
+    </span>
+  </div>
+
+  <p>
+    Si ȳ<sub>i</sub> crece a medida que i crece (es decir, a medida que crece la
+    antigüedad), tenemos evidencia de relación positiva entre las dos variables.
+    Si ȳ<sub>i</sub> decrece, evidencia de relación negativa. Si es constante,
+    no hay relación.
+  </p>
+</section>
+
+<!-- ══ EJERCICIO 1 ══ -->
+<section class="seccion" id="ejercicio1">
+  <p class="sec-num">09 &mdash; Aplicación</p>
+  <h2>Resolución del Ejercicio 1 del práctico</h2>
+
+  <p>
+    Ahora aplicamos todo lo aprendido al ejercicio del práctico. El enunciado da una tabla
+    que cruza ingreso del hogar (X, en miles de pesos) y superficie de la vivienda (Y, en m²):
+  </p>
+
+  <div class="tabla-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>X \ Y</th>
+          <th class="num">30-60</th>
+          <th class="num">60-80</th>
+          <th class="num">80-100</th>
+          <th class="num">100-150</th>
+          <th class="num">150-250</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="lbl">0-20</td><td class="num">20</td><td class="num">18</td><td class="num">2</td><td class="num">1</td><td class="num">0</td></tr>
+        <tr><td class="lbl">20-30</td><td class="num">25</td><td class="num">40</td><td class="num">30</td><td class="num">2</td><td class="num">1</td></tr>
+        <tr><td class="lbl">30-50</td><td class="num">5</td><td class="num">10</td><td class="num">15</td><td class="num">25</td><td class="num">3</td></tr>
+        <tr><td class="lbl">50-100</td><td class="num">0</td><td class="num">5</td><td class="num">15</td><td class="num">20</td><td class="num">8</td></tr>
+        <tr><td class="lbl">100-200</td><td class="num">0</td><td class="num">1</td><td class="num">2</td><td class="num">7</td><td class="num">10</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Parte (a) — Distribuciones marginales</h3>
+
+  <div class="aplicacion">
+    <span class="aplicacion-label">Resolución</span>
+    <p>
+      Sumamos cada fila para obtener la marginal de X (ingreso), y cada columna para
+      la marginal de Y (superficie).
+    </p>
+    <p><strong>Marginal del ingreso (X):</strong></p>
+    <div class="tabla-wrap">
+      <table>
+        <thead><tr><th>Ingreso (miles $)</th><th class="num">n<sub>i·</sub></th><th class="num">h<sub>i·</sub></th></tr></thead>
+        <tbody>
+          <tr><td>[0, 20)</td><td class="num">41</td><td class="num">0,155</td></tr>
+          <tr><td>[20, 30)</td><td class="num">98</td><td class="num">0,370</td></tr>
+          <tr><td>[30, 50)</td><td class="num">58</td><td class="num">0,219</td></tr>
+          <tr><td>[50, 100)</td><td class="num">48</td><td class="num">0,181</td></tr>
+          <tr><td>[100, 200)</td><td class="num">20</td><td class="num">0,075</td></tr>
+        </tbody>
+        <tfoot><tr><td>Total</td><td class="num">265</td><td class="num">1,000</td></tr></tfoot>
+      </table>
+    </div>
+    <p style="margin-top:0.75rem;"><strong>Marginal de la superficie (Y):</strong></p>
+    <div class="tabla-wrap">
+      <table>
+        <thead><tr><th>Superficie (m²)</th><th class="num">n<sub>·j</sub></th><th class="num">h<sub>·j</sub></th></tr></thead>
+        <tbody>
+          <tr><td>[30, 60)</td><td class="num">50</td><td class="num">0,189</td></tr>
+          <tr><td>[60, 80)</td><td class="num">74</td><td class="num">0,279</td></tr>
+          <tr><td>[80, 100)</td><td class="num">64</td><td class="num">0,242</td></tr>
+          <tr><td>[100, 150)</td><td class="num">55</td><td class="num">0,208</td></tr>
+          <tr><td>[150, 250)</td><td class="num">22</td><td class="num">0,083</td></tr>
+        </tbody>
+        <tfoot><tr><td>Total</td><td class="num">265</td><td class="num">1,000</td></tr></tfoot>
+      </table>
+    </div>
+    <p style="margin-top:0.75rem;">
+      <strong>Verificación:</strong> ambos totales dan 265. El total efectivo de la muestra
+      es n = 265 (no 250 como dice el enunciado del práctico — la suma de las celdas no
+      coincide con esa cifra. Para los cálculos usamos siempre el total real, 265).
+    </p>
+  </div>
+
+  <h3>Parte (b) — Distribución de la superficie condicionada al intervalo modal del ingreso</h3>
+
+  <div class="aplicacion">
+    <span class="aplicacion-label">Resolución</span>
+    <p><strong>Paso 1 — Identificar el intervalo modal del ingreso.</strong></p>
+    <p>
+      Los intervalos tienen amplitudes distintas, así que no basta con buscar el mayor
+      n<sub>i·</sub>. Calculamos la <strong>densidad empírica</strong>:
+      f*(x) = n<sub>i·</sub> / (n · amplitud).
+    </p>
+    <div class="tabla-wrap">
+      <table>
+        <thead>
+          <tr><th>Ingreso</th><th class="num">n<sub>i·</sub></th><th class="num">Amplitud</th><th class="num">Densidad f*</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>[0, 20)</td><td class="num">41</td><td class="num">20</td><td class="num">0,00774</td></tr>
+          <tr style="background:#fdf5f4;"><td><strong>[20, 30)</strong></td><td class="num">98</td><td class="num">10</td><td class="num"><strong>0,03698</strong></td></tr>
+          <tr><td>[30, 50)</td><td class="num">58</td><td class="num">20</td><td class="num">0,01094</td></tr>
+          <tr><td>[50, 100)</td><td class="num">48</td><td class="num">50</td><td class="num">0,00362</td></tr>
+          <tr><td>[100, 200)</td><td class="num">20</td><td class="num">100</td><td class="num">0,00075</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="margin-top:0.75rem;">
+      El intervalo modal del ingreso es <strong>[20, 30)</strong>, con la mayor densidad.
+    </p>
+    <p><strong>Paso 2 — Tomar la fila correspondiente.</strong></p>
+    <p>
+      Los hogares con ingreso entre 20 y 30 son 98 (la fila completa). Dividimos cada
+      celda por 98 para obtener las frecuencias condicionales h<sub>j|2</sub>:
+    </p>
+    <div class="tabla-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Superficie</th>
+            <th class="num">n<sub>2j</sub></th>
+            <th class="num">h<sub>j|2</sub> = n<sub>2j</sub> / 98</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>[30, 60)</td><td class="num">25</td><td class="num">25/98 = 0,2551</td></tr>
+          <tr><td>[60, 80)</td><td class="num">40</td><td class="num">40/98 = 0,4082</td></tr>
+          <tr><td>[80, 100)</td><td class="num">30</td><td class="num">30/98 = 0,3061</td></tr>
+          <tr><td>[100, 150)</td><td class="num">2</td><td class="num">2/98 = 0,0204</td></tr>
+          <tr><td>[150, 250)</td><td class="num">1</td><td class="num">1/98 = 0,0102</td></tr>
+        </tbody>
+        <tfoot><tr><td>Total</td><td class="num">98</td><td class="num"><strong>1,0000</strong></td></tr></tfoot>
+      </table>
+    </div>
+    <p style="margin-top:0.75rem;">
+      <strong>Lectura:</strong> dentro de los hogares con ingreso entre 20 y 30 mil pesos,
+      el 40,82% tiene vivienda entre 60 y 80 m². Solo el 3% tiene vivienda mayor a 100 m².
+      La distribución condicional está sesgada hacia viviendas chicas y medianas.
+    </p>
+  </div>
+
+  <h3>Parte (c) — Superficie promedio según el ingreso</h3>
+
+  <div class="aplicacion">
+    <span class="aplicacion-label">Resolución</span>
+    <p>
+      Calculamos la <strong>media condicional de la superficie</strong> para cada categoría
+      de ingreso. Usamos las marcas de clase de Y:
+    </p>
+    <p style="font-family:var(--code); font-size:0.86rem; margin:0.4rem 0;">
+      y<sub>1</sub> = (30+60)/2 = 45 &nbsp;·&nbsp; y<sub>2</sub> = 70 &nbsp;·&nbsp;
+      y<sub>3</sub> = 90 &nbsp;·&nbsp; y<sub>4</sub> = 125 &nbsp;·&nbsp; y<sub>5</sub> = 200
+    </p>
+    <p>Aplicamos la fórmula de media condicional, fila por fila:</p>
+
+    <h4>Hogares con ingreso [0, 20)</h4>
+    <p style="font-family:var(--code); font-size:0.84rem; line-height:1.9; text-align:center; margin:0.3rem 0;">
+      ȳ<sub>1</sub> = (45·20 + 70·18 + 90·2 + 125·1 + 200·0) / 41<br>
+      = (900 + 1260 + 180 + 125 + 0) / 41 = 2465/41 ≈ <strong>60,12 m²</strong>
+    </p>
+
+    <h4>Hogares con ingreso [20, 30)</h4>
+    <p style="font-family:var(--code); font-size:0.84rem; line-height:1.9; text-align:center; margin:0.3rem 0;">
+      ȳ<sub>2</sub> = (45·25 + 70·40 + 90·30 + 125·2 + 200·1) / 98<br>
+      = (1125 + 2800 + 2700 + 250 + 200) / 98 = 7075/98 ≈ <strong>72,19 m²</strong>
+    </p>
+
+    <h4>Hogares con ingreso [30, 50)</h4>
+    <p style="font-family:var(--code); font-size:0.84rem; line-height:1.9; text-align:center; margin:0.3rem 0;">
+      ȳ<sub>3</sub> = (45·5 + 70·10 + 90·15 + 125·25 + 200·3) / 58<br>
+      = (225 + 700 + 1350 + 3125 + 600) / 58 = 6000/58 ≈ <strong>103,45 m²</strong>
+    </p>
+
+    <h4>Hogares con ingreso [50, 100)</h4>
+    <p style="font-family:var(--code); font-size:0.84rem; line-height:1.9; text-align:center; margin:0.3rem 0;">
+      ȳ<sub>4</sub> = (45·0 + 70·5 + 90·15 + 125·20 + 200·8) / 48<br>
+      = (0 + 350 + 1350 + 2500 + 1600) / 48 = 5800/48 ≈ <strong>120,83 m²</strong>
+    </p>
+
+    <h4>Hogares con ingreso [100, 200)</h4>
+    <p style="font-family:var(--code); font-size:0.84rem; line-height:1.9; text-align:center; margin:0.3rem 0;">
+      ȳ<sub>5</sub> = (45·0 + 70·1 + 90·2 + 125·7 + 200·10) / 20<br>
+      = (0 + 70 + 180 + 875 + 2000) / 20 = 3125/20 = <strong>156,25 m²</strong>
+    </p>
+
+    <p style="margin-top:1rem;"><strong>Resumen final:</strong></p>
+    <div class="tabla-wrap">
+      <table>
+        <thead><tr><th>Ingreso del hogar (miles $)</th><th class="num">Superficie promedio (m²)</th></tr></thead>
+        <tbody>
+          <tr><td>[0, 20)</td><td class="num">60,12</td></tr>
+          <tr><td>[20, 30)</td><td class="num">72,19</td></tr>
+          <tr><td>[30, 50)</td><td class="num">103,45</td></tr>
+          <tr><td>[50, 100)</td><td class="num">120,83</td></tr>
+          <tr><td>[100, 200)</td><td class="num">156,25</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="margin-top:0.75rem;">
+      <strong>Interpretación:</strong> la superficie promedio crece <em>monótonamente</em>
+      con el ingreso. Pasa de 60 m² para los hogares más pobres a 156 m² para los más ricos.
+      El paso más grande está entre [20, 30) y [30, 50), con un salto de unos 30 m².
+      Hay una <strong>relación claramente positiva</strong> entre ingreso y superficie:
+      a mayor ingreso, mayor tamaño de la vivienda.
+    </p>
+  </div>
+</section>
+
+<!-- ══ Resumen ══ -->
+<div class="resumen">
+  <span class="resumen-label">Lo que aprendimos hoy</span>
+  <ul>
+    <li><strong>Análisis bivariado:</strong> estudiar dos variables simultáneamente para detectar relaciones.</li>
+    <li><strong>Tres casos:</strong> dos cualitativas (A) · una cualitativa y una cuantitativa (B) · dos cuantitativas (C).</li>
+    <li><strong>Frecuencia absoluta conjunta n<sub>ij</sub>:</strong> individuos con X = x<sub>i</sub> e Y = y<sub>j</sub>.</li>
+    <li><strong>Frecuencia relativa conjunta h<sub>ij</sub> = n<sub>ij</sub>/n:</strong> proporción que representa cada celda.</li>
+    <li><strong>Marginales n<sub>i·</sub> y n<sub>·j</sub>:</strong> sumas de filas y columnas — son las univariadas de toda la vida.</li>
+    <li><strong>Condicionales h<sub>i|j</sub> = n<sub>ij</sub>/n<sub>·j</sub>:</strong> distribución de X "solo dentro" de Y = y<sub>j</sub>. Renormalizamos.</li>
+    <li><strong>Notación del punto:</strong> el subíndice con punto reemplaza a la variable que sumamos.</li>
+    <li><strong>Sumatoria Σ:</strong> notación compacta para sumas largas o de cantidad genérica de términos.</li>
+    <li><strong>Doble sumatoria ΣΣ:</strong> recorre todas las celdas de la tabla, fila por fila.</li>
+    <li><strong>Medias condicionales:</strong> calculadas con las marcas de clase y la frecuencia n<sub>ij</sub> de cada celda. Crecientes ⟹ relación positiva.</li>
+    <li><strong>Próximo paso:</strong> resumir la relación en un solo número — la <em>covarianza</em>.</li>
+  </ul>
+</div>
+
+</main>
+
+<footer>
+  Estadística Descriptiva &nbsp;&middot;&nbsp; Análisis bivariado &nbsp;&middot;&nbsp; Curso base
+</footer>
+
+</body>
+</html>
