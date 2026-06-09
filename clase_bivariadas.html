@@ -1230,78 +1230,187 @@ code { font-family: var(--code); font-size: 0.85em; background: var(--paper2); p
   </p>
 </section>
 
-<!-- ══ EJERCICIO 1 ══ -->
-<section class="seccion" id="ejercicio1">
-  <p class="sec-num">09 &mdash; Aplicación</p>
-  <h2>Resolución del Ejercicio 1 del práctico</h2>
+<!-- ══ EJERCICIOS RESUELTOS ══ -->
+<section class="seccion" id="ejercicios">
+  <p class="sec-num">09 &mdash; Ejercicios resueltos</p>
+  <h2>Aplicación al práctico</h2>
 
   <p>
-    Ahora aplicamos todo lo aprendido al ejercicio del práctico. El enunciado da una tabla
-    que cruza ingreso del hogar (X, en miles de pesos) y superficie de la vivienda (Y, en m²):
+    Aplicamos toda la teoría a tres ejercicios del práctico. Mantenemos siempre
+    la <strong>lógica espacial</strong>: si una variable está en filas, sus resultados
+    relativos van en una columna agregada a la derecha; si está en columnas, sus
+    resultados van en una fila agregada abajo. Las tablas crecen, no se multiplican.
   </p>
+</section>
+
+<!-- ══ EJERCICIO 1 ══ -->
+<section class="seccion" id="ej1">
+  <p class="sec-num">09.1 &mdash; Ejercicio 1</p>
+  <h2>Ingreso del hogar × Superficie de la vivienda</h2>
+
+  <p>
+    El enunciado presenta una tabla bivariada que cruza el ingreso del hogar (X,
+    en miles de pesos) con la superficie de la vivienda (Y, en m²). Vamos a resolver
+    las tres partes una por una.
+  </p>
+
+  <h3>Datos de partida</h3>
 
   <div class="tabla-wrap">
     <table>
       <thead>
         <tr>
           <th>X \ Y</th>
-          <th class="num">30-60</th>
-          <th class="num">60-80</th>
-          <th class="num">80-100</th>
-          <th class="num">100-150</th>
-          <th class="num">150-250</th>
+          <th class="num">[30, 60)</th>
+          <th class="num">[60, 80)</th>
+          <th class="num">[80, 100)</th>
+          <th class="num">[100, 150)</th>
+          <th class="num">[150, 250)</th>
         </tr>
       </thead>
       <tbody>
-        <tr><td class="lbl">0-20</td><td class="num">20</td><td class="num">18</td><td class="num">2</td><td class="num">1</td><td class="num">0</td></tr>
-        <tr><td class="lbl">20-30</td><td class="num">25</td><td class="num">40</td><td class="num">30</td><td class="num">2</td><td class="num">1</td></tr>
-        <tr><td class="lbl">30-50</td><td class="num">5</td><td class="num">10</td><td class="num">15</td><td class="num">25</td><td class="num">3</td></tr>
-        <tr><td class="lbl">50-100</td><td class="num">0</td><td class="num">5</td><td class="num">15</td><td class="num">20</td><td class="num">8</td></tr>
-        <tr><td class="lbl">100-200</td><td class="num">0</td><td class="num">1</td><td class="num">2</td><td class="num">7</td><td class="num">10</td></tr>
+        <tr><td class="lbl">[0, 20)</td><td class="num">20</td><td class="num">18</td><td class="num">2</td><td class="num">1</td><td class="num">0</td></tr>
+        <tr><td class="lbl">[20, 30)</td><td class="num">25</td><td class="num">40</td><td class="num">30</td><td class="num">2</td><td class="num">1</td></tr>
+        <tr><td class="lbl">[30, 50)</td><td class="num">5</td><td class="num">10</td><td class="num">15</td><td class="num">25</td><td class="num">3</td></tr>
+        <tr><td class="lbl">[50, 100)</td><td class="num">0</td><td class="num">5</td><td class="num">15</td><td class="num">20</td><td class="num">8</td></tr>
+        <tr><td class="lbl">[100, 200)</td><td class="num">0</td><td class="num">1</td><td class="num">2</td><td class="num">7</td><td class="num">10</td></tr>
       </tbody>
     </table>
   </div>
+
+  <p>
+    X (ingreso) está en filas; Y (superficie) está en columnas. Esa orientación
+    la mantenemos en todo el ejercicio.
+  </p>
 
   <h3>Parte (a) — Distribuciones marginales</h3>
 
   <div class="aplicacion">
     <span class="aplicacion-label">Resolución</span>
-    <p>
-      Sumamos cada fila para obtener la marginal de X (ingreso), y cada columna para
-      la marginal de Y (superficie).
+    <p><strong>Fórmulas que vamos a usar:</strong></p>
+    <div class="formula" style="margin: 0.5rem 0;">
+      n<sub>i·</sub> &nbsp;=&nbsp;
+      <span class="sum">
+        <span class="sum-top">J</span>
+        <span class="sum-sym">∑</span>
+        <span class="sum-bot">j=1</span>
+      </span>
+      &nbsp;n<sub>ij</sub>
+      &nbsp;&nbsp;&nbsp;&nbsp;
+      n<sub>·j</sub> &nbsp;=&nbsp;
+      <span class="sum">
+        <span class="sum-top">I</span>
+        <span class="sum-sym">∑</span>
+        <span class="sum-bot">i=1</span>
+      </span>
+      &nbsp;n<sub>ij</sub>
+      <span class="formula-note">
+        La marginal de X se obtiene sumando cada fila (cada n<sub>i·</sub> es la suma
+        de los J valores de la fila i). La marginal de Y se obtiene sumando cada columna.
+      </span>
+    </div>
+
+    <p style="margin-top:1rem;">
+      <strong>Procedimiento:</strong> tomamos la tabla original y le agregamos una
+      <em>columna a la derecha</em> con las sumas por fila (n<sub>i·</sub>), y una
+      <em>fila abajo</em> con las sumas por columna (n<sub>·j</sub>). Así queda toda
+      la información integrada en una sola tabla ampliada.
     </p>
-    <p><strong>Marginal del ingreso (X):</strong></p>
+
     <div class="tabla-wrap">
       <table>
-        <thead><tr><th>Ingreso (miles $)</th><th class="num">n<sub>i·</sub></th><th class="num">h<sub>i·</sub></th></tr></thead>
+        <thead>
+          <tr>
+            <th>X \ Y</th>
+            <th class="num">[30, 60)</th>
+            <th class="num">[60, 80)</th>
+            <th class="num">[80, 100)</th>
+            <th class="num">[100, 150)</th>
+            <th class="num">[150, 250)</th>
+            <th class="num">n<sub>i·</sub></th>
+          </tr>
+        </thead>
         <tbody>
-          <tr><td>[0, 20)</td><td class="num">41</td><td class="num">0,155</td></tr>
-          <tr><td>[20, 30)</td><td class="num">98</td><td class="num">0,370</td></tr>
-          <tr><td>[30, 50)</td><td class="num">58</td><td class="num">0,219</td></tr>
-          <tr><td>[50, 100)</td><td class="num">48</td><td class="num">0,181</td></tr>
-          <tr><td>[100, 200)</td><td class="num">20</td><td class="num">0,075</td></tr>
+          <tr><td class="lbl">[0, 20)</td><td class="num">20</td><td class="num">18</td><td class="num">2</td><td class="num">1</td><td class="num">0</td><td class="num hi">41</td></tr>
+          <tr><td class="lbl">[20, 30)</td><td class="num">25</td><td class="num">40</td><td class="num">30</td><td class="num">2</td><td class="num">1</td><td class="num hi">98</td></tr>
+          <tr><td class="lbl">[30, 50)</td><td class="num">5</td><td class="num">10</td><td class="num">15</td><td class="num">25</td><td class="num">3</td><td class="num hi">58</td></tr>
+          <tr><td class="lbl">[50, 100)</td><td class="num">0</td><td class="num">5</td><td class="num">15</td><td class="num">20</td><td class="num">8</td><td class="num hi">48</td></tr>
+          <tr><td class="lbl">[100, 200)</td><td class="num">0</td><td class="num">1</td><td class="num">2</td><td class="num">7</td><td class="num">10</td><td class="num hi">20</td></tr>
         </tbody>
-        <tfoot><tr><td>Total</td><td class="num">265</td><td class="num">1,000</td></tr></tfoot>
+        <tfoot>
+          <tr>
+            <td><strong>n<sub>·j</sub></strong></td>
+            <td class="num hi">50</td>
+            <td class="num hi">74</td>
+            <td class="num hi">64</td>
+            <td class="num hi">55</td>
+            <td class="num hi">22</td>
+            <td class="num"><strong>n = 265</strong></td>
+          </tr>
+        </tfoot>
       </table>
     </div>
-    <p style="margin-top:0.75rem;"><strong>Marginal de la superficie (Y):</strong></p>
-    <div class="tabla-wrap">
-      <table>
-        <thead><tr><th>Superficie (m²)</th><th class="num">n<sub>·j</sub></th><th class="num">h<sub>·j</sub></th></tr></thead>
-        <tbody>
-          <tr><td>[30, 60)</td><td class="num">50</td><td class="num">0,189</td></tr>
-          <tr><td>[60, 80)</td><td class="num">74</td><td class="num">0,279</td></tr>
-          <tr><td>[80, 100)</td><td class="num">64</td><td class="num">0,242</td></tr>
-          <tr><td>[100, 150)</td><td class="num">55</td><td class="num">0,208</td></tr>
-          <tr><td>[150, 250)</td><td class="num">22</td><td class="num">0,083</td></tr>
-        </tbody>
-        <tfoot><tr><td>Total</td><td class="num">265</td><td class="num">1,000</td></tr></tfoot>
-      </table>
-    </div>
+
     <p style="margin-top:0.75rem;">
-      <strong>Verificación:</strong> ambos totales dan 265. El total efectivo de la muestra
-      es n = 265 (no 250 como dice el enunciado del práctico — la suma de las celdas no
-      coincide con esa cifra. Para los cálculos usamos siempre el total real, 265).
+      <strong>Verificación cruzada:</strong> sumando la columna marginal (41 + 98 + 58 + 48 + 20)
+      obtenemos 265. Sumando la fila marginal (50 + 74 + 64 + 55 + 22) también obtenemos 265.
+      Los dos caminos llegan al mismo total — la tabla está bien armada.
+    </p>
+
+    <div class="advertencia" style="margin-top:1rem;">
+      <span class="advertencia-label">Sobre el total de la muestra</span>
+      <p style="margin-bottom:0;">
+        El enunciado anuncia n = 250, pero al sumar las celdas obtenemos n = 265.
+        Es una pequeña inconsistencia del práctico. Trabajamos con el total
+        <strong>efectivo</strong> de la tabla (n = 265) para que las frecuencias relativas
+        sumen exactamente 1.
+      </p>
+    </div>
+
+    <p style="margin-top:1rem;">
+      <strong>Frecuencias relativas marginales</strong> — dividimos cada marginal absoluta
+      por n = 265:
+    </p>
+
+    <div class="tabla-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>X \ Y</th>
+            <th class="num">[30, 60)</th>
+            <th class="num">[60, 80)</th>
+            <th class="num">[80, 100)</th>
+            <th class="num">[100, 150)</th>
+            <th class="num">[150, 250)</th>
+            <th class="num">h<sub>i·</sub></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="lbl">[0, 20)</td><td class="num">0,0755</td><td class="num">0,0679</td><td class="num">0,0075</td><td class="num">0,0038</td><td class="num">0,0000</td><td class="num hi">0,1547</td></tr>
+          <tr><td class="lbl">[20, 30)</td><td class="num">0,0943</td><td class="num">0,1509</td><td class="num">0,1132</td><td class="num">0,0075</td><td class="num">0,0038</td><td class="num hi">0,3698</td></tr>
+          <tr><td class="lbl">[30, 50)</td><td class="num">0,0189</td><td class="num">0,0377</td><td class="num">0,0566</td><td class="num">0,0943</td><td class="num">0,0113</td><td class="num hi">0,2189</td></tr>
+          <tr><td class="lbl">[50, 100)</td><td class="num">0,0000</td><td class="num">0,0189</td><td class="num">0,0566</td><td class="num">0,0755</td><td class="num">0,0302</td><td class="num hi">0,1811</td></tr>
+          <tr><td class="lbl">[100, 200)</td><td class="num">0,0000</td><td class="num">0,0038</td><td class="num">0,0075</td><td class="num">0,0264</td><td class="num">0,0377</td><td class="num hi">0,0755</td></tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td><strong>h<sub>·j</sub></strong></td>
+            <td class="num hi">0,1887</td>
+            <td class="num hi">0,2792</td>
+            <td class="num hi">0,2415</td>
+            <td class="num hi">0,2075</td>
+            <td class="num hi">0,0830</td>
+            <td class="num"><strong>1,0000</strong></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <p style="margin-top:0.75rem;">
+      <strong>Lectura final:</strong> la columna h<sub>i·</sub> es la distribución
+      marginal del ingreso — el 36,98% de los hogares tiene ingresos entre 20 y 30 mil pesos.
+      La fila h<sub>·j</sub> es la distribución marginal de la superficie — el 27,92% de
+      las viviendas tiene entre 60 y 80 m². Ambas distribuciones suman 1.
     </p>
   </div>
 
@@ -1309,57 +1418,119 @@ code { font-family: var(--code); font-size: 0.85em; background: var(--paper2); p
 
   <div class="aplicacion">
     <span class="aplicacion-label">Resolución</span>
-    <p><strong>Paso 1 — Identificar el intervalo modal del ingreso.</strong></p>
+
+    <h4 style="font-family:var(--lora); font-style:italic; font-weight:600; margin-top:0.5rem;">Paso 1 — Identificar el intervalo modal del ingreso</h4>
+
     <p>
-      Los intervalos tienen amplitudes distintas, así que no basta con buscar el mayor
-      n<sub>i·</sub>. Calculamos la <strong>densidad empírica</strong>:
-      f*(x) = n<sub>i·</sub> / (n · amplitud).
+      Como los intervalos del ingreso tienen <strong>amplitudes distintas</strong>, no basta con
+      buscar el mayor h<sub>i·</sub>. El intervalo modal es el de mayor <strong>densidad
+      empírica</strong>:
     </p>
-    <div class="tabla-wrap">
-      <table>
-        <thead>
-          <tr><th>Ingreso</th><th class="num">n<sub>i·</sub></th><th class="num">Amplitud</th><th class="num">Densidad f*</th></tr>
-        </thead>
-        <tbody>
-          <tr><td>[0, 20)</td><td class="num">41</td><td class="num">20</td><td class="num">0,00774</td></tr>
-          <tr style="background:#fdf5f4;"><td><strong>[20, 30)</strong></td><td class="num">98</td><td class="num">10</td><td class="num"><strong>0,03698</strong></td></tr>
-          <tr><td>[30, 50)</td><td class="num">58</td><td class="num">20</td><td class="num">0,01094</td></tr>
-          <tr><td>[50, 100)</td><td class="num">48</td><td class="num">50</td><td class="num">0,00362</td></tr>
-          <tr><td>[100, 200)</td><td class="num">20</td><td class="num">100</td><td class="num">0,00075</td></tr>
-        </tbody>
-      </table>
+
+    <div class="formula" style="margin: 0.5rem 0;">
+      f*(x) &nbsp;=&nbsp; h<sub>i·</sub> / a<sub>i</sub>
+      <span class="formula-note">
+        donde h<sub>i·</sub> es la frecuencia relativa marginal del intervalo i y
+        a<sub>i</sub> es su amplitud. El intervalo modal es el que maximiza f*(x).
+      </span>
     </div>
-    <p style="margin-top:0.75rem;">
-      El intervalo modal del ingreso es <strong>[20, 30)</strong>, con la mayor densidad.
-    </p>
-    <p><strong>Paso 2 — Tomar la fila correspondiente.</strong></p>
+
     <p>
-      Los hogares con ingreso entre 20 y 30 son 98 (la fila completa). Dividimos cada
-      celda por 98 para obtener las frecuencias condicionales h<sub>j|2</sub>:
+      Agregamos a la tabla las columnas necesarias para calcular las densidades —
+      mantenemos las categorías de X en filas, como vienen del enunciado:
     </p>
+
     <div class="tabla-wrap">
       <table>
         <thead>
           <tr>
-            <th>Superficie</th>
-            <th class="num">n<sub>2j</sub></th>
-            <th class="num">h<sub>j|2</sub> = n<sub>2j</sub> / 98</th>
+            <th>Intervalo de X</th>
+            <th class="num">h<sub>i·</sub></th>
+            <th class="num">Amplitud a<sub>i</sub></th>
+            <th class="num">f*(x)</th>
           </tr>
         </thead>
         <tbody>
-          <tr><td>[30, 60)</td><td class="num">25</td><td class="num">25/98 = 0,2551</td></tr>
-          <tr><td>[60, 80)</td><td class="num">40</td><td class="num">40/98 = 0,4082</td></tr>
-          <tr><td>[80, 100)</td><td class="num">30</td><td class="num">30/98 = 0,3061</td></tr>
-          <tr><td>[100, 150)</td><td class="num">2</td><td class="num">2/98 = 0,0204</td></tr>
-          <tr><td>[150, 250)</td><td class="num">1</td><td class="num">1/98 = 0,0102</td></tr>
+          <tr><td class="lbl">[0, 20)</td><td class="num">0,1547</td><td class="num">20</td><td class="num">0,00774</td></tr>
+          <tr style="background:#fdf5f4;"><td class="lbl"><strong>[20, 30)</strong></td><td class="num"><strong>0,3698</strong></td><td class="num">10</td><td class="num"><strong>0,03698</strong></td></tr>
+          <tr><td class="lbl">[30, 50)</td><td class="num">0,2189</td><td class="num">20</td><td class="num">0,01094</td></tr>
+          <tr><td class="lbl">[50, 100)</td><td class="num">0,1811</td><td class="num">50</td><td class="num">0,00362</td></tr>
+          <tr><td class="lbl">[100, 200)</td><td class="num">0,0755</td><td class="num">100</td><td class="num">0,00075</td></tr>
         </tbody>
-        <tfoot><tr><td>Total</td><td class="num">98</td><td class="num"><strong>1,0000</strong></td></tr></tfoot>
       </table>
     </div>
+
     <p style="margin-top:0.75rem;">
-      <strong>Lectura:</strong> dentro de los hogares con ingreso entre 20 y 30 mil pesos,
-      el 40,82% tiene vivienda entre 60 y 80 m². Solo el 3% tiene vivienda mayor a 100 m².
-      La distribución condicional está sesgada hacia viviendas chicas y medianas.
+      El intervalo de mayor densidad es <strong>[20, 30)</strong> con f* = 0,03698.
+      Vale la pena observar [50, 100): tiene una h<sub>i·</sub> mayor que [0, 20)
+      (0,1811 vs. 0,1547), pero su densidad (0,00362) es menos de la mitad que la de
+      [0, 20) (0,00774) — porque ocupa una amplitud 2,5 veces más grande. Esto muestra
+      por qué <strong>no alcanza con mirar h<sub>i·</sub></strong> cuando los intervalos tienen
+      amplitudes distintas. <strong>El intervalo modal del ingreso es [20, 30).</strong>
+    </p>
+
+    <h4 style="font-family:var(--lora); font-style:italic; font-weight:600; margin-top:1.2rem;">Paso 2 — Construir la distribución condicional</h4>
+
+    <p>
+      Aplicamos la fórmula:
+    </p>
+
+    <div class="formula" style="margin: 0.5rem 0;">
+      h<sub>j|i</sub> &nbsp;=&nbsp; n<sub>ij</sub> / n<sub>i·</sub>
+      <span class="formula-note">
+        Tomamos la fila i (en este caso i = 2, intervalo [20, 30)) y dividimos cada
+        celda por su total n<sub>i·</sub> = 98. El resultado es una nueva fila cuya suma da 1.
+      </span>
+    </div>
+
+    <p>
+      La fila correspondiente al ingreso [20, 30) tiene los valores 25 / 40 / 30 / 2 / 1.
+      Como estamos extrayendo una fila completa, <strong>el resultado se presenta también
+      como una fila</strong>, donde cada columna sigue siendo un intervalo de Y:
+    </p>
+
+    <div class="tabla-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Y | X = [20, 30)</th>
+            <th class="num">[30, 60)</th>
+            <th class="num">[60, 80)</th>
+            <th class="num">[80, 100)</th>
+            <th class="num">[100, 150)</th>
+            <th class="num">[150, 250)</th>
+            <th class="num">Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="lbl">n<sub>2j</sub></td>
+            <td class="num">25</td>
+            <td class="num">40</td>
+            <td class="num">30</td>
+            <td class="num">2</td>
+            <td class="num">1</td>
+            <td class="num hi">98</td>
+          </tr>
+          <tr>
+            <td class="lbl">h<sub>j|2</sub></td>
+            <td class="num">25/98 = 0,2551</td>
+            <td class="num">40/98 = 0,4082</td>
+            <td class="num">30/98 = 0,3061</td>
+            <td class="num">2/98 = 0,0204</td>
+            <td class="num">1/98 = 0,0102</td>
+            <td class="num hi">1,0000</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p style="margin-top:0.75rem;">
+      <strong>Lectura:</strong> entre los hogares con ingreso entre 20 y 30 mil pesos,
+      el 40,82% vive en una vivienda de 60 a 80 m², el 30,61% en una de 80 a 100 m²,
+      y solo el 3% (0,0204 + 0,0102) tiene una vivienda de más de 100 m². La distribución
+      condicional está claramente sesgada hacia viviendas chicas y medianas — coherente
+      con el nivel de ingreso bajo.
     </p>
   </div>
 
@@ -1367,67 +1538,796 @@ code { font-family: var(--code); font-size: 0.85em; background: var(--paper2); p
 
   <div class="aplicacion">
     <span class="aplicacion-label">Resolución</span>
+
     <p>
-      Calculamos la <strong>media condicional de la superficie</strong> para cada categoría
-      de ingreso. Usamos las marcas de clase de Y:
+      Vamos a calcular la <strong>media condicional de Y</strong> para cada intervalo de X.
+      Como hay un valor de ȳ<sub>i</sub> por cada fila, el resultado se presenta como
+      una <strong>columna adicional</strong> a la derecha de la tabla — una al lado de cada
+      categoría de X.
     </p>
-    <p style="font-family:var(--code); font-size:0.86rem; margin:0.4rem 0;">
-      y<sub>1</sub> = (30+60)/2 = 45 &nbsp;·&nbsp; y<sub>2</sub> = 70 &nbsp;·&nbsp;
-      y<sub>3</sub> = 90 &nbsp;·&nbsp; y<sub>4</sub> = 125 &nbsp;·&nbsp; y<sub>5</sub> = 200
-    </p>
-    <p>Aplicamos la fórmula de media condicional, fila por fila:</p>
 
-    <h4>Hogares con ingreso [0, 20)</h4>
-    <p style="font-family:var(--code); font-size:0.84rem; line-height:1.9; text-align:center; margin:0.3rem 0;">
+    <p><strong>Fórmula:</strong></p>
+
+    <div class="formula" style="margin: 0.5rem 0;">
+      ȳ<sub>i</sub> &nbsp;=&nbsp; (1 / n<sub>i·</sub>) ·
+      <span class="sum">
+        <span class="sum-top">J</span>
+        <span class="sum-sym">∑</span>
+        <span class="sum-bot">j=1</span>
+      </span>
+      &nbsp;y<sub>j</sub> · n<sub>ij</sub>
+      <span class="formula-note">
+        Para cada fila i, multiplicamos las marcas de clase y<sub>j</sub> por las frecuencias
+        n<sub>ij</sub>, sumamos y dividimos por el total de la fila n<sub>i·</sub>.
+      </span>
+    </div>
+
+    <p><strong>Marcas de clase de Y</strong> (puntos medios de los intervalos):</p>
+
+    <p style="font-family:var(--code); font-size:0.86rem; text-align:center; margin: 0.4rem 0;">
+      y<sub>1</sub> = 45 &nbsp;·&nbsp; y<sub>2</sub> = 70 &nbsp;·&nbsp; y<sub>3</sub> = 90
+      &nbsp;·&nbsp; y<sub>4</sub> = 125 &nbsp;·&nbsp; y<sub>5</sub> = 200
+    </p>
+
+    <p style="margin-top:1rem;"><strong>Cálculo fila por fila:</strong></p>
+
+    <p style="font-family:var(--code); font-size:0.82rem; line-height:1.9; margin:0.4rem 0;">
+      <strong>i = 1, [0, 20):</strong><br>
       ȳ<sub>1</sub> = (45·20 + 70·18 + 90·2 + 125·1 + 200·0) / 41<br>
-      = (900 + 1260 + 180 + 125 + 0) / 41 = 2465/41 ≈ <strong>60,12 m²</strong>
+      &nbsp;&nbsp;&nbsp;&nbsp;= (900 + 1260 + 180 + 125 + 0) / 41 = 2465/41 = <strong>60,12 m²</strong>
     </p>
 
-    <h4>Hogares con ingreso [20, 30)</h4>
-    <p style="font-family:var(--code); font-size:0.84rem; line-height:1.9; text-align:center; margin:0.3rem 0;">
+    <p style="font-family:var(--code); font-size:0.82rem; line-height:1.9; margin:0.4rem 0;">
+      <strong>i = 2, [20, 30):</strong><br>
       ȳ<sub>2</sub> = (45·25 + 70·40 + 90·30 + 125·2 + 200·1) / 98<br>
-      = (1125 + 2800 + 2700 + 250 + 200) / 98 = 7075/98 ≈ <strong>72,19 m²</strong>
+      &nbsp;&nbsp;&nbsp;&nbsp;= (1125 + 2800 + 2700 + 250 + 200) / 98 = 7075/98 = <strong>72,19 m²</strong>
     </p>
 
-    <h4>Hogares con ingreso [30, 50)</h4>
-    <p style="font-family:var(--code); font-size:0.84rem; line-height:1.9; text-align:center; margin:0.3rem 0;">
+    <p style="font-family:var(--code); font-size:0.82rem; line-height:1.9; margin:0.4rem 0;">
+      <strong>i = 3, [30, 50):</strong><br>
       ȳ<sub>3</sub> = (45·5 + 70·10 + 90·15 + 125·25 + 200·3) / 58<br>
-      = (225 + 700 + 1350 + 3125 + 600) / 58 = 6000/58 ≈ <strong>103,45 m²</strong>
+      &nbsp;&nbsp;&nbsp;&nbsp;= (225 + 700 + 1350 + 3125 + 600) / 58 = 6000/58 = <strong>103,45 m²</strong>
     </p>
 
-    <h4>Hogares con ingreso [50, 100)</h4>
-    <p style="font-family:var(--code); font-size:0.84rem; line-height:1.9; text-align:center; margin:0.3rem 0;">
+    <p style="font-family:var(--code); font-size:0.82rem; line-height:1.9; margin:0.4rem 0;">
+      <strong>i = 4, [50, 100):</strong><br>
       ȳ<sub>4</sub> = (45·0 + 70·5 + 90·15 + 125·20 + 200·8) / 48<br>
-      = (0 + 350 + 1350 + 2500 + 1600) / 48 = 5800/48 ≈ <strong>120,83 m²</strong>
+      &nbsp;&nbsp;&nbsp;&nbsp;= (0 + 350 + 1350 + 2500 + 1600) / 48 = 5800/48 = <strong>120,83 m²</strong>
     </p>
 
-    <h4>Hogares con ingreso [100, 200)</h4>
-    <p style="font-family:var(--code); font-size:0.84rem; line-height:1.9; text-align:center; margin:0.3rem 0;">
+    <p style="font-family:var(--code); font-size:0.82rem; line-height:1.9; margin:0.4rem 0;">
+      <strong>i = 5, [100, 200):</strong><br>
       ȳ<sub>5</sub> = (45·0 + 70·1 + 90·2 + 125·7 + 200·10) / 20<br>
-      = (0 + 70 + 180 + 875 + 2000) / 20 = 3125/20 = <strong>156,25 m²</strong>
+      &nbsp;&nbsp;&nbsp;&nbsp;= (0 + 70 + 180 + 875 + 2000) / 20 = 3125/20 = <strong>156,25 m²</strong>
     </p>
 
-    <p style="margin-top:1rem;"><strong>Resumen final:</strong></p>
+    <p style="margin-top:1rem;">
+      <strong>Tabla final con marginales y medias condicionales integradas:</strong>
+    </p>
+
     <div class="tabla-wrap">
       <table>
-        <thead><tr><th>Ingreso del hogar (miles $)</th><th class="num">Superficie promedio (m²)</th></tr></thead>
+        <thead>
+          <tr>
+            <th>X \ Y</th>
+            <th class="num">[30, 60)</th>
+            <th class="num">[60, 80)</th>
+            <th class="num">[80, 100)</th>
+            <th class="num">[100, 150)</th>
+            <th class="num">[150, 250)</th>
+            <th class="num">n<sub>i·</sub></th>
+            <th class="num">ȳ<sub>i</sub></th>
+          </tr>
+        </thead>
         <tbody>
-          <tr><td>[0, 20)</td><td class="num">60,12</td></tr>
-          <tr><td>[20, 30)</td><td class="num">72,19</td></tr>
-          <tr><td>[30, 50)</td><td class="num">103,45</td></tr>
-          <tr><td>[50, 100)</td><td class="num">120,83</td></tr>
-          <tr><td>[100, 200)</td><td class="num">156,25</td></tr>
+          <tr><td class="lbl">[0, 20)</td><td class="num">20</td><td class="num">18</td><td class="num">2</td><td class="num">1</td><td class="num">0</td><td class="num">41</td><td class="num hi">60,12</td></tr>
+          <tr><td class="lbl">[20, 30)</td><td class="num">25</td><td class="num">40</td><td class="num">30</td><td class="num">2</td><td class="num">1</td><td class="num">98</td><td class="num hi">72,19</td></tr>
+          <tr><td class="lbl">[30, 50)</td><td class="num">5</td><td class="num">10</td><td class="num">15</td><td class="num">25</td><td class="num">3</td><td class="num">58</td><td class="num hi">103,45</td></tr>
+          <tr><td class="lbl">[50, 100)</td><td class="num">0</td><td class="num">5</td><td class="num">15</td><td class="num">20</td><td class="num">8</td><td class="num">48</td><td class="num hi">120,83</td></tr>
+          <tr><td class="lbl">[100, 200)</td><td class="num">0</td><td class="num">1</td><td class="num">2</td><td class="num">7</td><td class="num">10</td><td class="num">20</td><td class="num hi">156,25</td></tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td><strong>n<sub>·j</sub></strong></td>
+            <td class="num">50</td>
+            <td class="num">74</td>
+            <td class="num">64</td>
+            <td class="num">55</td>
+            <td class="num">22</td>
+            <td class="num"><strong>265</strong></td>
+            <td class="num">—</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <p style="margin-top:0.75rem;">
+      <strong>Interpretación.</strong> La superficie promedio crece de forma <em>monótonamente
+      creciente</em> con el ingreso: pasa de 60 m² para los hogares más pobres a 156 m² para
+      los más ricos. El salto más grande se da entre [20, 30) y [30, 50) — más de 30 m² de
+      aumento en una sola categoría. Hay una <strong>relación claramente positiva</strong>
+      entre el ingreso del hogar y el tamaño de la vivienda.
+    </p>
+  </div>
+</section>
+
+<!-- ══ EJERCICIO 2 ══ -->
+<section class="seccion" id="ej2">
+  <p class="sec-num">09.2 &mdash; Ejercicio 2</p>
+  <h2>Cálculo completo de x̄, ȳ, S²<sub>X</sub>, S²<sub>Y</sub> y S<sub>XY</sub></h2>
+
+  <p>
+    El enunciado da una tabla bivariada con valores numéricos discretos y pide calcular
+    todos los estadísticos descriptivos básicos del análisis bivariado.
+  </p>
+
+  <h3>Datos de partida</h3>
+
+  <div class="tabla-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>X \ Y</th>
+          <th class="num">1</th>
+          <th class="num">2</th>
+          <th class="num">3</th>
+          <th class="num">4</th>
+          <th class="num">5</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="lbl">−1</td><td class="num">2</td><td class="num">4</td><td class="num">6</td><td class="num">10</td><td class="num">8</td></tr>
+        <tr><td class="lbl">0</td><td class="num">1</td><td class="num">2</td><td class="num">3</td><td class="num">5</td><td class="num">4</td></tr>
+        <tr><td class="lbl">1</td><td class="num">3</td><td class="num">6</td><td class="num">9</td><td class="num">15</td><td class="num">12</td></tr>
+        <tr><td class="lbl">2</td><td class="num">4</td><td class="num">8</td><td class="num">12</td><td class="num">20</td><td class="num">16</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Paso 1 — Calcular las marginales</h3>
+
+  <div class="aplicacion">
+    <span class="aplicacion-label">Resolución</span>
+
+    <p>
+      Sumamos cada fila (para obtener n<sub>i·</sub>) y cada columna (para n<sub>·j</sub>).
+      Las marginales se agregan a la tabla original como una columna a la derecha y una
+      fila abajo:
+    </p>
+
+    <div class="tabla-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>X \ Y</th>
+            <th class="num">1</th>
+            <th class="num">2</th>
+            <th class="num">3</th>
+            <th class="num">4</th>
+            <th class="num">5</th>
+            <th class="num">n<sub>i·</sub></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="lbl">−1</td><td class="num">2</td><td class="num">4</td><td class="num">6</td><td class="num">10</td><td class="num">8</td><td class="num hi">30</td></tr>
+          <tr><td class="lbl">0</td><td class="num">1</td><td class="num">2</td><td class="num">3</td><td class="num">5</td><td class="num">4</td><td class="num hi">15</td></tr>
+          <tr><td class="lbl">1</td><td class="num">3</td><td class="num">6</td><td class="num">9</td><td class="num">15</td><td class="num">12</td><td class="num hi">45</td></tr>
+          <tr><td class="lbl">2</td><td class="num">4</td><td class="num">8</td><td class="num">12</td><td class="num">20</td><td class="num">16</td><td class="num hi">60</td></tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td><strong>n<sub>·j</sub></strong></td>
+            <td class="num hi">10</td>
+            <td class="num hi">20</td>
+            <td class="num hi">30</td>
+            <td class="num hi">50</td>
+            <td class="num hi">40</td>
+            <td class="num"><strong>n = 150</strong></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <p style="margin-top:0.75rem;">
+      Verificación: 30 + 15 + 45 + 60 = 150 ✓ y también 10 + 20 + 30 + 50 + 40 = 150 ✓
+    </p>
+  </div>
+
+  <h3>Paso 2 — Calcular las medias x̄ e ȳ</h3>
+
+  <div class="aplicacion">
+    <span class="aplicacion-label">Resolución</span>
+
+    <p><strong>Fórmulas:</strong></p>
+
+    <div class="formula" style="margin: 0.5rem 0;">
+      x̄ &nbsp;=&nbsp; (1/n) ·
+      <span class="sum">
+        <span class="sum-top">I</span>
+        <span class="sum-sym">∑</span>
+        <span class="sum-bot">i=1</span>
+      </span>
+      &nbsp;x<sub>i</sub> · n<sub>i·</sub>
+      &nbsp;&nbsp;&nbsp;&nbsp;
+      ȳ &nbsp;=&nbsp; (1/n) ·
+      <span class="sum">
+        <span class="sum-top">J</span>
+        <span class="sum-sym">∑</span>
+        <span class="sum-bot">j=1</span>
+      </span>
+      &nbsp;y<sub>j</sub> · n<sub>·j</sub>
+      <span class="formula-note">
+        Cada media se calcula usando solo la marginal de su variable.
+      </span>
+    </div>
+
+    <p><strong>Cálculo de x̄</strong> usando la columna marginal n<sub>i·</sub>:</p>
+
+    <p style="font-family:var(--code); font-size:0.86rem; text-align:center; margin: 0.5rem 0;">
+      x̄ = ((−1)·30 + 0·15 + 1·45 + 2·60) / 150<br>
+      &nbsp;&nbsp;&nbsp;= (−30 + 0 + 45 + 120) / 150<br>
+      &nbsp;&nbsp;&nbsp;= 135 / 150 = <strong>0,90</strong>
+    </p>
+
+    <p style="margin-top:0.75rem;"><strong>Cálculo de ȳ</strong> usando la fila marginal n<sub>·j</sub>:</p>
+
+    <p style="font-family:var(--code); font-size:0.86rem; text-align:center; margin: 0.5rem 0;">
+      ȳ = (1·10 + 2·20 + 3·30 + 4·50 + 5·40) / 150<br>
+      &nbsp;&nbsp;&nbsp;= (10 + 40 + 90 + 200 + 200) / 150<br>
+      &nbsp;&nbsp;&nbsp;= 540 / 150 = <strong>3,60</strong>
+    </p>
+  </div>
+
+  <h3>Paso 3 — Calcular las varianzas S²<sub>X</sub> y S²<sub>Y</sub></h3>
+
+  <div class="aplicacion">
+    <span class="aplicacion-label">Resolución</span>
+
+    <p>
+      Usamos la <strong>fórmula corta</strong> (la que en la práctica conviene usar siempre):
+    </p>
+
+    <div class="formula" style="margin: 0.5rem 0;">
+      S²<sub>X</sub> &nbsp;=&nbsp; (1/n) ·
+      <span class="sum">
+        <span class="sum-top">I</span>
+        <span class="sum-sym">∑</span>
+        <span class="sum-bot">i=1</span>
+      </span>
+      &nbsp;x<sub>i</sub>² · n<sub>i·</sub> &nbsp;−&nbsp; x̄²
+      <span class="formula-note">
+        Promedio de los cuadrados menos cuadrado del promedio. Análoga para S²<sub>Y</sub>.
+      </span>
+    </div>
+
+    <p>
+      Como los productos x<sub>i</sub>² · n<sub>i·</sub> e y<sub>j</sub>² · n<sub>·j</sub> son
+      cálculos por fila/columna marginal, los presentamos como columnas extra al lado de cada
+      marginal — manteniendo la lógica espacial:
+    </p>
+
+    <p><strong>Para X:</strong></p>
+
+    <div class="tabla-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>x<sub>i</sub></th>
+            <th class="num">n<sub>i·</sub></th>
+            <th class="num">x<sub>i</sub>²</th>
+            <th class="num">x<sub>i</sub>² · n<sub>i·</sub></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="lbl">−1</td><td class="num">30</td><td class="num">1</td><td class="num">30</td></tr>
+          <tr><td class="lbl">0</td><td class="num">15</td><td class="num">0</td><td class="num">0</td></tr>
+          <tr><td class="lbl">1</td><td class="num">45</td><td class="num">1</td><td class="num">45</td></tr>
+          <tr><td class="lbl">2</td><td class="num">60</td><td class="num">4</td><td class="num">240</td></tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td>Total</td><td class="num">150</td><td class="num">—</td><td class="num hi">315</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <p style="font-family:var(--code); font-size:0.88rem; text-align:center; margin: 0.6rem 0;">
+      S²<sub>X</sub> = 315/150 − (0,90)² = 2,10 − 0,81 = <strong>1,29</strong>
+    </p>
+
+    <p style="margin-top:1rem;"><strong>Para Y:</strong></p>
+
+    <div class="tabla-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>y<sub>j</sub></th>
+            <th class="num">n<sub>·j</sub></th>
+            <th class="num">y<sub>j</sub>²</th>
+            <th class="num">y<sub>j</sub>² · n<sub>·j</sub></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="lbl">1</td><td class="num">10</td><td class="num">1</td><td class="num">10</td></tr>
+          <tr><td class="lbl">2</td><td class="num">20</td><td class="num">4</td><td class="num">80</td></tr>
+          <tr><td class="lbl">3</td><td class="num">30</td><td class="num">9</td><td class="num">270</td></tr>
+          <tr><td class="lbl">4</td><td class="num">50</td><td class="num">16</td><td class="num">800</td></tr>
+          <tr><td class="lbl">5</td><td class="num">40</td><td class="num">25</td><td class="num">1000</td></tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td>Total</td><td class="num">150</td><td class="num">—</td><td class="num hi">2160</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <p style="font-family:var(--code); font-size:0.88rem; text-align:center; margin: 0.6rem 0;">
+      S²<sub>Y</sub> = 2160/150 − (3,60)² = 14,40 − 12,96 = <strong>1,44</strong>
+    </p>
+  </div>
+
+  <h3>Paso 4 — Calcular la covarianza S<sub>XY</sub></h3>
+
+  <div class="aplicacion">
+    <span class="aplicacion-label">Resolución</span>
+
+    <p><strong>Fórmula corta para datos en tabla bivariada:</strong></p>
+
+    <div class="formula" style="margin: 0.5rem 0;">
+      S<sub>XY</sub> &nbsp;=&nbsp; (1/n) ·
+      <span class="sum">
+        <span class="sum-top">I</span>
+        <span class="sum-sym">∑</span>
+        <span class="sum-bot">i=1</span>
+      </span>
+      <span class="sum">
+        <span class="sum-top">J</span>
+        <span class="sum-sym">∑</span>
+        <span class="sum-bot">j=1</span>
+      </span>
+      &nbsp;n<sub>ij</sub> · x<sub>i</sub> · y<sub>j</sub> &nbsp;−&nbsp; x̄ · ȳ
+      <span class="formula-note">
+        Doble sumatoria sobre todas las celdas de la tabla, ponderando cada producto
+        x<sub>i</sub>·y<sub>j</sub> por la frecuencia n<sub>ij</sub> de la celda.
+      </span>
+    </div>
+
+    <p>
+      Construimos los productos celda por celda. Como estamos operando sobre la tabla
+      completa, mostramos el resultado <strong>también como tabla completa</strong> —
+      cada celda contiene el producto correspondiente n<sub>ij</sub>·x<sub>i</sub>·y<sub>j</sub>:
+    </p>
+
+    <div class="tabla-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>n<sub>ij</sub>·x<sub>i</sub>·y<sub>j</sub></th>
+            <th class="num">y=1</th>
+            <th class="num">y=2</th>
+            <th class="num">y=3</th>
+            <th class="num">y=4</th>
+            <th class="num">y=5</th>
+            <th class="num">Suma fila</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="lbl">x = −1</td>
+            <td class="num">2·(−1)·1 = −2</td>
+            <td class="num">4·(−1)·2 = −8</td>
+            <td class="num">6·(−1)·3 = −18</td>
+            <td class="num">10·(−1)·4 = −40</td>
+            <td class="num">8·(−1)·5 = −40</td>
+            <td class="num hi">−108</td>
+          </tr>
+          <tr>
+            <td class="lbl">x = 0</td>
+            <td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td>
+            <td class="num hi">0</td>
+          </tr>
+          <tr>
+            <td class="lbl">x = 1</td>
+            <td class="num">3·1·1 = 3</td>
+            <td class="num">6·1·2 = 12</td>
+            <td class="num">9·1·3 = 27</td>
+            <td class="num">15·1·4 = 60</td>
+            <td class="num">12·1·5 = 60</td>
+            <td class="num hi">162</td>
+          </tr>
+          <tr>
+            <td class="lbl">x = 2</td>
+            <td class="num">4·2·1 = 8</td>
+            <td class="num">8·2·2 = 32</td>
+            <td class="num">12·2·3 = 72</td>
+            <td class="num">20·2·4 = 160</td>
+            <td class="num">16·2·5 = 160</td>
+            <td class="num hi">432</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="6"><strong>Suma total ΣΣ n<sub>ij</sub>·x<sub>i</sub>·y<sub>j</sub> =</strong></td>
+            <td class="num"><strong>486</strong></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <p style="font-family:var(--code); font-size:0.88rem; text-align:center; margin: 0.6rem 0;">
+      S<sub>XY</sub> = 486/150 − (0,90)·(3,60) = 3,24 − 3,24 = <strong>0,00</strong>
+    </p>
+  </div>
+
+  <h3>Resumen final del Ejercicio 2</h3>
+
+  <div class="tabla-wrap">
+    <table>
+      <thead>
+        <tr><th>Estadístico</th><th class="num">Valor</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>x̄</td><td class="num hi">0,90</td></tr>
+        <tr><td>ȳ</td><td class="num hi">3,60</td></tr>
+        <tr><td>S²<sub>X</sub></td><td class="num hi">1,29</td></tr>
+        <tr><td>S²<sub>Y</sub></td><td class="num hi">1,44</td></tr>
+        <tr><td>S<sub>XY</sub></td><td class="num hi">0,00</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="nota">
+    <span class="nota-label">¿Por qué la covarianza dio exactamente cero?</span>
+    <p>
+      No es casualidad ni error de cálculo. Observá las filas de la tabla original:
+    </p>
+    <ul style="padding-left:1.3rem; line-height:1.9; font-size:0.92rem; margin:0.4rem 0;">
+      <li>Fila x = −1: (2, 4, 6, 10, 8)</li>
+      <li>Fila x = 0: (1, 2, 3, 5, 4) ← base</li>
+      <li>Fila x = 1: (3, 6, 9, 15, 12) = 3 × fila base</li>
+      <li>Fila x = 2: (4, 8, 12, 20, 16) = 4 × fila base</li>
+    </ul>
+    <p style="margin-bottom:0;">
+      Todas las filas son <strong>múltiplos</strong> de la fila base. Eso significa que
+      la distribución condicional de Y es <em>idéntica</em> para todo valor de X — hay
+      <strong>independencia empírica</strong> entre las variables, y por eso S<sub>XY</sub> = 0
+      exactamente. Es un ejercicio armado pedagógicamente para mostrar el caso extremo
+      de no-relación.
+    </p>
+  </div>
+</section>
+
+<!-- ══ EJERCICIO 3 ══ -->
+<section class="seccion" id="ej3">
+  <p class="sec-num">09.3 &mdash; Ejercicio 3</p>
+  <h2>Personal Ocupado × Valor Bruto de Producción</h2>
+
+  <p>
+    Tenemos 6 empresas con dos variables medidas en cada una: el Personal Ocupado (PO,
+    en cientos de empleados) y el Valor Bruto de Producción (VBP, en millones de pesos).
+    A diferencia de los ejercicios anteriores, los datos vienen como <strong>pares (x<sub>i</sub>, y<sub>i</sub>)
+    sin agrupar</strong> — no hay tabla bivariada de frecuencias, hay 6 observaciones individuales.
+  </p>
+
+  <h3>Datos de partida</h3>
+
+  <p>Llamamos X = PO e Y = VBP. n = 6.</p>
+
+  <div class="tabla-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Empresa</th>
+          <th class="num">1</th>
+          <th class="num">2</th>
+          <th class="num">3</th>
+          <th class="num">4</th>
+          <th class="num">5</th>
+          <th class="num">6</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="lbl">X = PO (cientos)</td><td class="num">1</td><td class="num">3</td><td class="num">4</td><td class="num">6</td><td class="num">7</td><td class="num">6</td></tr>
+        <tr><td class="lbl">Y = VBP (mill. $)</td><td class="num">15</td><td class="num">20</td><td class="num">30</td><td class="num">50</td><td class="num">80</td><td class="num">100</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Parte (a) — Diagrama de dispersión</h3>
+
+  <div class="aplicacion">
+    <span class="aplicacion-label">Resolución</span>
+
+    <p>
+      Cada empresa se representa como un punto (x<sub>i</sub>, y<sub>i</sub>) en el plano
+      cartesiano:
+    </p>
+
+    <div style="background:var(--paper2); border:1px solid var(--rule); border-radius:3px; padding:1rem; margin: 1rem 0;">
+      <svg viewBox="0 0 460 360" role="img" aria-label="Diagrama de dispersión PO vs VBP" style="display:block; width:100%; max-width:480px; margin:0 auto; overflow:visible;">
+        <!-- Recuadro -->
+        <rect x="60" y="20" width="380" height="280" fill="none" stroke="#d6cfc2" stroke-width="1"/>
+        <!-- Grilla -->
+        <line x1="60" y1="58" x2="440" y2="58" stroke="#e8e1d4" stroke-dasharray="3,3"/>
+        <line x1="60" y1="114" x2="440" y2="114" stroke="#e8e1d4" stroke-dasharray="3,3"/>
+        <line x1="60" y1="170" x2="440" y2="170" stroke="#e8e1d4" stroke-dasharray="3,3"/>
+        <line x1="60" y1="226" x2="440" y2="226" stroke="#e8e1d4" stroke-dasharray="3,3"/>
+
+        <line x1="108" y1="20" x2="108" y2="300" stroke="#e8e1d4" stroke-dasharray="3,3"/>
+        <line x1="155" y1="20" x2="155" y2="300" stroke="#e8e1d4" stroke-dasharray="3,3"/>
+        <line x1="203" y1="20" x2="203" y2="300" stroke="#e8e1d4" stroke-dasharray="3,3"/>
+        <line x1="250" y1="20" x2="250" y2="300" stroke="#e8e1d4" stroke-dasharray="3,3"/>
+        <line x1="297" y1="20" x2="297" y2="300" stroke="#e8e1d4" stroke-dasharray="3,3"/>
+        <line x1="345" y1="20" x2="345" y2="300" stroke="#e8e1d4" stroke-dasharray="3,3"/>
+        <line x1="392" y1="20" x2="392" y2="300" stroke="#e8e1d4" stroke-dasharray="3,3"/>
+
+        <!-- Ejes (más oscuros) -->
+        <line x1="60" y1="300" x2="440" y2="300" stroke="#3d3a34" stroke-width="1.5"/>
+        <line x1="60" y1="20" x2="60" y2="300" stroke="#3d3a34" stroke-width="1.5"/>
+
+        <!-- Puntos: escala X: 0→60, 8→440 (1 unidad = 47.5px). Escala Y: 0→300, 100→20 (1 unidad = 2.8px) -->
+        <!-- (1, 15) -->
+        <circle cx="107.5" cy="258" r="5" fill="#1a4a8a"/>
+        <text x="115" y="252" font-family="Fira Code" font-size="9" fill="#3d3a34">E1 (1, 15)</text>
+        <!-- (3, 20) -->
+        <circle cx="202.5" cy="244" r="5" fill="#1a4a8a"/>
+        <text x="210" y="240" font-family="Fira Code" font-size="9" fill="#3d3a34">E2 (3, 20)</text>
+        <!-- (4, 30) -->
+        <circle cx="250" cy="216" r="5" fill="#1a4a8a"/>
+        <text x="258" y="212" font-family="Fira Code" font-size="9" fill="#3d3a34">E3 (4, 30)</text>
+        <!-- (6, 50) -->
+        <circle cx="345" cy="160" r="5" fill="#1a4a8a"/>
+        <text x="353" y="156" font-family="Fira Code" font-size="9" fill="#3d3a34">E4 (6, 50)</text>
+        <!-- (7, 80) -->
+        <circle cx="392.5" cy="76" r="5" fill="#1a4a8a"/>
+        <text x="345" y="70" font-family="Fira Code" font-size="9" fill="#3d3a34">E5 (7, 80)</text>
+        <!-- (6, 100) -->
+        <circle cx="345" cy="20" r="5" fill="#b5281c"/>
+        <text x="270" y="16" font-family="Fira Code" font-size="9" fill="#b5281c">E6 (6, 100)</text>
+
+        <!-- Etiquetas eje X -->
+        <text x="60" y="315" font-family="Fira Code" font-size="10" fill="#8a8178" text-anchor="middle">0</text>
+        <text x="108" y="315" font-family="Fira Code" font-size="10" fill="#8a8178" text-anchor="middle">1</text>
+        <text x="155" y="315" font-family="Fira Code" font-size="10" fill="#8a8178" text-anchor="middle">2</text>
+        <text x="203" y="315" font-family="Fira Code" font-size="10" fill="#8a8178" text-anchor="middle">3</text>
+        <text x="250" y="315" font-family="Fira Code" font-size="10" fill="#8a8178" text-anchor="middle">4</text>
+        <text x="297" y="315" font-family="Fira Code" font-size="10" fill="#8a8178" text-anchor="middle">5</text>
+        <text x="345" y="315" font-family="Fira Code" font-size="10" fill="#8a8178" text-anchor="middle">6</text>
+        <text x="392" y="315" font-family="Fira Code" font-size="10" fill="#8a8178" text-anchor="middle">7</text>
+        <text x="440" y="315" font-family="Fira Code" font-size="10" fill="#8a8178" text-anchor="middle">8</text>
+        <text x="250" y="340" font-family="Lora" font-size="12" fill="#3d3a34" text-anchor="middle">X = Personal Ocupado (cientos)</text>
+
+        <!-- Etiquetas eje Y -->
+        <text x="55" y="304" font-family="Fira Code" font-size="10" fill="#8a8178" text-anchor="end">0</text>
+        <text x="55" y="230" font-family="Fira Code" font-size="10" fill="#8a8178" text-anchor="end">25</text>
+        <text x="55" y="174" font-family="Fira Code" font-size="10" fill="#8a8178" text-anchor="end">50</text>
+        <text x="55" y="118" font-family="Fira Code" font-size="10" fill="#8a8178" text-anchor="end">75</text>
+        <text x="55" y="62" font-family="Fira Code" font-size="10" fill="#8a8178" text-anchor="end">100</text>
+        <text x="20" y="160" font-family="Lora" font-size="12" fill="#3d3a34" text-anchor="middle" transform="rotate(-90, 20, 160)">Y = VBP (millones $)</text>
+      </svg>
+    </div>
+
+    <p>
+      <strong>Comentario.</strong> Se observa una <strong>relación claramente positiva</strong>:
+      a mayor cantidad de empleados, mayor valor de producción. Los puntos siguen una tendencia
+      aproximadamente lineal creciente. La única observación que se aparta visiblemente de
+      la tendencia es la empresa 6 (marcada en rojo): con el mismo PO que la empresa 4
+      produce el doble. Este punto introduce algo de dispersión alrededor de la línea
+      tendencial.
+    </p>
+  </div>
+
+  <h3>Parte (b) — Covarianza entre PO y VBP</h3>
+
+  <div class="aplicacion">
+    <span class="aplicacion-label">Resolución</span>
+
+    <p><strong>Fórmula corta para datos sueltos (no agrupados):</strong></p>
+
+    <div class="formula" style="margin: 0.5rem 0;">
+      S<sub>XY</sub> &nbsp;=&nbsp; (1/n) ·
+      <span class="sum">
+        <span class="sum-top">n</span>
+        <span class="sum-sym">∑</span>
+        <span class="sum-bot">i=1</span>
+      </span>
+      &nbsp;x<sub>i</sub> · y<sub>i</sub> &nbsp;−&nbsp; x̄ · ȳ
+      <span class="formula-note">
+        Cuando los datos son pares individuales (no tabla de frecuencias), sumamos
+        directamente los productos x<sub>i</sub>·y<sub>i</sub> empresa por empresa.
+      </span>
+    </div>
+
+    <p><strong>Paso 1 — Calcular las medias.</strong></p>
+
+    <p style="font-family:var(--code); font-size:0.86rem; text-align:center; margin: 0.5rem 0;">
+      x̄ = (1 + 3 + 4 + 6 + 7 + 6) / 6 = 27 / 6 = <strong>4,5</strong><br>
+      ȳ = (15 + 20 + 30 + 50 + 80 + 100) / 6 = 295 / 6 = <strong>49,167</strong>
+    </p>
+
+    <p style="margin-top:1rem;">
+      <strong>Paso 2 — Tabla auxiliar.</strong> Agregamos a la tabla original las filas
+      con los productos x<sub>i</sub>·y<sub>i</sub>, x<sub>i</sub>² e y<sub>i</sub>² que
+      vamos a usar — manteniendo las empresas en columnas como en el enunciado:
+    </p>
+
+    <div class="tabla-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Empresa</th>
+            <th class="num">1</th>
+            <th class="num">2</th>
+            <th class="num">3</th>
+            <th class="num">4</th>
+            <th class="num">5</th>
+            <th class="num">6</th>
+            <th class="num">Σ</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="lbl">x<sub>i</sub></td><td class="num">1</td><td class="num">3</td><td class="num">4</td><td class="num">6</td><td class="num">7</td><td class="num">6</td><td class="num hi">27</td></tr>
+          <tr><td class="lbl">y<sub>i</sub></td><td class="num">15</td><td class="num">20</td><td class="num">30</td><td class="num">50</td><td class="num">80</td><td class="num">100</td><td class="num hi">295</td></tr>
+          <tr><td class="lbl">x<sub>i</sub> · y<sub>i</sub></td><td class="num">15</td><td class="num">60</td><td class="num">120</td><td class="num">300</td><td class="num">560</td><td class="num">600</td><td class="num hi">1655</td></tr>
+          <tr><td class="lbl">x<sub>i</sub>²</td><td class="num">1</td><td class="num">9</td><td class="num">16</td><td class="num">36</td><td class="num">49</td><td class="num">36</td><td class="num hi">147</td></tr>
+          <tr><td class="lbl">y<sub>i</sub>²</td><td class="num">225</td><td class="num">400</td><td class="num">900</td><td class="num">2500</td><td class="num">6400</td><td class="num">10000</td><td class="num hi">20425</td></tr>
         </tbody>
       </table>
     </div>
+
+    <p style="margin-top:1rem;"><strong>Paso 3 — Aplicar la fórmula:</strong></p>
+
+    <p style="font-family:var(--code); font-size:0.88rem; text-align:center; margin: 0.5rem 0;">
+      S<sub>XY</sub> = 1655/6 − (4,5)·(49,167)<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;= 275,833 − 221,250<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;= <strong>54,583</strong>
+    </p>
+
     <p style="margin-top:0.75rem;">
-      <strong>Interpretación:</strong> la superficie promedio crece <em>monótonamente</em>
-      con el ingreso. Pasa de 60 m² para los hogares más pobres a 156 m² para los más ricos.
-      El paso más grande está entre [20, 30) y [30, 50), con un salto de unos 30 m².
-      Hay una <strong>relación claramente positiva</strong> entre ingreso y superficie:
-      a mayor ingreso, mayor tamaño de la vivienda.
+      <strong>Interpretación.</strong> S<sub>XY</sub> &gt; 0 confirma lo que se veía en el
+      diagrama de dispersión: hay <strong>relación lineal positiva</strong> entre PO y VBP.
+      A mayor cantidad de empleados, mayor valor de producción. Las unidades de la covarianza
+      son "cientos de empleados × millones de pesos" — un híbrido difícil de interpretar
+      como magnitud absoluta. Por eso es útil calcular el coeficiente de Pearson en la parte
+      siguiente.
     </p>
   </div>
+
+  <h3>Parte (c) — Coeficiente de correlación lineal de Pearson</h3>
+
+  <div class="aplicacion">
+    <span class="aplicacion-label">Resolución</span>
+
+    <p><strong>Fórmula:</strong></p>
+
+    <div class="formula" style="margin: 0.5rem 0;">
+      r<sub>XY</sub> &nbsp;=&nbsp; S<sub>XY</sub> / (S<sub>X</sub> · S<sub>Y</sub>)
+      <span class="formula-note">
+        Cociente entre la covarianza y el producto de los desvíos estándar. Da un valor
+        adimensional entre −1 y 1.
+      </span>
+    </div>
+
+    <p><strong>Paso 1 — Calcular las varianzas</strong> (con la fórmula corta, ya tenemos los Σ x² y Σ y²):</p>
+
+    <p style="font-family:var(--code); font-size:0.86rem; text-align:center; margin: 0.5rem 0;">
+      S²<sub>X</sub> = 147/6 − (4,5)² = 24,500 − 20,250 = <strong>4,250</strong><br>
+      S²<sub>Y</sub> = 20425/6 − (49,167)² = 3404,167 − 2417,361 = <strong>986,806</strong>
+    </p>
+
+    <p style="margin-top:0.75rem;"><strong>Paso 2 — Desvíos estándar</strong> (raíz cuadrada de la varianza):</p>
+
+    <p style="font-family:var(--code); font-size:0.86rem; text-align:center; margin: 0.5rem 0;">
+      S<sub>X</sub> = √4,250 = <strong>2,062</strong><br>
+      S<sub>Y</sub> = √986,806 = <strong>31,413</strong>
+    </p>
+
+    <p style="margin-top:0.75rem;"><strong>Paso 3 — Aplicar la fórmula de Pearson:</strong></p>
+
+    <p style="font-family:var(--code); font-size:0.88rem; text-align:center; margin: 0.5rem 0;">
+      r<sub>XY</sub> = 54,583 / (2,062 · 31,413)<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;= 54,583 / 64,774<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;= <strong>0,843</strong>
+    </p>
+
+    <p style="margin-top:0.75rem;">
+      <strong>Interpretación.</strong> r<sub>XY</sub> = 0,843 es un valor alto y positivo
+      (entre 0,8 y 1,0). Existe una <strong>relación lineal fuerte y positiva</strong> entre
+      cantidad de empleados y valor de producción. A diferencia de la covarianza, este número
+      es <strong>adimensional</strong> y se interpreta directamente en términos relativos —
+      cerca de 1 indica asociación lineal fuerte; cerca de 0, asociación débil.
+    </p>
+  </div>
+
+  <h3>Parte (d) — ¿Qué pasa si el VBP se expresa en pesos?</h3>
+
+  <div class="aplicacion">
+    <span class="aplicacion-label">Resolución</span>
+
+    <p>
+      Cambiar el VBP de millones de pesos a pesos significa multiplicar cada y<sub>i</sub>
+      por <strong>1.000.000</strong>. Veamos qué le pasa a cada estadístico bajo este cambio
+      de unidades.
+    </p>
+
+    <h4 style="font-family:var(--lora); font-style:italic; font-weight:600; margin-top:1rem;">Efecto sobre la covarianza</h4>
+
+    <p>
+      Si reemplazamos cada y<sub>i</sub> por 10⁶ · y<sub>i</sub>, entonces:
+    </p>
+
+    <p style="font-family:var(--code); font-size:0.88rem; text-align:center; margin: 0.5rem 0;">
+      S<sub>XY</sub><sup>nueva</sup> = 10⁶ · S<sub>XY</sub> = 10⁶ · 54,583 = <strong>54.583.333</strong>
+    </p>
+
+    <p>
+      La covarianza se multiplica por un millón. <strong>Cambia drásticamente.</strong>
+      Esto evidencia una limitación importante: <em>comparar covarianzas entre estudios
+      con unidades distintas no tiene sentido</em>.
+    </p>
+
+    <h4 style="font-family:var(--lora); font-style:italic; font-weight:600; margin-top:1rem;">Efecto sobre Pearson</h4>
+
+    <p>
+      El coeficiente de Pearson <strong>no se modifica</strong>. Veamos por qué:
+    </p>
+
+    <ul style="padding-left:1.3rem; line-height:1.9; font-size:0.92rem; margin:0.4rem 0;">
+      <li>S<sub>Y</sub><sup>nueva</sup> = 10⁶ · S<sub>Y</sub> (el desvío estándar también se escala por la constante)</li>
+      <li>S<sub>X</sub> no cambia (no tocamos X)</li>
+    </ul>
+
+    <p>Entonces:</p>
+
+    <p style="font-family:var(--code); font-size:0.86rem; text-align:center; margin: 0.5rem 0;">
+      r<sub>XY</sub><sup>nuevo</sup> = (10⁶ · S<sub>XY</sub>) / (S<sub>X</sub> · 10⁶ · S<sub>Y</sub>)<br>
+      = S<sub>XY</sub> / (S<sub>X</sub> · S<sub>Y</sub>)<br>
+      = r<sub>XY</sub> = <strong>0,843</strong>
+    </p>
+
+    <p>
+      El factor 10⁶ se cancela en numerador y denominador. Pearson queda <strong>idéntico</strong>.
+    </p>
+
+    <div class="nota" style="margin-top:1rem;">
+      <span class="nota-label">La gran ventaja del coeficiente de Pearson</span>
+      <p style="margin-bottom:0;">
+        Pearson es <strong>invariante ante cambios lineales de escala</strong>. Esta es la
+        razón principal por la que es la medida preferida para comparar relaciones entre
+        variables medidas en unidades distintas o entre estudios diferentes. La covarianza,
+        en cambio, depende totalmente de las unidades elegidas.
+      </p>
+    </div>
+  </div>
+
+  <h3>Resumen final del Ejercicio 3</h3>
+
+  <div class="tabla-wrap">
+    <table>
+      <thead>
+        <tr><th>Estadístico</th><th class="num">Valor</th><th>Interpretación</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>x̄ (media PO)</td><td class="num">4,5</td><td>cientos de empleados promedio</td></tr>
+        <tr><td>ȳ (media VBP)</td><td class="num">49,17</td><td>millones $ promedio</td></tr>
+        <tr><td>S²<sub>X</sub></td><td class="num">4,25</td><td>varianza de PO</td></tr>
+        <tr><td>S²<sub>Y</sub></td><td class="num">986,81</td><td>varianza de VBP</td></tr>
+        <tr><td>S<sub>X</sub></td><td class="num">2,062</td><td>desvío estándar de PO</td></tr>
+        <tr><td>S<sub>Y</sub></td><td class="num">31,413</td><td>desvío estándar de VBP</td></tr>
+        <tr><td>S<sub>XY</sub></td><td class="num hi">54,583</td><td>covarianza positiva — relación lineal positiva</td></tr>
+        <tr><td>r<sub>XY</sub></td><td class="num hi">0,843</td><td>correlación lineal fuerte y positiva</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p style="margin-top:1rem;">
+    <strong>Conclusión integral.</strong> Existe una relación lineal positiva y fuerte
+    (r = 0,843) entre el personal ocupado y el valor bruto de producción de estas empresas.
+    A medida que aumenta el plantel, tiende a aumentar también la producción — algo
+    esperable desde la lógica económica, pero ahora cuantificado.
+  </p>
 </section>
 
 <!-- ══ Glosario de notación ══ -->
