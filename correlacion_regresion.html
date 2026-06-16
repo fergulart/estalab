@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<title>Estadística · Correlación y regresión · Dos variables cuantitativas</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400;1,600&family=Fira+Code:wght@400;500&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --paper:#faf8f3; --paper2:#f2ede3; --ink:#1c1a17; --ink2:#3d3a34;
+  --muted:#8a8178; --rule:#d6cfc2; --red:#b5281c; --blue:#1a4a8a;
+  --green:#1a6b3a; --gold:#9a6f00;
+  --lora:'Lora',Georgia,serif; --bask:'Libre Baskerville',Georgia,serif; --code:'Fira Code',monospace;
+}
+
+html { font-size:17px; scroll-behavior:smooth; background:var(--paper); color:var(--ink); }
+body { font-family:var(--lora); font-weight:400; line-height:1.8; -webkit-font-smoothing:antialiased; }
+
+h1 { font-family:var(--bask); font-size:clamp(1.9rem,6vw,3rem); font-weight:700; line-height:1.1; letter-spacing:-0.02em; color:var(--ink); }
+h2 { font-family:var(--bask); font-size:clamp(1.3rem,4vw,1.7rem); font-weight:700; line-height:1.2; color:var(--ink); margin-top:3rem; margin-bottom:1rem; }
+h3 { font-family:var(--lora); font-size:1.1rem; font-weight:600; font-style:italic; color:var(--ink2); margin-top:2rem; margin-bottom:0.6rem; }
+
+p { margin-bottom:1rem; }
+strong { font-weight:600; }
+em { font-style:italic; }
+
+.header { background:var(--ink); color:var(--paper); padding:clamp(2rem,8vw,4rem) clamp(1.2rem,6vw,3rem); position:relative; overflow:hidden; }
+.header::before { content:''; position:absolute; top:0; left:0; right:0; bottom:0; background-image:linear-gradient(rgba(255,255,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.03) 1px,transparent 1px); background-size:40px 40px; pointer-events:none; }
+.header-inner { max-width:760px; margin:0 auto; position:relative; }
+.clase-tag { font-family:var(--code); font-size:0.65rem; letter-spacing:0.25em; text-transform:uppercase; color:#c8bfa8; margin-bottom:1.2rem; display:block; }
+.header h1 { color:var(--paper); margin-bottom:0.8rem; }
+.header h1 em { color:#d4a84b; font-style:italic; }
+.header-sub { font-family:var(--lora); font-size:1rem; color:#9a9280; font-style:italic; margin-bottom:2rem; line-height:1.6; }
+.header-meta { display:flex; flex-wrap:wrap; gap:0.5rem; margin-top:1.5rem; }
+.tag { font-family:var(--code); font-size:0.6rem; letter-spacing:0.15em; text-transform:uppercase; border:1px solid rgba(255,255,255,0.2); color:#9a9280; padding:0.25rem 0.6rem; border-radius:2px; }
+
+.contenido { max-width:760px; margin:0 auto; padding:clamp(1.5rem,5vw,3rem) clamp(1.2rem,5vw,2rem) 5rem; }
+.seccion { margin-bottom:3.5rem; }
+
+.sec-num { font-family:var(--code); font-size:0.6rem; letter-spacing:0.25em; text-transform:uppercase; color:var(--red); display:flex; align-items:center; gap:0.75rem; margin-bottom:0.4rem; }
+.sec-num::after { content:''; flex:1; height:1px; background:var(--rule); }
+
+.problema { background:var(--ink); color:var(--paper); padding:clamp(1.2rem,4vw,2rem); border-radius:4px; margin:2rem 0; }
+.problema-label { font-family:var(--code); font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:#d4a84b; margin-bottom:0.8rem; display:block; }
+.problema p { color:#d0c8b8; font-size:0.97rem; line-height:1.75; margin-bottom:0.8rem; }
+.problema p:last-child { margin-bottom:0; }
+.problema strong { color:var(--paper); }
+
+.def { border-left:3px solid var(--red); padding:1rem 1.25rem; margin:1.5rem 0; background:#fdf5f4; }
+.def-label { font-family:var(--code); font-size:0.58rem; letter-spacing:0.22em; text-transform:uppercase; color:var(--red); display:block; margin-bottom:0.5rem; }
+.def p:last-child { margin-bottom:0; }
+
+.nota { border-left:3px solid var(--blue); padding:1rem 1.25rem; margin:1.5rem 0; background:#f4f6fd; }
+.nota-label { font-family:var(--code); font-size:0.58rem; letter-spacing:0.22em; text-transform:uppercase; color:var(--blue); display:block; margin-bottom:0.5rem; }
+.nota p:last-child { margin-bottom:0; }
+
+.advertencia { border-left:3px solid var(--gold); padding:1rem 1.25rem; margin:1.5rem 0; background:#fdf9ed; }
+.advertencia-label { font-family:var(--code); font-size:0.58rem; letter-spacing:0.22em; text-transform:uppercase; color:var(--gold); display:block; margin-bottom:0.5rem; }
+.advertencia p:last-child { margin-bottom:0; }
+
+.formula { background:var(--ink); color:#7ec8e3; font-family:var(--code); font-size:clamp(0.82rem,2.3vw,0.97rem); padding:1rem 1.25rem; border-radius:3px; margin:1.25rem 0; text-align:center; overflow-x:auto; white-space:nowrap; letter-spacing:0.02em; }
+.formula-label { display:block; font-size:0.58rem; letter-spacing:0.2em; text-transform:uppercase; color:#9a9280; text-align:left; margin-bottom:0.4rem; }
+.formula-note { display:block; font-size:0.72rem; color:#7a7060; text-align:left; margin-top:0.5rem; white-space:normal; font-family:var(--lora); font-style:italic; letter-spacing:0; line-height:1.5; }
+
+.sum { display:inline-flex; flex-direction:column; align-items:center; vertical-align:middle; margin:0 0.15em; line-height:1; }
+.sum-top { font-size:0.6em; line-height:1; margin-bottom:0.08em; font-family:var(--code); color:#9a9080; }
+.sum-sym { font-size:1.7em; line-height:1; color:#d4a84b; font-family:var(--lora); }
+.sum-bot { font-size:0.6em; line-height:1; margin-top:0.08em; font-family:var(--code); color:#9a9080; }
+
+.tabla-wrap { overflow-x:auto; margin:1.5rem 0; -webkit-overflow-scrolling:touch; }
+table { border-collapse:collapse; width:100%; min-width:360px; font-size:0.9rem; }
+thead th { background:var(--ink); color:var(--paper); font-family:var(--code); font-size:0.62rem; letter-spacing:0.08em; padding:0.65rem 0.9rem; text-align:left; border-bottom:1px solid var(--rule); white-space:nowrap; }
+tbody tr { border-bottom:1px solid var(--rule); }
+tbody tr:nth-child(even) { background:var(--paper2); }
+tbody td { padding:0.55rem 0.9rem; vertical-align:top; }
+td.num { text-align:right; font-family:var(--code); font-size:0.85rem; font-variant-numeric:tabular-nums; }
+th.num { text-align:center; font-family:var(--code); font-size:0.85rem; }
+td.hi { color:var(--red); font-weight:600; }
+td.lbl { background:var(--paper2); font-family:var(--code); font-size:0.85rem; white-space:nowrap; }
+tfoot td { font-family:var(--code); font-size:0.82rem; font-weight:500; padding:0.6rem 0.9rem; border-top:2px solid var(--ink); background:var(--paper2); }
+
+.resumen { background:var(--ink); color:var(--paper); padding:clamp(1.2rem,4vw,2rem); border-radius:4px; margin-top:3rem; }
+.resumen-label { font-family:var(--code); font-size:0.6rem; letter-spacing:0.25em; text-transform:uppercase; color:#9a9280; display:block; margin-bottom:1rem; }
+.resumen ul { padding-left:1.2rem; font-size:0.93rem; line-height:2; color:#c8bfa8; }
+.resumen li strong { color:var(--paper); }
+
+footer { border-top:1px solid var(--rule); padding:1.5rem clamp(1.2rem,5vw,2rem); text-align:center; font-family:var(--code); font-size:0.58rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--muted); }
+
+code { font-family:var(--code); font-size:0.85em; background:var(--paper2); padding:1px 5px; border-radius:2px; color:var(--ink2); }
+
+.print-btn { position:fixed; top:1rem; right:1rem; z-index:1000; background:var(--ink); color:var(--paper); border:none; padding:0.55rem 1rem; border-radius:3px; font-family:var(--code); font-size:0.65rem; letter-spacing:0.15em; text-transform:uppercase; cursor:pointer; box-shadow:0 4px 12px rgba(0,0,0,0.15); transition:transform 0.15s,box-shadow 0.15s; }
+.print-btn:hover { transform:translateY(-1px); box-shadow:0 6px 16px rgba(0,0,0,0.2); }
+.print-btn::before { content:"⎙ "; color:var(--gold); margin-right:0.25rem; }
+
+@media print {
+  @page { margin:1.8cm 1.5cm; }
+  html { font-size:10.5pt; }
+  body { background:white !important; color:#000 !important; line-height:1.5; }
+  .print-btn { display:none !important; }
+  .header { background:white !important; color:#000 !important; padding:0 0 1rem 0 !important; border-bottom:2px solid #000; page-break-after:avoid; }
+  .header::before { display:none !important; }
+  .header h1 { color:#000 !important; font-size:22pt; }
+  .header h1 em { color:#b5281c !important; }
+  .header-sub { color:#444 !important; }
+  .clase-tag { color:#b5281c !important; }
+  .tag { border-color:#888 !important; color:#444 !important; }
+  .contenido { padding:0 !important; max-width:100% !important; }
+  .seccion { page-break-inside:avoid; margin-bottom:1.5rem; }
+  h2 { page-break-after:avoid; font-size:14pt; }
+  h3 { page-break-after:avoid; font-size:12pt; }
+  .sec-num { color:#b5281c !important; }
+  .problema { background:#f5f5f5 !important; color:#000 !important; border:1.5px solid #000; page-break-inside:avoid; }
+  .problema p, .problema strong { color:#000 !important; }
+  .problema-label { color:#9a6f00 !important; }
+  .def,.nota,.advertencia,.resumen { page-break-inside:avoid; }
+  .resumen { background:#f5f5f5 !important; color:#000 !important; border:1.5px solid #000; }
+  .resumen ul,.resumen li,.resumen li strong { color:#000 !important; }
+  .resumen-label { color:#9a6f00 !important; }
+  table { page-break-inside:avoid; }
+  thead th { background:#333 !important; color:white !important; }
+  tbody tr:nth-child(even) { background:#f5f5f5 !important; }
+  tbody tr:nth-child(odd) { background:white !important; }
+  .formula { background:#f0f0f0 !important; color:#1a4a8a !important; }
+  .formula-note { color:#555 !important; }
+  .formula-label { color:#888 !important; }
+  .sum-sym { color:#b5281c !important; }
+  .sum-top,.sum-bot { color:#666 !important; }
+  footer { border-top:1px solid #888; color:#666 !important; }
+}
+</style>
+</head>
+<body>
+
+<button onclick="window.print()" class="print-btn">Imprimir</button>
+
+<header class="header">
+  <div class="header-inner">
+    <span class="clase-tag">Estadística Descriptiva &nbsp;·&nbsp; Dos variables cuantitativas</span>
+    <h1>Correlación y <em>regresión</em></h1>
+    <p class="header-sub">
+      Cuando dos variables numéricas se mueven juntas. De la nube de puntos
+      al número que mide la relación, y de ahí a la recta que permite predecir.
+    </p>
+    <div class="header-meta">
+      <span class="tag">Diagrama de dispersión</span>
+      <span class="tag">Covarianza</span>
+      <span class="tag">Pearson</span>
+      <span class="tag">Recta de regresión</span>
+    </div>
+  </div>
+</header>
+
+<main class="contenido">
+
+<!-- INTRO -->
+<div class="problema">
+  <span class="problema-label">Una pregunta sencilla</span>
+  <p>
+    ¿Las personas con más años de experiencia laboral ganan más sueldo?
+  </p>
+  <p>
+    La intuición dice que sí. Alguien que lleva 15 años trabajando probablemente
+    gane más que alguien que recién empieza. Pero <strong>"probablemente" no es
+    "siempre"</strong>: habrá quien con pocos años ya gane bien, y quien con muchos
+    años gane poco. No es una regla exacta — es una <em>tendencia</em>.
+  </p>
+  <p>
+    La <strong>correlación</strong> es la herramienta que nos permite responder, con
+    precisión, preguntas de este tipo: ¿existe una tendencia? ¿en qué dirección?
+    ¿qué tan fuerte es? Y la <strong>regresión</strong> nos permite dar el paso siguiente:
+    usar esa relación para predecir.
+  </p>
+</div>
+
+<!-- S1 INTUICIÓN -->
+<section class="seccion" id="s1">
+  <p class="sec-num">01 &mdash; La idea de correlación</p>
+  <h2>Cuando dos cosas se mueven juntas</h2>
+
+  <p>
+    Cuando estudiamos dos variables numéricas medidas sobre los mismos individuos —
+    como los <strong>años de experiencia</strong> y el <strong>sueldo</strong> de un grupo
+    de trabajadores — lo que nos interesa es saber si <em>se acompañan</em>: cuando una
+    sube, ¿qué hace la otra?
+  </p>
+
+  <p>Hay tres respuestas posibles, y conviene tenerlas clarísimas desde el arranque:</p>
+
+  <div class="def">
+    <span class="def-label">Las tres situaciones</span>
+    <p>
+      <strong>1. Relación positiva.</strong> Cuando una variable sube, la otra <em>tiende
+      a subir</em> también. Ejemplo: a más años de experiencia, más sueldo. Las dos van
+      "para el mismo lado".
+    </p>
+    <p>
+      <strong>2. Relación negativa.</strong> Cuando una variable sube, la otra <em>tiende
+      a bajar</em>. Ejemplo: a mayor cantidad de faltas, menor calificación. Van "para
+      lados opuestos".
+    </p>
+    <p style="margin-bottom:0;">
+      <strong>3. Sin relación.</strong> El valor de una variable no nos dice nada sobre la
+      otra. Ejemplo: el número de calzado de una persona y su sueldo.
+    </p>
+  </div>
+
+  <div class="nota">
+    <span class="nota-label">La palabra clave: tendencia</span>
+    <p style="margin-bottom:0;">
+      La correlación habla de <strong>tendencias generales</strong>, no de casos individuales.
+      Decir "hay relación positiva entre experiencia y sueldo" no significa que <em>todos</em>
+      los que tienen más experiencia ganen más — significa que, <em>en general, en promedio,
+      la mayoría</em> sigue esa tendencia. Siempre habrá excepciones, y eso está bien.
+    </p>
+  </div>
+</section>
+
+<!-- S2 DISPERSIÓN -->
+<section class="seccion" id="s2">
+  <p class="sec-num">02 &mdash; El diagrama de dispersión</p>
+  <h2>Ver la relación con los ojos</h2>
+
+  <p>
+    Antes de medir nada con números, los estadísticos hacen algo más simple: <strong>dibujan
+    los datos</strong>. La herramienta para ver la relación entre dos variables numéricas se
+    llama <strong>diagrama de dispersión</strong> (o <em>nube de puntos</em>).
+  </p>
+
+  <div class="def">
+    <span class="def-label">Definición</span>
+    <p style="margin-bottom:0;">
+      Un <strong>diagrama de dispersión</strong> es un gráfico donde cada individuo se
+      representa como un <strong>punto</strong>. La posición horizontal la da el valor de X,
+      la vertical el valor de Y. Cada punto tiene coordenadas (x<sub>i</sub>, y<sub>i</sub>).
+    </p>
+  </div>
+
+  <h3>Presentamos el equipo: 8 trabajadores</h3>
+
+  <p>
+    Trabajamos con un grupo concreto de 8 trabajadores de una empresa. De cada uno
+    conocemos sus <strong>años de experiencia</strong> (X) y su <strong>sueldo mensual</strong>
+    en miles de pesos (Y):
+  </p>
+
+  <div class="tabla-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Trabajador</th>
+          <th class="num">Experiencia (años)</th>
+          <th class="num">Sueldo (miles $)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="lbl">Rosa</td><td class="num">2</td><td class="num">34</td></tr>
+        <tr><td class="lbl">Tomás</td><td class="num">4</td><td class="num">32</td></tr>
+        <tr><td class="lbl">Diego</td><td class="num">5</td><td class="num">46</td></tr>
+        <tr><td class="lbl">Carla</td><td class="num">7</td><td class="num">44</td></tr>
+        <tr><td class="lbl">Pablo</td><td class="num">9</td><td class="num">56</td></tr>
+        <tr><td class="lbl">Elena</td><td class="num">11</td><td class="num">50</td></tr>
+        <tr><td class="lbl">Andrés</td><td class="num">12</td><td class="num">66</td></tr>
+        <tr><td class="lbl">Marta</td><td class="num">14</td><td class="num">72</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>
+    Mirando solo la tabla cuesta ver la relación. Pero si dibujamos cada trabajador como
+    un punto — experiencia en el eje horizontal, sueldo en el vertical — aparece algo
+    revelador:
+  </p>
+
+  <div style="background:var(--paper2); border:1px solid var(--rule); border-radius:3px; padding:1rem; margin:1rem 0;">
+    <svg viewBox="0 0 480 380" role="img" aria-label="Diagrama de dispersión experiencia vs sueldo" style="display:block; width:100%; max-width:500px; margin:0 auto; overflow:visible;">
+      <rect x="60" y="20" width="400" height="300" fill="none" stroke="#d6cfc2" stroke-width="1"/>
+      <line x1="60" y1="80" x2="460" y2="80" stroke="#e8e1d4" stroke-dasharray="3,3"/>
+      <line x1="60" y1="140" x2="460" y2="140" stroke="#e8e1d4" stroke-dasharray="3,3"/>
+      <line x1="60" y1="200" x2="460" y2="200" stroke="#e8e1d4" stroke-dasharray="3,3"/>
+      <line x1="60" y1="260" x2="460" y2="260" stroke="#e8e1d4" stroke-dasharray="3,3"/>
+      <line x1="110" y1="20" x2="110" y2="320" stroke="#e8e1d4" stroke-dasharray="3,3"/>
+      <line x1="160" y1="20" x2="160" y2="320" stroke="#e8e1d4" stroke-dasharray="3,3"/>
+      <line x1="210" y1="20" x2="210" y2="320" stroke="#e8e1d4" stroke-dasharray="3,3"/>
+      <line x1="260" y1="20" x2="260" y2="320" stroke="#e8e1d4" stroke-dasharray="3,3"/>
+      <line x1="310" y1="20" x2="310" y2="320" stroke="#e8e1d4" stroke-dasharray="3,3"/>
+      <line x1="360" y1="20" x2="360" y2="320" stroke="#e8e1d4" stroke-dasharray="3,3"/>
+      <line x1="410" y1="20" x2="410" y2="320" stroke="#e8e1d4" stroke-dasharray="3,3"/>
+      <line x1="60" y1="320" x2="460" y2="320" stroke="#3d3a34" stroke-width="1.5"/>
+      <line x1="60" y1="20" x2="60" y2="320" stroke="#3d3a34" stroke-width="1.5"/>
+      <circle cx="110" cy="293.3" r="5" fill="#1a4a8a"/><text x="116" y="289" font-family="Fira Code" font-size="9" fill="#3d3a34">Rosa</text>
+      <circle cx="160" cy="306.7" r="5" fill="#1a4a8a"/><text x="166" y="316" font-family="Fira Code" font-size="9" fill="#3d3a34">Tomás</text>
+      <circle cx="185" cy="213.3" r="5" fill="#1a4a8a"/><text x="191" y="209" font-family="Fira Code" font-size="9" fill="#3d3a34">Diego</text>
+      <circle cx="235" cy="226.7" r="5" fill="#1a4a8a"/><text x="241" y="237" font-family="Fira Code" font-size="9" fill="#3d3a34">Carla</text>
+      <circle cx="285" cy="146.7" r="5" fill="#1a4a8a"/><text x="291" y="142" font-family="Fira Code" font-size="9" fill="#3d3a34">Pablo</text>
+      <circle cx="335" cy="186.7" r="5" fill="#1a4a8a"/><text x="341" y="197" font-family="Fira Code" font-size="9" fill="#3d3a34">Elena</text>
+      <circle cx="360" cy="80" r="5" fill="#1a4a8a"/><text x="366" y="76" font-family="Fira Code" font-size="9" fill="#3d3a34">Andrés</text>
+      <circle cx="410" cy="40" r="5" fill="#1a4a8a"/><text x="370" y="36" font-family="Fira Code" font-size="9" fill="#3d3a34">Marta</text>
+      <text x="110" y="335" font-family="Fira Code" font-size="9" fill="#8a8178" text-anchor="middle">2</text>
+      <text x="160" y="335" font-family="Fira Code" font-size="9" fill="#8a8178" text-anchor="middle">4</text>
+      <text x="210" y="335" font-family="Fira Code" font-size="9" fill="#8a8178" text-anchor="middle">6</text>
+      <text x="260" y="335" font-family="Fira Code" font-size="9" fill="#8a8178" text-anchor="middle">8</text>
+      <text x="310" y="335" font-family="Fira Code" font-size="9" fill="#8a8178" text-anchor="middle">10</text>
+      <text x="360" y="335" font-family="Fira Code" font-size="9" fill="#8a8178" text-anchor="middle">12</text>
+      <text x="410" y="335" font-family="Fira Code" font-size="9" fill="#8a8178" text-anchor="middle">14</text>
+      <text x="260" y="360" font-family="Lora" font-size="12" fill="#3d3a34" text-anchor="middle">X = Años de experiencia</text>
+      <text x="54" y="324" font-family="Fira Code" font-size="9" fill="#8a8178" text-anchor="end">30</text>
+      <text x="54" y="264" font-family="Fira Code" font-size="9" fill="#8a8178" text-anchor="end">39</text>
+      <text x="54" y="204" font-family="Fira Code" font-size="9" fill="#8a8178" text-anchor="end">48</text>
+      <text x="54" y="144" font-family="Fira Code" font-size="9" fill="#8a8178" text-anchor="end">57</text>
+      <text x="54" y="84" font-family="Fira Code" font-size="9" fill="#8a8178" text-anchor="end">66</text>
+      <text x="54" y="24" font-family="Fira Code" font-size="9" fill="#8a8178" text-anchor="end">75</text>
+      <text x="18" y="170" font-family="Lora" font-size="12" fill="#3d3a34" text-anchor="middle" transform="rotate(-90,18,170)">Y = Sueldo (miles $)</text>
+    </svg>
+  </div>
+
+  <p>
+    Los puntos suben de izquierda a derecha. <strong>A más años de experiencia, más sueldo</strong> —
+    la nube tiene una clara tendencia ascendente. No es una línea perfecta (Tomás gana un
+    poco menos que Rosa pese a tener más experiencia; Elena gana lo mismo que el promedio
+    pese a sus 11 años), pero la <em>tendencia general</em> es inconfundible: positiva.
+  </p>
+
+  <h3>Las cuatro formas típicas de una nube</h3>
+
+  <p>Según cómo se vea la nube, reconocemos de un vistazo el tipo de relación:</p>
+
+  <div style="background:var(--paper2); border:1px solid var(--rule); border-radius:3px; padding:1rem; margin:1rem 0;">
+    <svg viewBox="0 0 480 160" role="img" aria-label="Cuatro tipos de correlación" style="display:block; width:100%; max-width:500px; margin:0 auto;">
+      <rect x="10" y="20" width="100" height="90" fill="white" stroke="#d6cfc2"/>
+      <circle cx="25" cy="98" r="2.5" fill="#1a6b3a"/><circle cx="38" cy="88" r="2.5" fill="#1a6b3a"/><circle cx="45" cy="80" r="2.5" fill="#1a6b3a"/><circle cx="58" cy="70" r="2.5" fill="#1a6b3a"/><circle cx="68" cy="58" r="2.5" fill="#1a6b3a"/><circle cx="80" cy="48" r="2.5" fill="#1a6b3a"/><circle cx="92" cy="38" r="2.5" fill="#1a6b3a"/><circle cx="100" cy="30" r="2.5" fill="#1a6b3a"/>
+      <text x="60" y="128" font-family="Lora" font-size="10" fill="#1a6b3a" text-anchor="middle" font-weight="600">Positiva</text>
+      <text x="60" y="140" font-family="Lora" font-size="8" fill="#8a8178" text-anchor="middle" font-style="italic">sube → sube</text>
+      <rect x="130" y="20" width="100" height="90" fill="white" stroke="#d6cfc2"/>
+      <circle cx="145" cy="32" r="2.5" fill="#b5281c"/><circle cx="158" cy="40" r="2.5" fill="#b5281c"/><circle cx="165" cy="52" r="2.5" fill="#b5281c"/><circle cx="178" cy="60" r="2.5" fill="#b5281c"/><circle cx="188" cy="72" r="2.5" fill="#b5281c"/><circle cx="200" cy="82" r="2.5" fill="#b5281c"/><circle cx="212" cy="92" r="2.5" fill="#b5281c"/><circle cx="220" cy="100" r="2.5" fill="#b5281c"/>
+      <text x="180" y="128" font-family="Lora" font-size="10" fill="#b5281c" text-anchor="middle" font-weight="600">Negativa</text>
+      <text x="180" y="140" font-family="Lora" font-size="8" fill="#8a8178" text-anchor="middle" font-style="italic">sube → baja</text>
+      <rect x="250" y="20" width="100" height="90" fill="white" stroke="#d6cfc2"/>
+      <circle cx="265" cy="50" r="2.5" fill="#8a8178"/><circle cx="280" cy="85" r="2.5" fill="#8a8178"/><circle cx="290" cy="35" r="2.5" fill="#8a8178"/><circle cx="305" cy="70" r="2.5" fill="#8a8178"/><circle cx="315" cy="45" r="2.5" fill="#8a8178"/><circle cx="328" cy="90" r="2.5" fill="#8a8178"/><circle cx="335" cy="60" r="2.5" fill="#8a8178"/><circle cx="300" cy="100" r="2.5" fill="#8a8178"/>
+      <text x="300" y="128" font-family="Lora" font-size="10" fill="#8a8178" text-anchor="middle" font-weight="600">Nula</text>
+      <text x="300" y="140" font-family="Lora" font-size="8" fill="#8a8178" text-anchor="middle" font-style="italic">sin patrón</text>
+      <rect x="370" y="20" width="100" height="90" fill="white" stroke="#d6cfc2"/>
+      <circle cx="385" cy="95" r="2.5" fill="#9a6f00"/><circle cx="398" cy="72" r="2.5" fill="#9a6f00"/><circle cx="408" cy="52" r="2.5" fill="#9a6f00"/><circle cx="420" cy="40" r="2.5" fill="#9a6f00"/><circle cx="432" cy="40" r="2.5" fill="#9a6f00"/><circle cx="444" cy="52" r="2.5" fill="#9a6f00"/><circle cx="454" cy="72" r="2.5" fill="#9a6f00"/><circle cx="465" cy="95" r="2.5" fill="#9a6f00"/>
+      <text x="420" y="128" font-family="Lora" font-size="10" fill="#9a6f00" text-anchor="middle" font-weight="600">No lineal</text>
+      <text x="420" y="140" font-family="Lora" font-size="8" fill="#8a8178" text-anchor="middle" font-style="italic">curva</text>
+    </svg>
+  </div>
+
+  <div class="advertencia">
+    <span class="advertencia-label">Atención al último caso</span>
+    <p style="margin-bottom:0;">
+      El cuarto caso (no lineal) es una trampa importante. Hay una relación clarísima —
+      los puntos forman una curva perfecta — pero <strong>no es una línea recta</strong>.
+      Las herramientas que veremos hoy miden solo <em>relaciones lineales</em>. Pueden dar
+      "cero" en un caso así aunque exista una relación fortísima. Medimos relación
+      <strong>lineal</strong>, no cualquier relación.
+    </p>
+  </div>
+</section>
+
+<!-- S3 COVARIANZA -->
+<section class="seccion" id="s3">
+  <p class="sec-num">03 &mdash; La covarianza</p>
+  <h2>El primer número que mide la relación</h2>
+
+  <p>
+    El diagrama nos deja <em>ver</em> la relación. Pero "ver" no alcanza cuando queremos
+    comparar, comunicar o ser precisos. Necesitamos un <strong>número</strong> que resuma
+    la nube. El primero es la <strong>covarianza</strong>.
+  </p>
+
+  <h3>La idea: dividir el plano en cuatro zonas</h3>
+
+  <p>
+    Marcamos en el diagrama <strong>dos líneas</strong>: una vertical en el promedio de las
+    experiencias (x̄), y una horizontal en el promedio de los sueldos (ȳ). Esas dos líneas
+    parten el plano en <strong>cuatro zonas</strong>.
+  </p>
+
+  <p>En nuestro grupo, x̄ = 8 años y ȳ = 50 mil pesos. Dibujemos esas líneas sobre la nube:</p>
+
+  <div style="background:var(--paper2); border:1px solid var(--rule); border-radius:3px; padding:1rem; margin:1rem 0;">
+    <svg viewBox="0 0 480 380" role="img" aria-label="Diagrama con cuadrantes" style="display:block; width:100%; max-width:500px; margin:0 auto; overflow:visible;">
+      <rect x="60" y="20" width="400" height="300" fill="none" stroke="#d6cfc2" stroke-width="1"/>
+      <line x1="260" y1="20" x2="260" y2="320" stroke="#b5281c" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <line x1="60" y1="186.7" x2="460" y2="186.7" stroke="#b5281c" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="265" y="34" font-family="Fira Code" font-size="10" fill="#b5281c">x̄ = 8</text>
+      <text x="400" y="182" font-family="Fira Code" font-size="10" fill="#b5281c">ȳ = 50</text>
+      <text x="360" y="105" font-family="Libre Baskerville" font-size="13" font-weight="700" fill="#1a6b3a" text-anchor="middle">(+,+)</text>
+      <text x="360" y="120" font-family="Lora" font-size="8" fill="#1a6b3a" text-anchor="middle" font-style="italic">producto +</text>
+      <text x="160" y="105" font-family="Libre Baskerville" font-size="13" font-weight="700" fill="#b5281c" text-anchor="middle">(−,+)</text>
+      <text x="160" y="120" font-family="Lora" font-size="8" fill="#b5281c" text-anchor="middle" font-style="italic">producto −</text>
+      <text x="160" y="255" font-family="Libre Baskerville" font-size="13" font-weight="700" fill="#1a6b3a" text-anchor="middle">(−,−)</text>
+      <text x="160" y="270" font-family="Lora" font-size="8" fill="#1a6b3a" text-anchor="middle" font-style="italic">producto +</text>
+      <text x="360" y="255" font-family="Libre Baskerville" font-size="13" font-weight="700" fill="#b5281c" text-anchor="middle">(+,−)</text>
+      <text x="360" y="270" font-family="Lora" font-size="8" fill="#b5281c" text-anchor="middle" font-style="italic">producto −</text>
+      <circle cx="110" cy="293.3" r="4.5" fill="#1a4a8a"/>
+      <circle cx="160" cy="306.7" r="4.5" fill="#1a4a8a"/>
+      <circle cx="185" cy="213.3" r="4.5" fill="#1a4a8a"/>
+      <circle cx="235" cy="226.7" r="4.5" fill="#1a4a8a"/>
+      <circle cx="285" cy="146.7" r="4.5" fill="#1a4a8a"/>
+      <circle cx="335" cy="186.7" r="4.5" fill="#1a4a8a"/>
+      <circle cx="360" cy="80" r="4.5" fill="#1a4a8a"/>
+      <circle cx="410" cy="40" r="4.5" fill="#1a4a8a"/>
+      <text x="260" y="360" font-family="Lora" font-size="12" fill="#3d3a34" text-anchor="middle">X = Años de experiencia</text>
+      <text x="18" y="170" font-family="Lora" font-size="12" fill="#3d3a34" text-anchor="middle" transform="rotate(-90,18,170)">Y = Sueldo (miles $)</text>
+    </svg>
+  </div>
+
+  <p>
+    Observá <strong>dónde caen los puntos</strong>. Casi todos están en dos zonas: abajo a
+    la izquierda (poca experiencia <em>y</em> sueldo bajo) y arriba a la derecha (mucha
+    experiencia <em>y</em> sueldo alto) — las zonas (−,−) y (+,+). <strong>Ese patrón es la
+    huella de una relación positiva.</strong>
+  </p>
+
+  <h3>El truco de multiplicar las distancias</h3>
+
+  <p>
+    Para cada trabajador medimos dos distancias respecto de los promedios: cuánto se aparta
+    su experiencia del promedio (x<sub>i</sub> − x̄) y cuánto su sueldo (y<sub>i</sub> − ȳ).
+    Después <strong>multiplicamos</strong> esas dos distancias. El signo del producto dice
+    en qué cuadrante está el punto:
+  </p>
+
+  <div class="nota">
+    <span class="nota-label">El signo del producto (x<sub>i</sub> − x̄)(y<sub>i</sub> − ȳ)</span>
+    <p>
+      <strong>Zona (+,+):</strong> dos números positivos → producto <span style="color:var(--green);font-weight:600;">positivo</span>.
+    </p>
+    <p>
+      <strong>Zona (−,−):</strong> dos números negativos → producto <span style="color:var(--green);font-weight:600;">positivo</span> (menos por menos es más).
+    </p>
+    <p style="margin-bottom:0;">
+      <strong>Zonas (−,+) y (+,−):</strong> uno positivo y otro negativo → producto <span style="color:var(--red);font-weight:600;">negativo</span>.
+    </p>
+  </div>
+
+  <p>
+    Si <strong>sumamos todos esos productos</strong>, compiten los positivos (relación que va
+    para el mismo lado) contra los negativos (en contra). Si ganan los positivos, la suma da
+    positiva. La <strong>covarianza</strong> es el promedio de esos productos.
+  </p>
+
+  <div class="def">
+    <span class="def-label">Definición — Covarianza</span>
+    <p>
+      La <strong>covarianza</strong> entre X e Y es el promedio de los productos de las
+      desviaciones de cada variable respecto de su media:
+    </p>
+    <div class="formula" style="margin:0.6rem 0;">
+      S<sub>XY</sub> &nbsp;=&nbsp; (1/n) ·
+      <span class="sum"><span class="sum-top">n</span><span class="sum-sym">∑</span><span class="sum-bot">i=1</span></span>
+      &nbsp;(x<sub>i</sub> − x̄)(y<sub>i</sub> − ȳ)
+    </div>
+    <p style="margin-bottom:0;">
+      <strong>S<sub>XY</sub> &gt; 0:</strong> relación positiva. &nbsp;
+      <strong>S<sub>XY</sub> &lt; 0:</strong> relación negativa. &nbsp;
+      <strong>S<sub>XY</sub> ≈ 0:</strong> sin relación lineal.
+    </p>
+  </div>
+
+  <h3>Calculémosla con nuestros datos</h3>
+
+  <p>
+    Como x̄ = 8 e ȳ = 50 son redondos, las desviaciones quedan limpias. Una fila por trabajador:
+  </p>
+
+  <div class="tabla-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Trabajador</th>
+          <th class="num">x<sub>i</sub></th>
+          <th class="num">y<sub>i</sub></th>
+          <th class="num">x<sub>i</sub> − x̄</th>
+          <th class="num">y<sub>i</sub> − ȳ</th>
+          <th class="num">(x<sub>i</sub> − x̄)(y<sub>i</sub> − ȳ)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="lbl">Rosa</td><td class="num">2</td><td class="num">34</td><td class="num">−6</td><td class="num">−16</td><td class="num">96</td></tr>
+        <tr><td class="lbl">Tomás</td><td class="num">4</td><td class="num">32</td><td class="num">−4</td><td class="num">−18</td><td class="num">72</td></tr>
+        <tr><td class="lbl">Diego</td><td class="num">5</td><td class="num">46</td><td class="num">−3</td><td class="num">−4</td><td class="num">12</td></tr>
+        <tr><td class="lbl">Carla</td><td class="num">7</td><td class="num">44</td><td class="num">−1</td><td class="num">−6</td><td class="num">6</td></tr>
+        <tr><td class="lbl">Pablo</td><td class="num">9</td><td class="num">56</td><td class="num">1</td><td class="num">6</td><td class="num">6</td></tr>
+        <tr><td class="lbl">Elena</td><td class="num">11</td><td class="num">50</td><td class="num">3</td><td class="num">0</td><td class="num">0</td></tr>
+        <tr><td class="lbl">Andrés</td><td class="num">12</td><td class="num">66</td><td class="num">4</td><td class="num">16</td><td class="num">64</td></tr>
+        <tr><td class="lbl">Marta</td><td class="num">14</td><td class="num">72</td><td class="num">6</td><td class="num">22</td><td class="num">132</td></tr>
+      </tbody>
+      <tfoot>
+        <tr><td colspan="5"><strong>Suma de la última columna</strong></td><td class="num"><strong>388</strong></td></tr>
+      </tfoot>
+    </table>
+  </div>
+
+  <p>
+    Fijate que <strong>casi todos los productos son positivos</strong> — solo Elena aporta
+    cero (su sueldo es exactamente el promedio). Ninguno es negativo, porque todos siguen la
+    tendencia. La suma da 388. Dividimos por n = 8:
+  </p>
+
+  <div class="formula">S<sub>XY</sub> = 388 / 8 = <strong>48,5</strong></div>
+
+  <p>
+    La covarianza es <strong>positiva</strong> (48,5), confirmando lo que el diagrama ya
+    mostraba: a más experiencia, más sueldo.
+  </p>
+
+  <div class="advertencia">
+    <span class="advertencia-label">El problema de la covarianza</span>
+    <p>
+      La covarianza nos da el <strong>signo</strong> de la relación. Pero su valor
+      <strong>depende de las unidades</strong>: si midiéramos el sueldo en pesos en vez de
+      miles, la covarianza se multiplicaría por mil (48.500 en vez de 48,5). <em>El mismo
+      dato, número distinto.</em>
+    </p>
+    <p style="margin-bottom:0;">
+      Por eso la covarianza, sola, no responde "¿qué tan fuerte es la relación?". Necesitamos
+      algo que no dependa de las unidades: el <strong>coeficiente de correlación</strong>.
+    </p>
+  </div>
+</section>
+
+<!-- S4 PEARSON -->
+<section class="seccion" id="s4">
+  <p class="sec-num">04 &mdash; El coeficiente de correlación de Pearson</p>
+  <h2>Midiendo la fuerza de la relación</h2>
+
+  <p>
+    El coeficiente de Pearson resuelve el problema de la covarianza: <strong>no depende de
+    las unidades</strong> y siempre da un número entre −1 y 1. Se construye dividiendo la
+    covarianza por el producto de los desvíos estándar.
+  </p>
+
+  <div class="def">
+    <span class="def-label">Definición — Coeficiente de Pearson</span>
+    <p>El coeficiente de correlación lineal de Pearson es:</p>
+    <div class="formula" style="margin:0.6rem 0;">
+      r<sub>XY</sub> &nbsp;=&nbsp; S<sub>XY</sub> / (S<sub>X</sub> · S<sub>Y</sub>)
+      <span class="formula-note">
+        donde S<sub>X</sub> y S<sub>Y</sub> son los desvíos estándar. Al dividir por ellos,
+        las unidades se cancelan y queda un número "puro".
+      </span>
+    </div>
+    <p style="margin-bottom:0;"><strong>−1 ≤ r<sub>XY</sub> ≤ 1</strong>.</p>
+  </div>
+
+  <h3>Qué significa el valor de r</h3>
+
+  <div class="tabla-wrap">
+    <table>
+      <thead><tr><th>Valor de r</th><th>Interpretación</th></tr></thead>
+      <tbody>
+        <tr><td class="num">r = 1</td><td>Relación lineal positiva <strong>perfecta</strong></td></tr>
+        <tr><td class="num">0,8 a 1</td><td>Relación positiva <strong>fuerte</strong></td></tr>
+        <tr><td class="num">0,4 a 0,8</td><td>Relación positiva <strong>moderada</strong></td></tr>
+        <tr><td class="num">0 a 0,4</td><td>Relación positiva <strong>débil</strong></td></tr>
+        <tr><td class="num">r = 0</td><td>Sin relación lineal</td></tr>
+        <tr><td class="num">−1 a −0,8</td><td>Relación negativa fuerte</td></tr>
+        <tr><td class="num">r = −1</td><td>Relación lineal negativa <strong>perfecta</strong></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Calculemos r para nuestros trabajadores</h3>
+
+  <p>
+    Ya tenemos la covarianza (S<sub>XY</sub> = 48,5). Faltan los desvíos estándar, que salen
+    de las varianzas. Ampliamos la tabla con las columnas de los cuadrados de las desviaciones:
+  </p>
+
+  <div class="tabla-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Trabajador</th>
+          <th class="num">x<sub>i</sub> − x̄</th>
+          <th class="num">(x<sub>i</sub> − x̄)²</th>
+          <th class="num">y<sub>i</sub> − ȳ</th>
+          <th class="num">(y<sub>i</sub> − ȳ)²</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="lbl">Rosa</td><td class="num">−6</td><td class="num">36</td><td class="num">−16</td><td class="num">256</td></tr>
+        <tr><td class="lbl">Tomás</td><td class="num">−4</td><td class="num">16</td><td class="num">−18</td><td class="num">324</td></tr>
+        <tr><td class="lbl">Diego</td><td class="num">−3</td><td class="num">9</td><td class="num">−4</td><td class="num">16</td></tr>
+        <tr><td class="lbl">Carla</td><td class="num">−1</td><td class="num">1</td><td class="num">−6</td><td class="num">36</td></tr>
+        <tr><td class="lbl">Pablo</td><td class="num">1</td><td class="num">1</td><td class="num">6</td><td class="num">36</td></tr>
+        <tr><td class="lbl">Elena</td><td class="num">3</td><td class="num">9</td><td class="num">0</td><td class="num">0</td></tr>
+        <tr><td class="lbl">Andrés</td><td class="num">4</td><td class="num">16</td><td class="num">16</td><td class="num">256</td></tr>
+        <tr><td class="lbl">Marta</td><td class="num">6</td><td class="num">36</td><td class="num">22</td><td class="num">484</td></tr>
+      </tbody>
+      <tfoot>
+        <tr><td><strong>Suma</strong></td><td class="num">0</td><td class="num"><strong>124</strong></td><td class="num">0</td><td class="num"><strong>1408</strong></td></tr>
+      </tfoot>
+    </table>
+  </div>
+
+  <p><strong>Varianzas</strong> (suma de cuadrados dividida por n):</p>
+
+  <p style="font-family:var(--code); font-size:0.86rem; text-align:center; line-height:1.9; margin:0.5rem 0;">
+    S²<sub>X</sub> = 124 / 8 = 15,5 &nbsp;→&nbsp; S<sub>X</sub> = √15,5 = <strong>3,937</strong><br>
+    S²<sub>Y</sub> = 1408 / 8 = 176 &nbsp;→&nbsp; S<sub>Y</sub> = √176 = <strong>13,267</strong>
+  </p>
+
+  <p><strong>Coeficiente de Pearson:</strong></p>
+
+  <div class="formula">r<sub>XY</sub> = 48,5 / (3,937 · 13,267) = 48,5 / 52,23 = <strong>0,929</strong></div>
+
+  <div class="nota">
+    <span class="nota-label">Interpretación</span>
+    <p style="margin-bottom:0;">
+      r = 0,929 es <strong>muy cercano a 1</strong> — relación lineal positiva <strong>fuerte</strong>.
+      La experiencia explica muy bien las diferencias de sueldo: los puntos están <em>casi</em>
+      alineados sobre una recta ascendente. A diferencia de la covarianza (48,5, sin escala
+      clara), el 0,929 se interpreta de inmediato — sin importar las unidades.
+    </p>
+  </div>
+
+  <div class="advertencia">
+    <span class="advertencia-label">Tres advertencias importantes sobre r</span>
+    <p>
+      <strong>1. Correlación no es causalidad.</strong> Que r sea alto no prueba que la
+      experiencia <em>cause</em> el sueldo. Podría haber una tercera variable (la edad, el
+      nivel educativo) influyendo en ambas.
+    </p>
+    <p>
+      <strong>2. Solo mide relación lineal.</strong> Si la relación fuera curva, r podría dar
+      bajo aunque exista una relación fortísima.
+    </p>
+    <p style="margin-bottom:0;">
+      <strong>3. Es sensible a valores atípicos.</strong> Un solo dato muy alejado puede
+      cambiar drásticamente r. Siempre conviene mirar el diagrama antes de confiar en el número.
+    </p>
+  </div>
+</section>
+
+<!-- S5 REGRESIÓN -->
+<section class="seccion" id="s5">
+  <p class="sec-num">05 &mdash; La recta de regresión</p>
+  <h2>De medir la relación a usarla</h2>
+
+  <p>
+    Hasta acá <em>medimos</em> la relación: positiva (covarianza) y fuerte (Pearson). El
+    último paso es <strong>aprovecharla para predecir</strong>. Si un nuevo trabajador tiene
+    10 años de experiencia, ¿cuánto esperaríamos que gane? Para eso trazamos la recta que
+    representa la tendencia de la nube: la <strong>recta de regresión</strong>.
+  </p>
+
+  <div class="def">
+    <span class="def-label">La idea</span>
+    <p style="margin-bottom:0;">
+      La <strong>recta de regresión</strong> es la línea recta que mejor se ajusta a la nube —
+      la que pasa "lo más cerca posible" de todos los puntos a la vez. Con ella podemos
+      estimar el valor de Y que corresponde a cualquier valor de X.
+    </p>
+  </div>
+
+  <h3>La ecuación de la recta</h3>
+
+  <p>Toda recta se escribe como una <strong>función lineal</strong>:</p>
+
+  <div class="formula">
+    Y = a + b · X
+    <span class="formula-note">
+      <strong>a</strong> es la <em>ordenada al origen</em>: el valor de Y cuando X = 0.
+      <strong>b</strong> es la <em>pendiente</em>: cuánto sube (o baja) Y cuando X aumenta
+      en una unidad.
+    </span>
+  </div>
+
+  <p>
+    El método encuentra los valores de <strong>a</strong> y <strong>b</strong> que hacen que
+    la recta ajuste mejor. La pendiente se calcula a partir de la covarianza y la varianza de
+    X — dos cosas que ya tenemos:
+  </p>
+
+  <div class="def">
+    <span class="def-label">Fórmulas de la recta de regresión de Y sobre X</span>
+    <p><strong>Pendiente:</strong></p>
+    <div class="formula" style="margin:0.5rem 0;">
+      b &nbsp;=&nbsp; S<sub>XY</sub> / S²<sub>X</sub>
+      <span class="formula-note">
+        Covarianza dividida por la varianza de X. Tiene el mismo signo que la covarianza:
+        si la relación es positiva, la recta sube.
+      </span>
+    </div>
+    <p><strong>Ordenada al origen:</strong></p>
+    <div class="formula" style="margin:0.5rem 0;">
+      a &nbsp;=&nbsp; ȳ − b · x̄
+      <span class="formula-note">
+        Se obtiene exigiendo que la recta pase por el punto promedio (x̄, ȳ) — el "centro
+        de gravedad" de la nube.
+      </span>
+    </div>
+  </div>
+
+  <h3>Calculemos la recta para nuestros trabajadores</h3>
+
+  <p>Ya tenemos todo lo necesario:</p>
+
+  <p style="font-family:var(--code); font-size:0.86rem; text-align:center; line-height:1.9; margin:0.5rem 0;">
+    S<sub>XY</sub> = 48,5 &nbsp;·&nbsp; S²<sub>X</sub> = 15,5 &nbsp;·&nbsp; x̄ = 8 &nbsp;·&nbsp; ȳ = 50
+  </p>
+
+  <p><strong>Pendiente:</strong></p>
+  <div class="formula">b = 48,5 / 15,5 = <strong>3,129</strong></div>
+
+  <p><strong>Ordenada al origen:</strong></p>
+  <div class="formula">a = 50 − 3,129 · 8 = 50 − 25,032 = <strong>24,968</strong></div>
+
+  <p><strong>La recta de regresión es:</strong></p>
+  <div class="formula" style="font-size:1.05rem;">Y = 24,97 + 3,13 · X</div>
+
+  <p>Dibujada sobre la nube, la recta pasa justo por el medio de los puntos:</p>
+
+  <div style="background:var(--paper2); border:1px solid var(--rule); border-radius:3px; padding:1rem; margin:1rem 0;">
+    <svg viewBox="0 0 480 380" role="img" aria-label="Recta de regresión sobre la nube" style="display:block; width:100%; max-width:500px; margin:0 auto; overflow:visible;">
+      <rect x="60" y="20" width="400" height="300" fill="none" stroke="#d6cfc2" stroke-width="1"/>
+      <line x1="60" y1="80" x2="460" y2="80" stroke="#e8e1d4" stroke-dasharray="3,3"/>
+      <line x1="60" y1="140" x2="460" y2="140" stroke="#e8e1d4" stroke-dasharray="3,3"/>
+      <line x1="60" y1="200" x2="460" y2="200" stroke="#e8e1d4" stroke-dasharray="3,3"/>
+      <line x1="60" y1="260" x2="460" y2="260" stroke="#e8e1d4" stroke-dasharray="3,3"/>
+      <line x1="85" y1="332.6" x2="435" y2="40.6" stroke="#1a6b3a" stroke-width="2.5"/>
+      <circle cx="110" cy="293.3" r="4.5" fill="#1a4a8a"/>
+      <circle cx="160" cy="306.7" r="4.5" fill="#1a4a8a"/>
+      <circle cx="185" cy="213.3" r="4.5" fill="#1a4a8a"/>
+      <circle cx="235" cy="226.7" r="4.5" fill="#1a4a8a"/>
+      <circle cx="285" cy="146.7" r="4.5" fill="#1a4a8a"/>
+      <circle cx="335" cy="186.7" r="4.5" fill="#1a4a8a"/>
+      <circle cx="360" cy="80" r="4.5" fill="#1a4a8a"/>
+      <circle cx="410" cy="40" r="4.5" fill="#1a4a8a"/>
+      <text x="395" y="60" font-family="Fira Code" font-size="9" fill="#1a6b3a">Y = 24,97 + 3,13 X</text>
+      <text x="110" y="335" font-family="Fira Code" font-size="9" fill="#8a8178" text-anchor="middle">2</text>
+      <text x="160" y="335" font-family="Fira Code" font-size="9" fill="#8a8178" text-anchor="middle">4</text>
+      <text x="210" y="335" font-family="Fira Code" font-size="9" fill="#8a8178" text-anchor="middle">6</text>
+      <text x="260" y="335" font-family="Fira Code" font-size="9" fill="#8a8178" text-anchor="middle">8</text>
+      <text x="310" y="335" font-family="Fira Code" font-size="9" fill="#8a8178" text-anchor="middle">10</text>
+      <text x="360" y="335" font-family="Fira Code" font-size="9" fill="#8a8178" text-anchor="middle">12</text>
+      <text x="410" y="335" font-family="Fira Code" font-size="9" fill="#8a8178" text-anchor="middle">14</text>
+      <text x="260" y="360" font-family="Lora" font-size="12" fill="#3d3a34" text-anchor="middle">X = Años de experiencia</text>
+      <text x="54" y="324" font-family="Fira Code" font-size="9" fill="#8a8178" text-anchor="end">30</text>
+      <text x="54" y="204" font-family="Fira Code" font-size="9" fill="#8a8178" text-anchor="end">48</text>
+      <text x="54" y="84" font-family="Fira Code" font-size="9" fill="#8a8178" text-anchor="end">66</text>
+      <text x="18" y="170" font-family="Lora" font-size="12" fill="#3d3a34" text-anchor="middle" transform="rotate(-90,18,170)">Y = Sueldo (miles $)</text>
+    </svg>
+  </div>
+
+  <h3>Cómo se lee la recta</h3>
+
+  <div class="nota">
+    <span class="nota-label">Interpretación de los coeficientes</span>
+    <p>
+      <strong>Ordenada a = 24,97:</strong> el sueldo estimado para alguien con CERO años de
+      experiencia — un trabajador que recién entra ganaría alrededor de 25 mil pesos.
+    </p>
+    <p style="margin-bottom:0;">
+      <strong>Pendiente b = 3,13:</strong> por <em>cada año adicional</em> de experiencia, el
+      sueldo aumenta en promedio <strong>3,13 mil pesos</strong>. Es el "precio" de cada año
+      de experiencia en esta empresa.
+    </p>
+  </div>
+
+  <h3>Usando la recta para predecir</h3>
+
+  <p>
+    Acá está la utilidad concreta. Llega un nuevo trabajador con <strong>10 años de
+    experiencia</strong> y queremos estimar su sueldo. Reemplazamos X = 10:
+  </p>
+
+  <div class="formula">Y = 24,97 + 3,13 · 10 = 24,97 + 31,3 = <strong>56,27 mil pesos</strong></div>
+
+  <p>
+    Según el modelo, ganaría alrededor de <strong>56 mil pesos</strong>. Es una
+    <em>estimación</em> basada en la tendencia del grupo — no una certeza, pero sí la mejor
+    predicción posible con la información disponible.
+  </p>
+
+  <div class="advertencia">
+    <span class="advertencia-label">Cuidado con extrapolar demasiado</span>
+    <p style="margin-bottom:0;">
+      La recta es confiable <em>dentro</em> del rango de datos (de 2 a 14 años). Usarla para
+      predecir el sueldo de alguien con 40 años de experiencia sería arriesgado: no tenemos
+      datos en esa zona y la relación podría dejar de ser lineal (los sueldos suelen
+      amesetarse). Predecir fuera del rango observado se llama <strong>extrapolación</strong>,
+      y hay que hacerlo con mucha prudencia.
+    </p>
+  </div>
+</section>
+
+<!-- RESUMEN -->
+<div class="resumen">
+  <span class="resumen-label">El recorrido completo</span>
+  <ul>
+    <li><strong>Correlación:</strong> mide si dos variables numéricas se mueven juntas. Positiva, negativa o nula. Habla de tendencias, no de casos individuales.</li>
+    <li><strong>Diagrama de dispersión:</strong> cada individuo es un punto (x<sub>i</sub>, y<sub>i</sub>). Permite "ver" la relación antes de medirla.</li>
+    <li><strong>Covarianza S<sub>XY</sub>:</strong> promedio de los productos (x<sub>i</sub>−x̄)(y<sub>i</sub>−ȳ). Su signo da la dirección, pero depende de las unidades. Dio 48,5.</li>
+    <li><strong>Coeficiente de Pearson r:</strong> covarianza dividida por el producto de los desvíos. Entre −1 y 1, adimensional, mide la <em>fuerza</em>. Dio 0,929 (fuerte).</li>
+    <li><strong>Recta de regresión Y = a + b·X:</strong> con b = S<sub>XY</sub>/S²<sub>X</sub> y a = ȳ − b·x̄. Dio Y = 24,97 + 3,13·X. Sirve para predecir.</li>
+    <li><strong>Tres cautelas:</strong> correlación no implica causalidad · solo se mide relación lineal · cuidado con la extrapolación.</li>
+  </ul>
+</div>
+
+</main>
+
+<footer>
+  Estadística Descriptiva &nbsp;&middot;&nbsp; Correlación y regresión &nbsp;&middot;&nbsp; Dos variables cuantitativas
+</footer>
+
+</body>
+</html>
