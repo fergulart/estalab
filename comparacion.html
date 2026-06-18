@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<title>Estadística · Dos formas de calcular: datos sueltos vs. agrupados</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400;1,600&family=Fira+Code:wght@400;500&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+:root {
+  --paper:#faf8f3; --paper2:#f2ede3; --ink:#1c1a17; --ink2:#3d3a34;
+  --muted:#8a8178; --rule:#d6cfc2; --red:#b5281c; --blue:#1a4a8a;
+  --green:#1a6b3a; --gold:#9a6f00;
+  --lora:'Lora',Georgia,serif; --bask:'Libre Baskerville',Georgia,serif; --code:'Fira Code',monospace;
+}
+html { font-size:17px; scroll-behavior:smooth; background:var(--paper); color:var(--ink); }
+body { font-family:var(--lora); font-weight:400; line-height:1.8; -webkit-font-smoothing:antialiased; }
+h1 { font-family:var(--bask); font-size:clamp(1.9rem,6vw,3rem); font-weight:700; line-height:1.1; letter-spacing:-0.02em; color:var(--ink); }
+h2 { font-family:var(--bask); font-size:clamp(1.3rem,4vw,1.7rem); font-weight:700; line-height:1.2; color:var(--ink); margin-top:3rem; margin-bottom:1rem; }
+h3 { font-family:var(--lora); font-size:1.1rem; font-weight:600; font-style:italic; color:var(--ink2); margin-top:2rem; margin-bottom:0.6rem; }
+h4 { font-family:var(--lora); font-size:1.02rem; font-weight:600; color:var(--ink2); margin-top:1.5rem; margin-bottom:0.5rem; }
+p { margin-bottom:1rem; }
+strong { font-weight:600; }
+em { font-style:italic; }
+
+.header { background:var(--ink); color:var(--paper); padding:clamp(2rem,8vw,4rem) clamp(1.2rem,6vw,3rem); position:relative; overflow:hidden; }
+.header::before { content:''; position:absolute; inset:0; background-image:linear-gradient(rgba(255,255,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.03) 1px,transparent 1px); background-size:40px 40px; pointer-events:none; }
+.header-inner { max-width:760px; margin:0 auto; position:relative; }
+.clase-tag { font-family:var(--code); font-size:0.65rem; letter-spacing:0.25em; text-transform:uppercase; color:#c8bfa8; margin-bottom:1.2rem; display:block; }
+.header h1 { color:var(--paper); margin-bottom:0.8rem; }
+.header h1 em { color:#d4a84b; font-style:italic; }
+.header-sub { font-family:var(--lora); font-size:1rem; color:#9a9280; font-style:italic; margin-bottom:2rem; line-height:1.6; }
+.header-meta { display:flex; flex-wrap:wrap; gap:0.5rem; margin-top:1.5rem; }
+.tag { font-family:var(--code); font-size:0.6rem; letter-spacing:0.15em; text-transform:uppercase; border:1px solid rgba(255,255,255,0.2); color:#9a9280; padding:0.25rem 0.6rem; border-radius:2px; }
+
+.contenido { max-width:760px; margin:0 auto; padding:clamp(1.5rem,5vw,3rem) clamp(1.2rem,5vw,2rem) 5rem; }
+.seccion { margin-bottom:3.5rem; }
+.sec-num { font-family:var(--code); font-size:0.6rem; letter-spacing:0.25em; text-transform:uppercase; color:var(--red); display:flex; align-items:center; gap:0.75rem; margin-bottom:0.4rem; }
+.sec-num::after { content:''; flex:1; height:1px; background:var(--rule); }
+
+.caso-banner { background:linear-gradient(90deg,var(--ink) 0%,var(--ink2) 100%); color:var(--paper); padding:1.5rem 1.8rem; border-radius:4px; margin:2.5rem 0 1.5rem 0; border-left:4px solid #d4a84b; }
+.caso-banner-label { font-family:var(--code); font-size:0.62rem; letter-spacing:0.22em; text-transform:uppercase; color:#d4a84b; display:block; margin-bottom:0.5rem; }
+.caso-banner h2 { color:var(--paper); margin-top:0; margin-bottom:0.5rem; font-size:1.45rem; }
+.caso-banner p { color:#c8bfa8; font-size:0.95rem; margin-bottom:0; font-style:italic; line-height:1.6; }
+
+.problema { background:var(--ink); color:var(--paper); padding:clamp(1.2rem,4vw,2rem); border-radius:4px; margin:2rem 0; }
+.problema-label { font-family:var(--code); font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:#d4a84b; margin-bottom:0.8rem; display:block; }
+.problema p { color:#d0c8b8; font-size:0.97rem; line-height:1.75; margin-bottom:0.8rem; }
+.problema p:last-child { margin-bottom:0; }
+.problema strong { color:var(--paper); }
+
+.def { border-left:3px solid var(--red); padding:1rem 1.25rem; margin:1.5rem 0; background:#fdf5f4; }
+.def-label { font-family:var(--code); font-size:0.58rem; letter-spacing:0.22em; text-transform:uppercase; color:var(--red); display:block; margin-bottom:0.5rem; }
+.def p:last-child { margin-bottom:0; }
+
+.nota { border-left:3px solid var(--blue); padding:1rem 1.25rem; margin:1.5rem 0; background:#f4f6fd; }
+.nota-label { font-family:var(--code); font-size:0.58rem; letter-spacing:0.22em; text-transform:uppercase; color:var(--blue); display:block; margin-bottom:0.5rem; }
+.nota p:last-child { margin-bottom:0; }
+
+.advertencia { border-left:3px solid var(--gold); padding:1rem 1.25rem; margin:1.5rem 0; background:#fdf9ed; }
+.advertencia-label { font-family:var(--code); font-size:0.58rem; letter-spacing:0.22em; text-transform:uppercase; color:var(--gold); display:block; margin-bottom:0.5rem; }
+.advertencia p:last-child { margin-bottom:0; }
+
+.aplicacion { border:2px solid var(--green); padding:1.2rem 1.25rem; margin:1.8rem 0; background:#f3f9f5; border-radius:3px; }
+.aplicacion-label { font-family:var(--code); font-size:0.62rem; letter-spacing:0.22em; text-transform:uppercase; color:var(--green); display:block; margin-bottom:0.6rem; font-weight:700; }
+.aplicacion p:last-child { margin-bottom:0; }
+
+.formula { background:var(--ink); color:#7ec8e3; font-family:var(--code); font-size:clamp(0.82rem,2.3vw,0.97rem); padding:1rem 1.25rem; border-radius:3px; margin:1.25rem 0; text-align:center; overflow-x:auto; white-space:nowrap; letter-spacing:0.02em; }
+.formula-label { display:block; font-size:0.58rem; letter-spacing:0.2em; text-transform:uppercase; color:#9a9280; text-align:left; margin-bottom:0.4rem; }
+.formula-note { display:block; font-size:0.72rem; color:#7a7060; text-align:left; margin-top:0.5rem; white-space:normal; font-family:var(--lora); font-style:italic; letter-spacing:0; line-height:1.5; }
+
+.sum { display:inline-flex; flex-direction:column; align-items:center; vertical-align:middle; margin:0 0.15em; line-height:1; }
+.sum-top { font-size:0.6em; line-height:1; margin-bottom:0.08em; font-family:var(--code); color:#9a9080; }
+.sum-sym { font-size:1.7em; line-height:1; color:#d4a84b; font-family:var(--lora); }
+.sum-bot { font-size:0.6em; line-height:1; margin-top:0.08em; font-family:var(--code); color:#9a9080; }
+
+.tabla-wrap { overflow-x:auto; margin:1.5rem 0; -webkit-overflow-scrolling:touch; }
+table { border-collapse:collapse; width:100%; min-width:360px; font-size:0.9rem; }
+thead th { background:var(--ink); color:var(--paper); font-family:var(--code); font-size:0.62rem; letter-spacing:0.08em; padding:0.65rem 0.9rem; text-align:left; border-bottom:1px solid var(--rule); white-space:nowrap; }
+tbody tr { border-bottom:1px solid var(--rule); }
+tbody tr:nth-child(even) { background:var(--paper2); }
+tbody td { padding:0.55rem 0.9rem; vertical-align:top; }
+td.num { text-align:right; font-family:var(--code); font-size:0.85rem; font-variant-numeric:tabular-nums; }
+th.num { text-align:center; font-family:var(--code); font-size:0.85rem; }
+td.hi { color:var(--red); font-weight:600; }
+td.lbl { background:var(--paper2); font-family:var(--code); font-size:0.85rem; white-space:nowrap; }
+tfoot td { font-family:var(--code); font-size:0.82rem; font-weight:500; padding:0.6rem 0.9rem; border-top:2px solid var(--ink); background:var(--paper2); }
+
+.comparativa { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin:1.5rem 0; }
+.comparativa > div { border:1px solid var(--rule); border-radius:4px; padding:1.1rem; background:var(--paper2); }
+.comparativa h4 { margin-top:0; font-style:italic; }
+.comparativa .formula { font-size:0.78rem; margin:0.6rem 0 0 0; }
+@media (max-width:560px) { .comparativa { grid-template-columns:1fr; } }
+
+.resumen { background:var(--ink); color:var(--paper); padding:clamp(1.2rem,4vw,2rem); border-radius:4px; margin-top:3rem; }
+.resumen-label { font-family:var(--code); font-size:0.6rem; letter-spacing:0.25em; text-transform:uppercase; color:#9a9280; display:block; margin-bottom:1rem; }
+.resumen ul { padding-left:1.2rem; font-size:0.93rem; line-height:2; color:#c8bfa8; }
+.resumen li strong { color:var(--paper); }
+
+footer { border-top:1px solid var(--rule); padding:1.5rem clamp(1.2rem,5vw,2rem); text-align:center; font-family:var(--code); font-size:0.58rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--muted); }
+code { font-family:var(--code); font-size:0.85em; background:var(--paper2); padding:1px 5px; border-radius:2px; color:var(--ink2); }
+
+.print-btn { position:fixed; top:1rem; right:1rem; z-index:1000; background:var(--ink); color:var(--paper); border:none; padding:0.55rem 1rem; border-radius:3px; font-family:var(--code); font-size:0.65rem; letter-spacing:0.15em; text-transform:uppercase; cursor:pointer; box-shadow:0 4px 12px rgba(0,0,0,0.15); transition:transform 0.15s,box-shadow 0.15s; }
+.print-btn:hover { transform:translateY(-1px); box-shadow:0 6px 16px rgba(0,0,0,0.2); }
+.print-btn::before { content:"⎙ "; color:var(--gold); margin-right:0.25rem; }
+
+@media print {
+  @page { margin:1.8cm 1.5cm; }
+  html { font-size:10.5pt; }
+  body { background:white !important; color:#000 !important; line-height:1.5; }
+  .print-btn { display:none !important; }
+  .header { background:white !important; color:#000 !important; padding:0 0 1rem 0 !important; border-bottom:2px solid #000; page-break-after:avoid; }
+  .header::before { display:none !important; }
+  .header h1 { color:#000 !important; font-size:22pt; }
+  .header h1 em { color:#b5281c !important; }
+  .header-sub { color:#444 !important; }
+  .clase-tag { color:#b5281c !important; }
+  .tag { border-color:#888 !important; color:#444 !important; }
+  .contenido { padding:0 !important; max-width:100% !important; }
+  .seccion { page-break-inside:avoid; margin-bottom:1.5rem; }
+  h2 { page-break-after:avoid; font-size:14pt; }
+  h3,h4 { page-break-after:avoid; }
+  .sec-num { color:#b5281c !important; }
+  .caso-banner { background:#f0f0f0 !important; color:#000 !important; border-left:4px solid #9a6f00 !important; }
+  .caso-banner h2 { color:#000 !important; }
+  .caso-banner p { color:#444 !important; }
+  .caso-banner-label { color:#9a6f00 !important; }
+  .problema { background:#f5f5f5 !important; color:#000 !important; border:1.5px solid #000; page-break-inside:avoid; }
+  .problema p,.problema strong { color:#000 !important; }
+  .problema-label { color:#9a6f00 !important; }
+  .def,.nota,.advertencia,.aplicacion,.resumen,.comparativa>div { page-break-inside:avoid; }
+  .resumen { background:#f5f5f5 !important; color:#000 !important; border:1.5px solid #000; }
+  .resumen ul,.resumen li,.resumen li strong { color:#000 !important; }
+  .resumen-label { color:#9a6f00 !important; }
+  .aplicacion { background:#f0f8f0 !important; border-color:#1a6b3a !important; }
+  table { page-break-inside:avoid; }
+  thead th { background:#333 !important; color:white !important; }
+  tbody tr:nth-child(even) { background:#f5f5f5 !important; }
+  tbody tr:nth-child(odd) { background:white !important; }
+  .formula { background:#f0f0f0 !important; color:#1a4a8a !important; }
+  .formula-note { color:#555 !important; }
+  .formula-label { color:#888 !important; }
+  .sum-sym { color:#b5281c !important; }
+  .sum-top,.sum-bot { color:#666 !important; }
+  footer { border-top:1px solid #888; color:#666 !important; }
+}
+</style>
+</head>
+<body>
+
+<button onclick="window.print()" class="print-btn">Imprimir</button>
+
+<header class="header">
+  <div class="header-inner">
+    <span class="clase-tag">Estadística Descriptiva &nbsp;·&nbsp; Análisis bivariado de dos cuantitativas</span>
+    <h1>Dos formas de calcular<br>la <em>misma</em> covarianza</h1>
+    <p class="header-sub">
+      Datos sueltos vs. datos agrupados en tabla. Por qué las fórmulas se ven distintas
+      siendo el mismo concepto — y resolución completa de los dos casos, paso a paso.
+    </p>
+    <div class="header-meta">
+      <span class="tag">Medias</span>
+      <span class="tag">Varianzas</span>
+      <span class="tag">Covarianza</span>
+      <span class="tag">Dos formatos de datos</span>
+    </div>
+  </div>
+</header>
+
+<main class="contenido">
+
+<!-- ═══ DISCUSIÓN INICIAL ═══ -->
+<section class="seccion" id="discusion">
+  <p class="sec-num">00 &mdash; Antes de calcular</p>
+  <h2>¿Por qué las fórmulas se ven distintas?</h2>
+
+  <div class="problema">
+    <span class="problema-label">El punto de partida</span>
+    <p>
+      Vamos a resolver dos problemas de <strong>análisis bivariado de dos variables
+      cuantitativas</strong>. Los dos son <em>el mismo tipo</em> de problema: dos variables
+      numéricas, calcular medias, varianzas y covarianza, estudiar la relación.
+    </p>
+    <p>
+      Pero si mirás las fórmulas, en un caso aparecen <strong>frecuencias</strong>
+      (n<sub>i·</sub>, n<sub>ij</sub>) y en el otro <strong>no</strong>. Eso confunde.
+      ¿Son fórmulas distintas? <strong>No.</strong> Es la misma fórmula adaptada a cómo
+      vienen presentados los datos.
+    </p>
+  </div>
+
+  <h3>Todo depende de cómo vienen empaquetados los datos</h3>
+
+  <p>
+    La diferencia es <strong>puramente de formato</strong>, igual que pasaba en la estadística
+    de una sola variable. Hay dos maneras de que te entreguen los datos:
+  </p>
+
+  <div class="def">
+    <span class="def-label">Datos sueltos (sin agrupar)</span>
+    <p style="margin-bottom:0;">
+      Te dan la lista individuo por individuo. Por ejemplo, 8 trabajadores, cada uno con su par
+      (experiencia, sueldo). <strong>Cada dato aparece una sola vez.</strong> No hay
+      repeticiones que contar.
+    </p>
+  </div>
+
+  <div class="def">
+    <span class="def-label">Datos agrupados (en tabla de frecuencias)</span>
+    <p style="margin-bottom:0;">
+      Te dan una tabla que dice <em>cuántas veces</em> aparece cada combinación. Por ejemplo,
+      "hay 10 individuos con X=−1 e Y=4". <strong>Cada combinación trae su frecuencia</strong>
+      n<sub>ij</sub>, porque hay muchos individuos repartidos en pocas categorías.
+    </p>
+  </div>
+
+  <h3>La misma media, dos escrituras</h3>
+
+  <p>
+    Pensá primero en la media de <strong>una sola variable</strong>, que ya conocés.
+    Si te dan datos sueltos, sumás y dividís. Si te dan una tabla de frecuencias, ponderás
+    cada valor por las veces que aparece:
+  </p>
+
+  <div class="comparativa">
+    <div>
+      <h4>Datos sueltos</h4>
+      <div class="formula">
+        x̄ = (1/n) ·
+        <span class="sum"><span class="sum-top">n</span><span class="sum-sym">∑</span><span class="sum-bot">i=1</span></span>
+        &nbsp;x<sub>i</sub>
+      </div>
+      <p style="font-size:0.82rem; margin:0.6rem 0 0 0; color:var(--ink2);">Sumo todos los valores, divido por n.</p>
+    </div>
+    <div>
+      <h4>Datos agrupados</h4>
+      <div class="formula">
+        x̄ = (1/n) ·
+        <span class="sum"><span class="sum-top">k</span><span class="sum-sym">∑</span><span class="sum-bot">i=1</span></span>
+        &nbsp;x<sub>i</sub> · n<sub>i</sub>
+      </div>
+      <p style="font-size:0.82rem; margin:0.6rem 0 0 0; color:var(--ink2);">Peso cada valor por su frecuencia, divido por n.</p>
+    </div>
+  </div>
+
+  <div class="nota">
+    <span class="nota-label">La clave: una es caso particular de la otra</span>
+    <p>
+      La fórmula con frecuencias es la <strong>versión general</strong>. La fórmula simple es
+      lo que queda cuando <strong>todas las frecuencias valen 1</strong> (cada dato aparece
+      una sola vez):
+    </p>
+    <div class="formula" style="margin:0.6rem 0;">
+      (1/n) · Σ x<sub>i</sub> · 1 &nbsp;=&nbsp; (1/n) · Σ x<sub>i</sub>
+    </div>
+    <p style="margin-bottom:0;">
+      Es decir: si tomáramos los 8 trabajadores sueltos y los metiéramos en una tabla, cada
+      uno tendría frecuencia 1 y las dos fórmulas darían exactamente lo mismo. <strong>No hay
+      dos medias. Hay una media, escrita según convenga al formato de los datos.</strong>
+    </p>
+  </div>
+
+  <h3>Lo mismo vale para la covarianza</h3>
+
+  <p>
+    La covarianza sigue la misma lógica. Con datos sueltos sumamos los productos uno por uno;
+    con datos agrupados ponderamos cada producto por la frecuencia conjunta de la celda:
+  </p>
+
+  <div class="comparativa">
+    <div>
+      <h4>Datos sueltos</h4>
+      <div class="formula">
+        S<sub>XY</sub> = (1/n) ·
+        <span class="sum"><span class="sum-top">n</span><span class="sum-sym">∑</span><span class="sum-bot">i=1</span></span>
+        &nbsp;x<sub>i</sub>y<sub>i</sub> − x̄ȳ
+      </div>
+      <p style="font-size:0.82rem; margin:0.6rem 0 0 0; color:var(--ink2);">Un producto por individuo.</p>
+    </div>
+    <div>
+      <h4>Datos agrupados</h4>
+      <div class="formula">
+        S<sub>XY</sub> = (1/n) ·
+        <span class="sum"><span class="sum-top">I</span><span class="sum-sym">∑</span><span class="sum-bot">i=1</span></span>
+        <span class="sum"><span class="sum-top">J</span><span class="sum-sym">∑</span><span class="sum-bot">j=1</span></span>
+        &nbsp;n<sub>ij</sub>x<sub>i</sub>y<sub>j</sub> − x̄ȳ
+      </div>
+      <p style="font-size:0.82rem; margin:0.6rem 0 0 0; color:var(--ink2);">Cada producto pesado por su frecuencia.</p>
+    </div>
+  </div>
+
+  <div class="advertencia">
+    <span class="advertencia-label">En resumen</span>
+    <p style="margin-bottom:0;">
+      <strong>Caso 1 (correlación de sueldos)</strong> usa datos sueltos: 8 trabajadores, cada
+      uno único → fórmulas <em>sin</em> frecuencias. <strong>Caso 2 (Ejercicio 2)</strong> usa
+      datos agrupados: 150 individuos en una tabla → fórmulas <em>con</em> frecuencias. Mismo
+      concepto, distinta forma de la cuenta. Ahora resolvemos los dos en detalle.
+    </p>
+  </div>
+</section>
+
+<!-- ═══ CASO 1 ═══ -->
+<div class="caso-banner">
+  <span class="caso-banner-label">Caso 1 · datos sueltos</span>
+  <h2>Correlación: experiencia vs. sueldo</h2>
+  <p>8 trabajadores, cada uno con su par (experiencia, sueldo) — sin agrupar</p>
+</div>
+
+<section class="seccion" id="caso1">
+  <p class="sec-num">01 &mdash; Caso 1 · Resolución</p>
+  <h2>Los datos</h2>
+
+  <p>
+    Ocho trabajadores, con sus años de experiencia (X) y su sueldo mensual en miles de pesos (Y):
+  </p>
+
+  <div class="tabla-wrap">
+    <table>
+      <thead>
+        <tr><th>Trabajador</th><th class="num">X (años)</th><th class="num">Y (miles $)</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="lbl">Rosa</td><td class="num">2</td><td class="num">34</td></tr>
+        <tr><td class="lbl">Tomás</td><td class="num">4</td><td class="num">32</td></tr>
+        <tr><td class="lbl">Diego</td><td class="num">5</td><td class="num">46</td></tr>
+        <tr><td class="lbl">Carla</td><td class="num">7</td><td class="num">44</td></tr>
+        <tr><td class="lbl">Pablo</td><td class="num">9</td><td class="num">56</td></tr>
+        <tr><td class="lbl">Elena</td><td class="num">11</td><td class="num">50</td></tr>
+        <tr><td class="lbl">Andrés</td><td class="num">12</td><td class="num">66</td></tr>
+        <tr><td class="lbl">Marta</td><td class="num">14</td><td class="num">72</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>Son <strong>datos sueltos</strong>: cada trabajador aparece una sola vez. n = 8.</p>
+
+  <h3>Paso 1 — Las medias</h3>
+
+  <div class="aplicacion">
+    <span class="aplicacion-label">Fórmulas</span>
+    <div class="formula" style="margin:0.4rem 0;">
+      x̄ = (1/n) ·
+      <span class="sum"><span class="sum-top">n</span><span class="sum-sym">∑</span><span class="sum-bot">i=1</span></span>
+      &nbsp;x<sub>i</sub>
+      &nbsp;&nbsp;&nbsp;&nbsp;
+      ȳ = (1/n) ·
+      <span class="sum"><span class="sum-top">n</span><span class="sum-sym">∑</span><span class="sum-bot">i=1</span></span>
+      &nbsp;y<sub>i</sub>
+    </div>
+
+    <p style="margin-top:0.8rem;">Sumamos cada columna:</p>
+
+    <div class="tabla-wrap">
+      <table>
+        <thead><tr><th>Trabajador</th><th class="num">x<sub>i</sub></th><th class="num">y<sub>i</sub></th></tr></thead>
+        <tbody>
+          <tr><td class="lbl">Rosa</td><td class="num">2</td><td class="num">34</td></tr>
+          <tr><td class="lbl">Tomás</td><td class="num">4</td><td class="num">32</td></tr>
+          <tr><td class="lbl">Diego</td><td class="num">5</td><td class="num">46</td></tr>
+          <tr><td class="lbl">Carla</td><td class="num">7</td><td class="num">44</td></tr>
+          <tr><td class="lbl">Pablo</td><td class="num">9</td><td class="num">56</td></tr>
+          <tr><td class="lbl">Elena</td><td class="num">11</td><td class="num">50</td></tr>
+          <tr><td class="lbl">Andrés</td><td class="num">12</td><td class="num">66</td></tr>
+          <tr><td class="lbl">Marta</td><td class="num">14</td><td class="num">72</td></tr>
+        </tbody>
+        <tfoot>
+          <tr><td><strong>Σ</strong></td><td class="num"><strong>64</strong></td><td class="num"><strong>400</strong></td></tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <p style="font-family:var(--code); font-size:0.88rem; text-align:center; line-height:1.9; margin:0.6rem 0;">
+      x̄ = 64 / 8 = <strong>8 años</strong><br>
+      ȳ = 400 / 8 = <strong>50 mil pesos</strong>
+    </p>
+  </div>
+
+  <h3>Paso 2 — La covarianza</h3>
+
+  <p>
+    Hay <strong>dos formas equivalentes</strong> de calcular la covarianza, y conviene
+    conocer las dos. Empezamos por la fórmula de las <em>desviaciones</em> (la más intuitiva),
+    y después la <em>fórmula corta</em> (la más práctica). Las dos dan el mismo resultado.
+  </p>
+
+  <h4>Vía A — Fórmula de las desviaciones</h4>
+
+  <div class="aplicacion">
+    <span class="aplicacion-label">Fórmula larga (desviaciones)</span>
+    <div class="formula" style="margin:0.4rem 0;">
+      S<sub>XY</sub> = (1/n) ·
+      <span class="sum"><span class="sum-top">n</span><span class="sum-sym">∑</span><span class="sum-bot">i=1</span></span>
+      &nbsp;(x<sub>i</sub> − x̄)(y<sub>i</sub> − ȳ)
+      <span class="formula-note">
+        Para cada trabajador, calculamos cuánto se aparta su X del promedio y cuánto su Y,
+        multiplicamos esas dos desviaciones, sumamos todo y dividimos por n.
+      </span>
+    </div>
+
+    <p style="margin-top:0.8rem;">
+      Como x̄ = 8 e ȳ = 50 son redondos, las desviaciones quedan limpias. Una fila por trabajador:
+    </p>
+
+    <div class="tabla-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Trabajador</th>
+            <th class="num">x<sub>i</sub></th>
+            <th class="num">y<sub>i</sub></th>
+            <th class="num">x<sub>i</sub> − x̄</th>
+            <th class="num">y<sub>i</sub> − ȳ</th>
+            <th class="num">(x<sub>i</sub> − x̄)(y<sub>i</sub> − ȳ)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="lbl">Rosa</td><td class="num">2</td><td class="num">34</td><td class="num">−6</td><td class="num">−16</td><td class="num">96</td></tr>
+          <tr><td class="lbl">Tomás</td><td class="num">4</td><td class="num">32</td><td class="num">−4</td><td class="num">−18</td><td class="num">72</td></tr>
+          <tr><td class="lbl">Diego</td><td class="num">5</td><td class="num">46</td><td class="num">−3</td><td class="num">−4</td><td class="num">12</td></tr>
+          <tr><td class="lbl">Carla</td><td class="num">7</td><td class="num">44</td><td class="num">−1</td><td class="num">−6</td><td class="num">6</td></tr>
+          <tr><td class="lbl">Pablo</td><td class="num">9</td><td class="num">56</td><td class="num">1</td><td class="num">6</td><td class="num">6</td></tr>
+          <tr><td class="lbl">Elena</td><td class="num">11</td><td class="num">50</td><td class="num">3</td><td class="num">0</td><td class="num">0</td></tr>
+          <tr><td class="lbl">Andrés</td><td class="num">12</td><td class="num">66</td><td class="num">4</td><td class="num">16</td><td class="num">64</td></tr>
+          <tr><td class="lbl">Marta</td><td class="num">14</td><td class="num">72</td><td class="num">6</td><td class="num">22</td><td class="num">132</td></tr>
+        </tbody>
+        <tfoot>
+          <tr><td colspan="5"><strong>Suma de productos</strong></td><td class="num"><strong>388</strong></td></tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <p style="font-family:var(--code); font-size:0.92rem; text-align:center; margin:0.6rem 0;">
+      S<sub>XY</sub> = 388 / 8 = <strong>48,5</strong>
+    </p>
+
+    <p style="margin-bottom:0;">
+      Positiva: a más experiencia, más sueldo. Casi todos los productos dieron positivos —
+      solo Elena aportó cero (su sueldo es justo el promedio).
+    </p>
+  </div>
+
+  <h4>Vía B — Fórmula corta</h4>
+
+  <div class="aplicacion">
+    <span class="aplicacion-label">Fórmula corta</span>
+    <div class="formula" style="margin:0.4rem 0;">
+      S<sub>XY</sub> = (1/n) ·
+      <span class="sum"><span class="sum-top">n</span><span class="sum-sym">∑</span><span class="sum-bot">i=1</span></span>
+      &nbsp;x<sub>i</sub> · y<sub>i</sub> &nbsp;−&nbsp; x̄ · ȳ
+      <span class="formula-note">
+        En vez de restar las medias a cada dato, multiplicamos directamente x<sub>i</sub>·y<sub>i</sub>,
+        promediamos, y al final restamos el producto de las medias. Es más rápida porque no hay
+        que calcular desviaciones una por una.
+      </span>
+    </div>
+
+    <p style="margin-top:0.8rem;">
+      Solo necesitamos la columna de productos x<sub>i</sub>·y<sub>i</sub> y su suma:
+    </p>
+
+    <div class="tabla-wrap">
+      <table>
+        <thead>
+          <tr><th>Trabajador</th><th class="num">x<sub>i</sub></th><th class="num">y<sub>i</sub></th><th class="num">x<sub>i</sub> · y<sub>i</sub></th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="lbl">Rosa</td><td class="num">2</td><td class="num">34</td><td class="num">68</td></tr>
+          <tr><td class="lbl">Tomás</td><td class="num">4</td><td class="num">32</td><td class="num">128</td></tr>
+          <tr><td class="lbl">Diego</td><td class="num">5</td><td class="num">46</td><td class="num">230</td></tr>
+          <tr><td class="lbl">Carla</td><td class="num">7</td><td class="num">44</td><td class="num">308</td></tr>
+          <tr><td class="lbl">Pablo</td><td class="num">9</td><td class="num">56</td><td class="num">504</td></tr>
+          <tr><td class="lbl">Elena</td><td class="num">11</td><td class="num">50</td><td class="num">550</td></tr>
+          <tr><td class="lbl">Andrés</td><td class="num">12</td><td class="num">66</td><td class="num">792</td></tr>
+          <tr><td class="lbl">Marta</td><td class="num">14</td><td class="num">72</td><td class="num">1008</td></tr>
+        </tbody>
+        <tfoot>
+          <tr><td colspan="3"><strong>Σ x<sub>i</sub>·y<sub>i</sub></strong></td><td class="num"><strong>3588</strong></td></tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <p style="font-family:var(--code); font-size:0.9rem; text-align:center; line-height:1.9; margin:0.6rem 0;">
+      S<sub>XY</sub> = 3588/8 − (8 · 50)<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;= 448,5 − 400 = <strong>48,5</strong>
+    </p>
+
+    <p style="margin-bottom:0;">
+      <strong>Mismo resultado que la Vía A</strong> (48,5), como tenía que ser. La fórmula
+      corta es la que conviene usar en la práctica: menos cuentas, menos lugar para errores.
+    </p>
+  </div>
+
+  <h3>Paso 3 — Las varianzas y los desvíos</h3>
+
+  <p>
+    Igual que con la covarianza, las varianzas tienen las <strong>mismas dos vías</strong>:
+    la de las desviaciones y la fórmula corta. Mostramos las dos.
+  </p>
+
+  <h4>Vía A — Fórmula de las desviaciones</h4>
+
+  <div class="aplicacion">
+    <span class="aplicacion-label">Fórmula larga (desviaciones)</span>
+    <div class="formula" style="margin:0.4rem 0;">
+      S²<sub>X</sub> = (1/n) ·
+      <span class="sum"><span class="sum-top">n</span><span class="sum-sym">∑</span><span class="sum-bot">i=1</span></span>
+      &nbsp;(x<sub>i</sub> − x̄)² &nbsp;&nbsp;&nbsp; S<sub>X</sub> = √S²<sub>X</sub>
+    </div>
+
+    <p style="margin-top:0.8rem;">Elevamos al cuadrado las desviaciones (que ya teníamos) y sumamos:</p>
+
+    <div class="tabla-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Trabajador</th>
+            <th class="num">x<sub>i</sub> − x̄</th>
+            <th class="num">(x<sub>i</sub> − x̄)²</th>
+            <th class="num">y<sub>i</sub> − ȳ</th>
+            <th class="num">(y<sub>i</sub> − ȳ)²</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="lbl">Rosa</td><td class="num">−6</td><td class="num">36</td><td class="num">−16</td><td class="num">256</td></tr>
+          <tr><td class="lbl">Tomás</td><td class="num">−4</td><td class="num">16</td><td class="num">−18</td><td class="num">324</td></tr>
+          <tr><td class="lbl">Diego</td><td class="num">−3</td><td class="num">9</td><td class="num">−4</td><td class="num">16</td></tr>
+          <tr><td class="lbl">Carla</td><td class="num">−1</td><td class="num">1</td><td class="num">−6</td><td class="num">36</td></tr>
+          <tr><td class="lbl">Pablo</td><td class="num">1</td><td class="num">1</td><td class="num">6</td><td class="num">36</td></tr>
+          <tr><td class="lbl">Elena</td><td class="num">3</td><td class="num">9</td><td class="num">0</td><td class="num">0</td></tr>
+          <tr><td class="lbl">Andrés</td><td class="num">4</td><td class="num">16</td><td class="num">16</td><td class="num">256</td></tr>
+          <tr><td class="lbl">Marta</td><td class="num">6</td><td class="num">36</td><td class="num">22</td><td class="num">484</td></tr>
+        </tbody>
+        <tfoot>
+          <tr><td><strong>Σ</strong></td><td class="num">0</td><td class="num"><strong>124</strong></td><td class="num">0</td><td class="num"><strong>1408</strong></td></tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <p style="font-family:var(--code); font-size:0.86rem; text-align:center; line-height:1.9; margin:0.6rem 0;">
+      S²<sub>X</sub> = 124 / 8 = 15,5 &nbsp;→&nbsp; S<sub>X</sub> = √15,5 = <strong>3,937</strong><br>
+      S²<sub>Y</sub> = 1408 / 8 = 176 &nbsp;→&nbsp; S<sub>Y</sub> = √176 = <strong>13,267</strong>
+    </p>
+  </div>
+
+  <h4>Vía B — Fórmula corta</h4>
+
+  <div class="aplicacion">
+    <span class="aplicacion-label">Fórmula corta</span>
+    <div class="formula" style="margin:0.4rem 0;">
+      S²<sub>X</sub> = (1/n) ·
+      <span class="sum"><span class="sum-top">n</span><span class="sum-sym">∑</span><span class="sum-bot">i=1</span></span>
+      &nbsp;x<sub>i</sub>² &nbsp;−&nbsp; x̄²
+      <span class="formula-note">
+        Promedio de los cuadrados de los datos, menos el cuadrado de la media. Sin desviaciones.
+        Misma idea para S²<sub>Y</sub> con y<sub>i</sub>².
+      </span>
+    </div>
+
+    <p style="margin-top:0.8rem;">
+      Necesitamos las columnas de cuadrados x<sub>i</sub>² e y<sub>i</sub>² y sus sumas:
+    </p>
+
+    <div class="tabla-wrap">
+      <table>
+        <thead>
+          <tr><th>Trabajador</th><th class="num">x<sub>i</sub></th><th class="num">x<sub>i</sub>²</th><th class="num">y<sub>i</sub></th><th class="num">y<sub>i</sub>²</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="lbl">Rosa</td><td class="num">2</td><td class="num">4</td><td class="num">34</td><td class="num">1156</td></tr>
+          <tr><td class="lbl">Tomás</td><td class="num">4</td><td class="num">16</td><td class="num">32</td><td class="num">1024</td></tr>
+          <tr><td class="lbl">Diego</td><td class="num">5</td><td class="num">25</td><td class="num">46</td><td class="num">2116</td></tr>
+          <tr><td class="lbl">Carla</td><td class="num">7</td><td class="num">49</td><td class="num">44</td><td class="num">1936</td></tr>
+          <tr><td class="lbl">Pablo</td><td class="num">9</td><td class="num">81</td><td class="num">56</td><td class="num">3136</td></tr>
+          <tr><td class="lbl">Elena</td><td class="num">11</td><td class="num">121</td><td class="num">50</td><td class="num">2500</td></tr>
+          <tr><td class="lbl">Andrés</td><td class="num">12</td><td class="num">144</td><td class="num">66</td><td class="num">4356</td></tr>
+          <tr><td class="lbl">Marta</td><td class="num">14</td><td class="num">196</td><td class="num">72</td><td class="num">5184</td></tr>
+        </tbody>
+        <tfoot>
+          <tr><td><strong>Σ</strong></td><td class="num">64</td><td class="num hi">636</td><td class="num">400</td><td class="num hi">21408</td></tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <p style="font-family:var(--code); font-size:0.86rem; text-align:center; line-height:1.9; margin:0.6rem 0;">
+      S²<sub>X</sub> = 636/8 − 8² = 79,5 − 64 = <strong>15,5</strong><br>
+      S²<sub>Y</sub> = 21408/8 − 50² = 2676 − 2500 = <strong>176</strong>
+    </p>
+
+    <p style="margin-bottom:0;">
+      <strong>Idénticos a la Vía A.</strong> De acá: S<sub>X</sub> = √15,5 = 3,937 y
+      S<sub>Y</sub> = √176 = 13,267.
+    </p>
+  </div>
+
+  <h3>Paso 4 — El coeficiente de Pearson</h3>
+
+  <div class="aplicacion">
+    <span class="aplicacion-label">Fórmula</span>
+    <div class="formula" style="margin:0.4rem 0;">
+      r<sub>XY</sub> = S<sub>XY</sub> / (S<sub>X</sub> · S<sub>Y</sub>)
+    </div>
+    <p style="font-family:var(--code); font-size:0.9rem; text-align:center; margin:0.6rem 0;">
+      r<sub>XY</sub> = 48,5 / (3,937 · 13,267) = 48,5 / 52,23 = <strong>0,929</strong>
+    </p>
+    <p style="margin-bottom:0;">
+      Relación lineal positiva <strong>fuerte</strong> (muy cerca de 1). La experiencia explica
+      muy bien las diferencias de sueldo en este grupo.
+    </p>
+  </div>
+
+  <div class="nota">
+    <span class="nota-label">Resumen del Caso 1</span>
+    <p style="margin-bottom:0;">
+      x̄ = 8 &nbsp;·&nbsp; ȳ = 50 &nbsp;·&nbsp; S<sub>XY</sub> = 48,5 &nbsp;·&nbsp;
+      S²<sub>X</sub> = 15,5 &nbsp;·&nbsp; S²<sub>Y</sub> = 176 &nbsp;·&nbsp; r = 0,929.
+      Todas las fórmulas <strong>sin frecuencias</strong>, porque cada dato aparece una sola vez.
+    </p>
+  </div>
+</section>
+
+<!-- ═══ CASO 2 ═══ -->
+<div class="caso-banner">
+  <span class="caso-banner-label">Caso 2 · datos agrupados</span>
+  <h2>Ejercicio 2: tabla de doble entrada</h2>
+  <p>150 individuos repartidos en una tabla cruzada — con frecuencias</p>
+</div>
+
+<section class="seccion" id="caso2">
+  <p class="sec-num">02 &mdash; Caso 2 · Resolución</p>
+  <h2>Los datos</h2>
+
+  <p>
+    Una tabla de doble entrada con n = 150 individuos. Cada celda dice cuántos individuos
+    tienen esa combinación de X (filas) e Y (columnas):
+  </p>
+
+  <div class="tabla-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>X \ Y</th>
+          <th class="num">1</th><th class="num">2</th><th class="num">3</th><th class="num">4</th><th class="num">5</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="lbl">−1</td><td class="num">2</td><td class="num">4</td><td class="num">6</td><td class="num">10</td><td class="num">8</td></tr>
+        <tr><td class="lbl">0</td><td class="num">1</td><td class="num">2</td><td class="num">3</td><td class="num">5</td><td class="num">4</td></tr>
+        <tr><td class="lbl">1</td><td class="num">3</td><td class="num">6</td><td class="num">9</td><td class="num">15</td><td class="num">12</td></tr>
+        <tr><td class="lbl">2</td><td class="num">4</td><td class="num">8</td><td class="num">12</td><td class="num">20</td><td class="num">16</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>
+    Son <strong>datos agrupados</strong>: por ejemplo, la celda (X=−1, Y=4) vale 10 — hay 10
+    individuos con esa combinación. Como hay repeticiones, las fórmulas llevan frecuencias.
+  </p>
+
+  <h3>Paso 1 — Las marginales</h3>
+
+  <div class="aplicacion">
+    <span class="aplicacion-label">Fórmulas</span>
+    <div class="formula" style="margin:0.4rem 0;">
+      n<sub>i·</sub> =
+      <span class="sum"><span class="sum-top">J</span><span class="sum-sym">∑</span><span class="sum-bot">j=1</span></span>
+      &nbsp;n<sub>ij</sub>
+      &nbsp;&nbsp;&nbsp;&nbsp;
+      n<sub>·j</sub> =
+      <span class="sum"><span class="sum-top">I</span><span class="sum-sym">∑</span><span class="sum-bot">i=1</span></span>
+      &nbsp;n<sub>ij</sub>
+      <span class="formula-note">
+        La marginal de X (n<sub>i·</sub>) suma cada fila; la de Y (n<sub>·j</sub>) suma cada columna.
+        Son las frecuencias de cada variable por separado.
+      </span>
+    </div>
+
+    <p style="margin-top:0.8rem;">Agregamos los totales de fila (derecha) y de columna (abajo):</p>
+
+    <div class="tabla-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>X \ Y</th>
+            <th class="num">1</th><th class="num">2</th><th class="num">3</th><th class="num">4</th><th class="num">5</th>
+            <th class="num">n<sub>i·</sub></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="lbl">−1</td><td class="num">2</td><td class="num">4</td><td class="num">6</td><td class="num">10</td><td class="num">8</td><td class="num hi">30</td></tr>
+          <tr><td class="lbl">0</td><td class="num">1</td><td class="num">2</td><td class="num">3</td><td class="num">5</td><td class="num">4</td><td class="num hi">15</td></tr>
+          <tr><td class="lbl">1</td><td class="num">3</td><td class="num">6</td><td class="num">9</td><td class="num">15</td><td class="num">12</td><td class="num hi">45</td></tr>
+          <tr><td class="lbl">2</td><td class="num">4</td><td class="num">8</td><td class="num">12</td><td class="num">20</td><td class="num">16</td><td class="num hi">60</td></tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td><strong>n<sub>·j</sub></strong></td>
+            <td class="num hi">10</td><td class="num hi">20</td><td class="num hi">30</td><td class="num hi">50</td><td class="num hi">40</td>
+            <td class="num"><strong>150</strong></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <p style="margin-bottom:0;">
+      Verificación: 30+15+45+60 = 150 ✓ &nbsp;y&nbsp; 10+20+30+50+40 = 150 ✓
+    </p>
+  </div>
+
+  <h3>Paso 2 — Las medias</h3>
+
+  <div class="aplicacion">
+    <span class="aplicacion-label">Fórmulas</span>
+    <div class="formula" style="margin:0.4rem 0;">
+      x̄ = (1/n) ·
+      <span class="sum"><span class="sum-top">I</span><span class="sum-sym">∑</span><span class="sum-bot">i=1</span></span>
+      &nbsp;x<sub>i</sub> · n<sub>i·</sub>
+      &nbsp;&nbsp;&nbsp;&nbsp;
+      ȳ = (1/n) ·
+      <span class="sum"><span class="sum-top">J</span><span class="sum-sym">∑</span><span class="sum-bot">j=1</span></span>
+      &nbsp;y<sub>j</sub> · n<sub>·j</sub>
+      <span class="formula-note">
+        Cada valor se pondera por su frecuencia marginal — porque aparece muchas veces.
+      </span>
+    </div>
+
+    <p style="margin-top:0.8rem;"><strong>Media de X</strong> — usamos la marginal de las filas:</p>
+
+    <div class="tabla-wrap">
+      <table>
+        <thead><tr><th class="num">x<sub>i</sub></th><th class="num">n<sub>i·</sub></th><th class="num">x<sub>i</sub> · n<sub>i·</sub></th></tr></thead>
+        <tbody>
+          <tr><td class="num">−1</td><td class="num">30</td><td class="num">−30</td></tr>
+          <tr><td class="num">0</td><td class="num">15</td><td class="num">0</td></tr>
+          <tr><td class="num">1</td><td class="num">45</td><td class="num">45</td></tr>
+          <tr><td class="num">2</td><td class="num">60</td><td class="num">120</td></tr>
+        </tbody>
+        <tfoot><tr><td><strong>Σ</strong></td><td class="num">150</td><td class="num hi">135</td></tr></tfoot>
+      </table>
+    </div>
+
+    <p style="font-family:var(--code); font-size:0.9rem; text-align:center; margin:0.5rem 0;">
+      x̄ = 135 / 150 = <strong>0,90</strong>
+    </p>
+
+    <p style="margin-top:0.8rem;"><strong>Media de Y</strong> — usamos la marginal de las columnas:</p>
+
+    <div class="tabla-wrap">
+      <table>
+        <thead><tr><th class="num">y<sub>j</sub></th><th class="num">n<sub>·j</sub></th><th class="num">y<sub>j</sub> · n<sub>·j</sub></th></tr></thead>
+        <tbody>
+          <tr><td class="num">1</td><td class="num">10</td><td class="num">10</td></tr>
+          <tr><td class="num">2</td><td class="num">20</td><td class="num">40</td></tr>
+          <tr><td class="num">3</td><td class="num">30</td><td class="num">90</td></tr>
+          <tr><td class="num">4</td><td class="num">50</td><td class="num">200</td></tr>
+          <tr><td class="num">5</td><td class="num">40</td><td class="num">200</td></tr>
+        </tbody>
+        <tfoot><tr><td><strong>Σ</strong></td><td class="num">150</td><td class="num hi">540</td></tr></tfoot>
+      </table>
+    </div>
+
+    <p style="font-family:var(--code); font-size:0.9rem; text-align:center; margin:0.5rem 0;">
+      ȳ = 540 / 150 = <strong>3,60</strong>
+    </p>
+  </div>
+
+  <h3>Paso 3 — Las varianzas</h3>
+
+  <div class="aplicacion">
+    <span class="aplicacion-label">Fórmulas (forma corta)</span>
+    <div class="formula" style="margin:0.4rem 0;">
+      S²<sub>X</sub> = (1/n) ·
+      <span class="sum"><span class="sum-top">I</span><span class="sum-sym">∑</span><span class="sum-bot">i=1</span></span>
+      &nbsp;x<sub>i</sub>² · n<sub>i·</sub> − x̄²
+      <span class="formula-note">
+        Promedio ponderado de los cuadrados, menos el cuadrado de la media. Análoga para Y con n<sub>·j</sub>.
+      </span>
+    </div>
+
+    <p style="margin-top:0.8rem;"><strong>Varianza de X:</strong></p>
+
+    <div class="tabla-wrap">
+      <table>
+        <thead><tr><th class="num">x<sub>i</sub></th><th class="num">n<sub>i·</sub></th><th class="num">x<sub>i</sub>²</th><th class="num">x<sub>i</sub>² · n<sub>i·</sub></th></tr></thead>
+        <tbody>
+          <tr><td class="num">−1</td><td class="num">30</td><td class="num">1</td><td class="num">30</td></tr>
+          <tr><td class="num">0</td><td class="num">15</td><td class="num">0</td><td class="num">0</td></tr>
+          <tr><td class="num">1</td><td class="num">45</td><td class="num">1</td><td class="num">45</td></tr>
+          <tr><td class="num">2</td><td class="num">60</td><td class="num">4</td><td class="num">240</td></tr>
+        </tbody>
+        <tfoot><tr><td colspan="3"><strong>Σ</strong></td><td class="num hi">315</td></tr></tfoot>
+      </table>
+    </div>
+
+    <p style="font-family:var(--code); font-size:0.88rem; text-align:center; margin:0.5rem 0;">
+      S²<sub>X</sub> = 315/150 − (0,90)² = 2,10 − 0,81 = <strong>1,29</strong>
+    </p>
+
+    <p style="margin-top:0.8rem;"><strong>Varianza de Y:</strong></p>
+
+    <div class="tabla-wrap">
+      <table>
+        <thead><tr><th class="num">y<sub>j</sub></th><th class="num">n<sub>·j</sub></th><th class="num">y<sub>j</sub>²</th><th class="num">y<sub>j</sub>² · n<sub>·j</sub></th></tr></thead>
+        <tbody>
+          <tr><td class="num">1</td><td class="num">10</td><td class="num">1</td><td class="num">10</td></tr>
+          <tr><td class="num">2</td><td class="num">20</td><td class="num">4</td><td class="num">80</td></tr>
+          <tr><td class="num">3</td><td class="num">30</td><td class="num">9</td><td class="num">270</td></tr>
+          <tr><td class="num">4</td><td class="num">50</td><td class="num">16</td><td class="num">800</td></tr>
+          <tr><td class="num">5</td><td class="num">40</td><td class="num">25</td><td class="num">1000</td></tr>
+        </tbody>
+        <tfoot><tr><td colspan="3"><strong>Σ</strong></td><td class="num hi">2160</td></tr></tfoot>
+      </table>
+    </div>
+
+    <p style="font-family:var(--code); font-size:0.88rem; text-align:center; margin:0.5rem 0;">
+      S²<sub>Y</sub> = 2160/150 − (3,60)² = 14,40 − 12,96 = <strong>1,44</strong>
+    </p>
+  </div>
+
+  <h3>Paso 4 — La covarianza</h3>
+
+  <div class="aplicacion">
+    <span class="aplicacion-label">Fórmula (forma corta con frecuencias)</span>
+    <div class="formula" style="margin:0.4rem 0;">
+      S<sub>XY</sub> = (1/n) ·
+      <span class="sum"><span class="sum-top">I</span><span class="sum-sym">∑</span><span class="sum-bot">i=1</span></span>
+      <span class="sum"><span class="sum-top">J</span><span class="sum-sym">∑</span><span class="sum-bot">j=1</span></span>
+      &nbsp;n<sub>ij</sub> · x<sub>i</sub> · y<sub>j</sub> − x̄ · ȳ
+      <span class="formula-note">
+        Doble sumatoria: recorremos todas las celdas, multiplicamos su frecuencia n<sub>ij</sub>
+        por el producto x<sub>i</sub>·y<sub>j</sub>, sumamos, y restamos el producto de las medias.
+      </span>
+    </div>
+
+    <p style="margin-top:0.8rem;">
+      Calculamos n<sub>ij</sub>·x<sub>i</sub>·y<sub>j</sub> en cada celda. Mostramos la tabla
+      completa de productos:
+    </p>
+
+    <div class="tabla-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>n<sub>ij</sub>·x<sub>i</sub>·y<sub>j</sub></th>
+            <th class="num">y=1</th><th class="num">y=2</th><th class="num">y=3</th><th class="num">y=4</th><th class="num">y=5</th>
+            <th class="num">Suma fila</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="lbl">x=−1</td>
+            <td class="num">−2</td><td class="num">−8</td><td class="num">−18</td><td class="num">−40</td><td class="num">−40</td>
+            <td class="num hi">−108</td>
+          </tr>
+          <tr>
+            <td class="lbl">x=0</td>
+            <td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td>
+            <td class="num hi">0</td>
+          </tr>
+          <tr>
+            <td class="lbl">x=1</td>
+            <td class="num">3</td><td class="num">12</td><td class="num">27</td><td class="num">60</td><td class="num">60</td>
+            <td class="num hi">162</td>
+          </tr>
+          <tr>
+            <td class="lbl">x=2</td>
+            <td class="num">8</td><td class="num">32</td><td class="num">72</td><td class="num">160</td><td class="num">160</td>
+            <td class="num hi">432</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr><td colspan="6"><strong>Suma total ΣΣ</strong></td><td class="num"><strong>486</strong></td></tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <p style="font-size:0.82rem; color:var(--ink2); margin:0.4rem 0;">
+      <em>Ejemplo de una celda:</em> fila x=−1, columna y=4 → n<sub>ij</sub>·x·y = 10·(−1)·4 = −40.
+    </p>
+
+    <p style="font-family:var(--code); font-size:0.9rem; text-align:center; margin:0.6rem 0;">
+      S<sub>XY</sub> = 486/150 − (0,90)·(3,60) = 3,24 − 3,24 = <strong>0,00</strong>
+    </p>
+  </div>
+
+  <div class="nota">
+    <span class="nota-label">¿Por qué dio exactamente cero?</span>
+    <p>
+      No es casualidad. Mirá las filas de la tabla original:
+    </p>
+    <ul style="padding-left:1.3rem; line-height:1.9; font-size:0.92rem; margin:0.4rem 0;">
+      <li>Fila x = −1: (2, 4, 6, 10, 8)</li>
+      <li>Fila x = 0: (1, 2, 3, 5, 4) ← base</li>
+      <li>Fila x = 1: (3, 6, 9, 15, 12) = 3 × base</li>
+      <li>Fila x = 2: (4, 8, 12, 20, 16) = 4 × base</li>
+    </ul>
+    <p style="margin-bottom:0;">
+      Todas las filas son múltiplos de la misma fila base. Eso significa que la distribución de
+      Y es <em>idéntica</em> para todo valor de X — hay <strong>independencia empírica</strong>,
+      y por eso S<sub>XY</sub> = 0 exactamente.
+    </p>
+  </div>
+
+  <div class="nota">
+    <span class="nota-label">Resumen del Caso 2</span>
+    <p style="margin-bottom:0;">
+      x̄ = 0,90 &nbsp;·&nbsp; ȳ = 3,60 &nbsp;·&nbsp; S²<sub>X</sub> = 1,29 &nbsp;·&nbsp;
+      S²<sub>Y</sub> = 1,44 &nbsp;·&nbsp; S<sub>XY</sub> = 0. Todas las fórmulas
+      <strong>con frecuencias</strong> (n<sub>i·</sub>, n<sub>·j</sub>, n<sub>ij</sub>),
+      porque los datos vienen agrupados.
+    </p>
+  </div>
+</section>
+
+<!-- RESUMEN FINAL -->
+<div class="resumen">
+  <span class="resumen-label">Lo esencial: una idea, dos escrituras</span>
+  <ul>
+    <li><strong>Los dos casos son análisis bivariado de dos cuantitativas.</strong> Mismo concepto, mismas medidas (medias, varianzas, covarianza).</li>
+    <li><strong>Caso 1 — datos sueltos:</strong> 8 trabajadores únicos. Fórmulas sin frecuencias: x̄ = Σx<sub>i</sub>/n, S<sub>XY</sub> = Σx<sub>i</sub>y<sub>i</sub>/n − x̄ȳ.</li>
+    <li><strong>Caso 2 — datos agrupados:</strong> 150 individuos en tabla. Fórmulas con frecuencias: x̄ = Σx<sub>i</sub>·n<sub>i·</sub>/n, S<sub>XY</sub> = ΣΣ n<sub>ij</sub>x<sub>i</sub>y<sub>j</sub>/n − x̄ȳ.</li>
+    <li><strong>Las frecuencias aparecen solo cuando hay repeticiones.</strong> Si cada dato es único, su frecuencia es 1 y la fórmula con frecuencias se reduce a la simple.</li>
+    <li><strong>La regla para elegir:</strong> ¿los datos vienen como lista individual? → sin frecuencias. ¿Vienen en tabla con conteos? → con frecuencias.</li>
+  </ul>
+</div>
+
+</main>
+
+<footer>
+  Estadística Descriptiva &nbsp;&middot;&nbsp; Datos sueltos vs. agrupados &nbsp;&middot;&nbsp; Resolución comparada
+</footer>
+
+</body>
+</html>
