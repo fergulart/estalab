@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Estadística Laboral · Módulo 8 — Del recibo de sueldo al salario real</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+
+<style>
+  :root{
+    --paper:#faf7f0;
+    --paper-2:#f3eee3;
+    --ink:#23211c;
+    --ink-soft:#5c574c;
+    --green:#1f6f47;
+    --green-deep:#164e33;
+    --green-tint:#e7f1ea;
+    --gold:#9a7320;
+    --gold-tint:#f6efdd;
+    --clay:#a8462f;
+    --clay-tint:#f6e6e0;
+    --line:#ddd6c7;
+    --line-strong:#c8c0ad;
+    --serif:'Lora', Georgia, serif;
+    --sans:'DM Sans', system-ui, sans-serif;
+    --mono:'Space Mono', ui-monospace, monospace;
+  }
+
+  *{box-sizing:border-box;}
+  html{ -webkit-text-size-adjust:100%; }
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--serif);
+    font-size:clamp(16.5px, 1.05rem + 0.15vw, 19px);
+    line-height:1.72;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ----------- barra superior ----------- */
+  .topbar{
+    position:sticky; top:0; z-index:50;
+    display:flex; align-items:center; justify-content:space-between;
+    gap:1rem;
+    padding:.55rem clamp(1rem,4vw,2.4rem);
+    background:rgba(250,247,240,.86);
+    backdrop-filter:saturate(140%) blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  .topbar .tag{
+    font-family:var(--mono); font-size:.7rem; letter-spacing:.13em;
+    text-transform:uppercase; color:var(--green-deep);
+  }
+  .topbar .tag b{ color:var(--ink); }
+  .printbtn{
+    font-family:var(--mono); font-size:.7rem; letter-spacing:.08em;
+    text-transform:uppercase;
+    border:1px solid var(--green); color:var(--green-deep);
+    background:transparent; border-radius:999px;
+    padding:.4rem .85rem; cursor:pointer;
+    transition:background .15s ease, color .15s ease;
+  }
+  .printbtn:hover{ background:var(--green); color:#fff; }
+  .printbtn:focus-visible{ outline:3px solid var(--gold); outline-offset:2px; }
+
+  /* ----------- layout ----------- */
+  .wrap{ max-width:830px; margin:0 auto; padding:0 clamp(1.1rem,4vw,2rem); }
+
+  /* ----------- portada / hero ----------- */
+  .hero{ padding:3.2rem 0 2.2rem; border-bottom:1px solid var(--line); }
+  .hero .eyebrow{
+    font-family:var(--mono); font-size:.74rem; letter-spacing:.16em;
+    text-transform:uppercase; color:var(--green);
+    display:flex; align-items:center; gap:.7rem; margin-bottom:1.1rem;
+  }
+  .hero .eyebrow::after{ content:""; height:1px; flex:1; background:var(--line-strong); }
+  .hero h1{
+    font-family:var(--sans); font-weight:700; line-height:1.08;
+    font-size:clamp(2rem, 1.5rem + 2.4vw, 3.1rem);
+    letter-spacing:-.015em; margin:.2rem 0 .9rem;
+  }
+  .hero h1 .accent{ color:var(--green); }
+  .hero .lede{
+    font-size:clamp(1.05rem,1rem + .5vw,1.3rem); color:var(--ink-soft);
+    font-style:italic; max-width:60ch; margin:.4rem 0 1.6rem;
+  }
+  .hero .question{
+    font-family:var(--serif); font-weight:600; font-size:1.06rem;
+    background:var(--green-tint); border-left:4px solid var(--green);
+    padding:.9rem 1.1rem; border-radius:0 8px 8px 0; color:var(--green-deep);
+  }
+  .hero .meta{
+    margin-top:1.5rem; font-family:var(--mono); font-size:.72rem;
+    letter-spacing:.04em; color:var(--ink-soft); line-height:1.9;
+  }
+
+  /* ----------- estructura de partes ----------- */
+  .part{ padding:2.8rem 0 .5rem; }
+  .part-head{ margin-bottom:1.4rem; }
+  .part-head .num{
+    font-family:var(--mono); font-size:.76rem; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--green); display:block; margin-bottom:.45rem;
+  }
+  .part-head h2{
+    font-family:var(--sans); font-weight:700; font-size:clamp(1.5rem,1.2rem+1.4vw,2.1rem);
+    line-height:1.12; letter-spacing:-.01em; margin:0;
+    padding-bottom:.7rem; border-bottom:3px solid var(--green);
+    display:inline-block;
+  }
+
+  h3{
+    font-family:var(--sans); font-weight:700; font-size:1.18rem;
+    margin:2rem 0 .55rem; letter-spacing:-.005em;
+  }
+  h3 .mini{
+    font-family:var(--mono); font-weight:400; font-size:.66rem;
+    letter-spacing:.12em; text-transform:uppercase; color:var(--green);
+    display:block; margin-bottom:.15rem;
+  }
+  h4{ font-family:var(--sans); font-weight:500; font-size:1.02rem; margin:1.4rem 0 .35rem; color:var(--green-deep); }
+
+  p{ margin:.7rem 0; }
+  strong{ font-weight:600; }
+  em.term{ font-style:normal; font-weight:600; color:var(--green-deep); }
+  .small{ font-size:.9rem; color:var(--ink-soft); }
+
+  a{ color:var(--green-deep); }
+
+  /* ----------- cajas didácticas ----------- */
+  .box{ border-radius:0 10px 10px 0; padding:1rem 1.2rem; margin:1.3rem 0; }
+  .box .lab{
+    font-family:var(--mono); font-size:.68rem; letter-spacing:.12em;
+    text-transform:uppercase; display:block; margin-bottom:.5rem; font-weight:700;
+  }
+  .box p:first-of-type{ margin-top:0; }
+  .box p:last-child{ margin-bottom:0; }
+
+  .def{ background:var(--green-tint); border-left:4px solid var(--green); }
+  .def .lab{ color:var(--green-deep); }
+
+  .ej{ background:#fff; border:1px solid var(--line); border-left:4px solid var(--gold); }
+  .ej .lab{ color:var(--gold); }
+
+  .idea{ background:var(--gold-tint); border-left:4px solid var(--gold); }
+  .idea .lab{ color:var(--gold); }
+
+  .ojo{ background:var(--clay-tint); border-left:4px solid var(--clay); }
+  .ojo .lab{ color:var(--clay); }
+
+  .result{ background:var(--green-deep); color:#f3efe2; border-left:4px solid #2f9c63; }
+  .result .lab{ color:#9fe0bd; }
+  .result strong{ color:#fff; }
+
+  /* ----------- ficha técnica (IPC / IMS) ----------- */
+  .ficha{
+    border:1px solid var(--line-strong); border-top:4px solid var(--green);
+    border-radius:4px; padding:1rem 1.2rem; margin:1.3rem 0; background:#fff;
+  }
+  .ficha .lab{
+    font-family:var(--mono); font-size:.68rem; letter-spacing:.1em;
+    text-transform:uppercase; color:var(--green); font-weight:700; display:block; margin-bottom:.5rem;
+  }
+  .ficha dl{ margin:0; display:grid; grid-template-columns:auto 1fr; gap:.25rem .9rem; }
+  .ficha dt{ font-family:var(--mono); font-size:.78rem; color:var(--ink-soft); }
+  .ficha dd{ margin:0; font-size:.95rem; }
+
+  /* ----------- pasos numerados ----------- */
+  .pasos{ counter-reset:paso; margin:1.4rem 0; padding:0; list-style:none; }
+  .pasos > li{
+    position:relative; counter-increment:paso;
+    padding:.2rem 0 1.1rem 3rem; margin:0;
+    border-left:2px solid var(--line-strong); margin-left:1.15rem;
+  }
+  .pasos > li:last-child{ border-left-color:transparent; padding-bottom:.2rem; }
+  .pasos > li::before{
+    content:counter(paso);
+    position:absolute; left:-1.15rem; top:-.15rem;
+    width:2.3rem; height:2.3rem; border-radius:50%;
+    background:var(--green); color:#fff;
+    font-family:var(--mono); font-weight:700; font-size:.95rem;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .pasos > li .steptitle{
+    font-family:var(--sans); font-weight:700; font-size:1.04rem; display:block; margin-bottom:.25rem;
+  }
+
+  /* ----------- fórmulas en bloque ----------- */
+  .formula{
+    margin:1.1rem 0; padding:.4rem .2rem; text-align:center; overflow-x:auto;
+  }
+  .formula.boxed{
+    border:1px dashed var(--line-strong); border-radius:8px; background:#fff;
+    padding:1rem .6rem;
+  }
+  .katex{ font-size:1.06em; }
+
+  /* ----------- tablas ----------- */
+  .tablewrap{ overflow-x:auto; margin:1.3rem 0; }
+  table{ border-collapse:collapse; width:100%; font-size:.92rem; }
+  caption{
+    font-family:var(--mono); font-size:.68rem; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--ink-soft); text-align:left; margin-bottom:.5rem;
+  }
+  th,td{ padding:.5rem .65rem; border-bottom:1px solid var(--line); text-align:left; }
+  thead th{
+    font-family:var(--sans); font-weight:700; font-size:.82rem;
+    background:var(--green-tint); color:var(--green-deep);
+    border-bottom:2px solid var(--green);
+  }
+  td.num,th.num{ text-align:right; font-family:var(--mono); font-size:.86rem; white-space:nowrap; }
+  tbody tr:nth-child(even){ background:rgba(243,238,227,.45); }
+  tr.total td{ font-weight:700; border-top:2px solid var(--line-strong); background:var(--green-tint); }
+  .rowlabel{ font-weight:600; }
+
+  /* ----------- varios ----------- */
+  hr.soft{ border:none; border-top:1px solid var(--line); margin:2.4rem 0; }
+  .checklist{ list-style:none; padding:0; margin:1rem 0; }
+  .checklist li{ padding:.35rem 0 .35rem 1.7rem; position:relative; }
+  .checklist li::before{
+    content:"›"; position:absolute; left:.2rem; top:.3rem;
+    color:var(--green); font-weight:700; font-family:var(--sans);
+  }
+
+  footer{
+    margin-top:3.5rem; padding:2rem 0 3rem; border-top:1px solid var(--line);
+    font-size:.85rem; color:var(--ink-soft);
+  }
+  footer .mono{ font-family:var(--mono); font-size:.72rem; letter-spacing:.04em; }
+
+  /* ----------- impresión ----------- */
+  @media print{
+    .topbar{ display:none; }
+    body{ background:#fff; font-size:11.2pt; line-height:1.5; }
+    .wrap{ max-width:100%; }
+    .hero{ padding-top:.4rem; }
+    .box, .ficha, .formula.boxed, .pasos > li{ break-inside:avoid; }
+    .part{ break-before:auto; }
+    .result{ -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    thead th, .def, .idea, .ojo, .result, .ej, tr.total td{ -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    a{ color:var(--ink); text-decoration:none; }
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    *{ transition:none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <span class="tag"><b>Estadística Laboral</b> · Módulo 8 · Números índices &amp; salario real · v3</span>
+  <button class="printbtn" onclick="window.print()">Imprimir / PDF</button>
+</div>
+
+<div class="wrap">
+
+  <!-- ====================== HERO ====================== -->
+  <header class="hero">
+    <div class="eyebrow">Relaciones Laborales · Facultad de Derecho</div>
+    <h1>Del recibo de sueldo<br>al <span class="accent">salario real</span>.</h1>
+    <p class="lede">Los dos ejercicios clave del repartido del Módulo 8, resueltos desde cero: sin dar por sabido absolutamente nada sobre números índices.</p>
+    <p class="question">Todo el módulo contesta una sola pregunta práctica: <strong>cuando me suben el sueldo, ¿puedo comprar más cosas… o la inflación se comió el aumento?</strong> Responderla bien es saber qué es un número índice, una variación porcentual, una deflactación y un índice ponderado. Vamos uno por uno.</p>
+    <div class="meta">
+      EJERCICIOS ELEGIDOS — Nº 3 (salario real) &amp; Nº 6 (Laspeyres · Paasche · valor)<br>
+      REQUISITO PREVIO — univariada, bivariada y medidas de dispersión. Nada más.<br>
+      MATERIAL DE CLASE — apoyo del Módulo 8 (Quiñones · Cabrera)
+    </div>
+  </header>
+
+  <!-- ====================== ORIENTACIÓN ====================== -->
+  <section class="part">
+    <div class="part-head">
+      <span class="num">Antes de arrancar</span>
+      <h2>Dónde estás parado</h2>
+    </div>
+
+    <p>Hasta ahora, en estadística, describiste una <strong>foto</strong>: tomabas una población en un momento dado y la resumías. Con una variable (univariada): promedio, mediana, varianza, desvío. Con dos a la vez (bivariada): tablas de doble entrada, covarianza, correlación. Todo eso es describir <em>un instante</em>.</p>
+
+    <p>Acá cambiamos de pregunta. Ahora nos interesa la <strong>película</strong>: cómo evoluciona una característica <em>a lo largo del tiempo</em>. ¿Subieron los precios? ¿Creció el salario? ¿Mejoró respecto al año pasado? La herramienta que inventaron para eso es el <em class="term">número índice</em>, y de ahí salen palabras que escuchás todos los días: IPC, inflación, salario real.</p>
+
+    <div class="idea">
+      <span class="lab">El mapa del módulo en 3 ideas</span>
+      <p><strong>1. El instrumento.</strong> El número índice y su variación porcentual: cómo medir un cambio en el tiempo.<br>
+      <strong>2. Cómo se arma de verdad.</strong> Cuando hay muchos productos (una canasta), hay que ponderar: ahí aparecen <em>Laspeyres</em> y <em>Paasche</em>. El IPC y el IMS se construyen así. → <strong>Ejercicio 6.</strong><br>
+      <strong>3. Para qué sirve.</strong> Sacarle la inflación a un sueldo (deflactar) para ver su poder de compra real. → <strong>Ejercicio 3.</strong></p>
+    </div>
+
+    <p class="small">Los otros seis ejercicios del repartido (cambios de base, completar tablas de variaciones, PBI per cápita, producción industrial) son variaciones más mecánicas de estas mismas ideas. Si dominás el 3 y el 6, los demás caen solos.</p>
+  </section>
+
+  <!-- ====================== PARTE 0 — CIMIENTOS ====================== -->
+  <section class="part">
+    <div class="part-head">
+      <span class="num">Parte 0 · Cimientos</span>
+      <h2>Las tres piezas que vas a usar en todo</h2>
+    </div>
+
+    <p>Estos tres conceptos aparecen en los dos ejercicios. Los dejamos firmes acá, así después no frenamos.</p>
+
+    <h3><span class="mini">Pieza 1</span>Número índice</h3>
+    <div class="def">
+      <span class="lab">Definición</span>
+      <p>Un <strong>número índice</strong> es un número que compara el valor de una variable en un momento contra su valor en un momento de referencia llamado <strong>base</strong>. A la base le asignamos el valor <strong>100</strong>, y todos los demás momentos se leen en relación a ese 100.</p>
+    </div>
+
+    <p>La fórmula del caso más simple (una sola variable) es:</p>
+    <div class="formula boxed">
+      \[ I_{0}^{\,t}=\frac{X_{t}}{X_{0}}\times 100 \]
+    </div>
+    <p>donde \(X_0\) es el valor en el momento base y \(X_t\) el valor en el momento \(t\). Es, literalmente, una regla de tres: "si el momento base vale 100, ¿cuánto vale el momento \(t\)?".</p>
+
+    <div class="ojo">
+      <span class="lab">Ojo · la notación rara</span>
+      <p>El momento que estás mirando va <strong>arriba</strong> y la base va <strong>abajo</strong>: \(I_{\text{base}}^{\,\text{momento}}\). Por ejemplo, \(I_{2000}^{\,2007}\) se lee "índice del año 2007 con base en 2000". Cuesta al principio; con dos ejemplos se acomoda.</p>
+    </div>
+
+    <div class="ej">
+      <span class="lab">Ejemplo 1 · precios</span>
+      <p>Un kilo de pan costaba <strong>$40</strong> en el año base y hoy cuesta <strong>$52</strong>. El índice de precio del pan es \( \frac{52}{40}\times 100 = 130 \). Lectura: el pan está un <strong>30 %</strong> más caro que en la base (130 − 100 = 30).</p>
+    </div>
+    <div class="ej">
+      <span class="lab">Ejemplo 2 · empleados</span>
+      <p>Una empresa tenía <strong>90</strong> empleados en 2000 (base) y <strong>105</strong> en 2007. El índice es \( \frac{105}{90}\times 100 = 116{,}7 \). Lectura: la plantilla creció un <strong>16,7 %</strong>. Fijate que el índice es solo la variable "reescalada" para que la base valga 100; no inventa información.</p>
+    </div>
+
+    <h3><span class="mini">Pieza 2</span>Variación porcentual</h3>
+    <div class="def">
+      <span class="lab">Definición</span>
+      <p>La <strong>variación porcentual</strong> dice en qué porcentaje creció (o cayó) el índice —y por lo tanto la variable— entre dos momentos. Es el "cuánto cambió" expresado en porcentaje.</p>
+    </div>
+    <div class="formula boxed">
+      \[ \operatorname{Var} I_{\,t_1\rightarrow t_2}=\left(\frac{I^{\,t_2}-I^{\,t_1}}{I^{\,t_1}}\right)\times 100=\left(\frac{I^{\,t_2}}{I^{\,t_1}}-1\right)\times 100 \]
+    </div>
+    <p>Las dos formas son la misma: "valor nuevo sobre valor viejo, menos 1, por cien".</p>
+
+    <div class="idea">
+      <span class="lab">Atajo que vas a usar mil veces</span>
+      <p>Cuando comparás contra la <strong>base</strong> (o contra cualquier momento donde el índice valga 100), la cuenta se reduce a una <strong>resta</strong>:</p>
+      <div class="formula">\[ \operatorname{Var} I_{\,0\rightarrow t}=I^{\,t}-100 \]</div>
+      <p>Por eso, si el IPC vale 108,5 con base en cierto mes, la inflación desde ese mes fue directamente <strong>8,5 %</strong>.</p>
+    </div>
+
+    <h3><span class="mini">Pieza 3</span>Un doble aumento, visto en variación y en índice</h3>
+    <p>El índice (Pieza 1) y la variación (Pieza 2) son, en el fondo, dos formas de mirar lo mismo. La <strong>variación</strong> te dice cuánto cambió algo entre dos momentos; el <strong>índice</strong> guarda toda la serie de cambios en un solo número anclado en 100. Cuando un valor sube dos veces seguidas, vale la pena ver cómo aparece ese doble aumento en cada una. Lo hacemos con un caso chico.</p>
+
+    <div class="ficha">
+      <span class="lab">Problema</span>
+      <p>El salario nominal de un cargo era de <strong>$25.000</strong>. En el primer año subió <strong>10 %</strong>; en el segundo, <strong>20 %</strong>. Queremos ver esos dos aumentos de dos maneras: <strong>(a)</strong> como variaciones y <strong>(b)</strong> construyendo un índice con base en el inicio (año 0 = 100).</p>
+      <p class="small">Trabajamos con el número del recibo (el salario nominal). Si ese sueldo además alcanza para comprar más o menos es la pregunta del Ejercicio 3; acá solo armamos la herramienta.</p>
+    </div>
+
+    <ol class="pasos">
+      <li>
+        <span class="steptitle">Los salarios, año a año</span>
+        <p>Cada aumento es multiplicar por su factor \((1+i)\): subir 10 % es ×1,10; subir 20 % es ×1,20.</p>
+        <div class="formula">\[ S_0=25\,000 \qquad S_1=25\,000\times 1{,}10 = 27\,500 \qquad S_2=27\,500\times 1{,}20 = 33\,000 \]</div>
+      </li>
+
+      <li>
+        <span class="steptitle">(a) Los dos aumentos como variaciones</span>
+        <p>La variación es "nuevo sobre viejo, menos 1, por cien". Una para cada año:</p>
+        <div class="formula">\[ \operatorname{Var}_{0\rightarrow1}=\left(\frac{27\,500}{25\,000}-1\right)\times100 = 10\% \]</div>
+        <div class="formula">\[ \operatorname{Var}_{1\rightarrow2}=\left(\frac{33\,000}{27\,500}-1\right)\times100 = 20\% \]</div>
+        <p>Hasta acá, nada raro: recuperamos los dos aumentos que nos dieron, +10 % y +20 %, cada uno entre su par de años.</p>
+      </li>
+
+      <li>
+        <span class="steptitle">(b) Los mismos aumentos, ahora dentro de un índice</span>
+        <p>El índice es cada salario comparado con el del año base, puesto en 100: \( I^{\,t}=\dfrac{S_t}{S_0}\times100 \).</p>
+        <div class="formula">\[ I^{\,0}=100 \qquad I^{\,1}=\frac{27\,500}{25\,000}\times100 = 110 \qquad I^{\,2}=\frac{33\,000}{25\,000}\times100 = 132 \]</div>
+        <p>Y acá está lo importante: <strong>los aumentos siguen adentro</strong>. Pasar de un valor del índice al siguiente es multiplicar por el mismo factor de antes:</p>
+        <div class="formula">\[ 110 = 100\times 1{,}10 \qquad\qquad 132 = 110\times 1{,}20 \]</div>
+        <p>O sea: el +10 % es el salto de 100 a 110, y el +20 % es el salto de 110 a 132. Variación e índice no son cosas distintas: el índice es la variación acumulada y reescalada para que la base valga 100.</p>
+      </li>
+
+      <li>
+        <span class="steptitle">El aumento total (donde se nota la comodidad del índice)</span>
+        <p>¿Cuánto subió el salario en los dos años juntos? Con el índice se lee casi de un vistazo, porque la base vale 100:</p>
+        <div class="formula">\[ \operatorname{Var}_{0\rightarrow2}=I^{\,2}-100 = 132-100 = 32\% \]</div>
+        <p>Con las variaciones hay que combinarlas, y acá va el único cuidado: se <strong>multiplican los factores</strong>, no se suman los porcentajes.</p>
+        <div class="formula">\[ (1{,}10)\times(1{,}20)-1 = 1{,}32-1 = 32\% \]</div>
+        <p>Mismo resultado: <strong>+32 %</strong> (no 30 %). Esa es justo la gracia del índice: como ya viene en base 100, el número 132 te dice "subió 32 % desde el inicio" sin ninguna cuenta extra.</p>
+      </li>
+
+      <li>
+        <span class="steptitle">El índice guarda todas las variaciones</span>
+        <p>Como el índice acumula los saltos, podés sacar cualquier variación de vuelta dividiendo dos de sus valores. Por ejemplo, el aumento del segundo año sale del índice solo:</p>
+        <div class="formula">\[ \operatorname{Var}_{1\rightarrow2}=\left(\frac{I^{\,2}}{I^{\,1}}-1\right)\times100=\left(\frac{132}{110}-1\right)\times100 = 20\% \]</div>
+        <p>Recuperamos el 20 % original. El índice es, en el fondo, todas las variaciones empaquetadas en una sola serie.</p>
+      </li>
+    </ol>
+
+    <div class="tablewrap">
+      <table>
+        <caption>El problema, de un vistazo</caption>
+        <thead>
+          <tr><th>Año</th><th class="num">Salario ($)</th><th class="num">Variación del año</th><th class="num">Índice (año 0 = 100)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="rowlabel">0</td><td class="num">25 000</td><td class="num">—</td><td class="num">100</td></tr>
+          <tr><td class="rowlabel">1</td><td class="num">27 500</td><td class="num">+10 %</td><td class="num">110</td></tr>
+          <tr><td class="rowlabel">2</td><td class="num">33 000</td><td class="num">+20 %</td><td class="num">132</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="idea">
+      <span class="lab">La síntesis</span>
+      <p><strong>Variación</strong> = el cambio entre dos momentos puntuales, en porcentaje (un salto). <strong>Índice</strong> = todos esos saltos acumulados en un número que arranca en 100. Misma información; el índice es más cómodo cuando querés comparar muchos períodos contra una misma referencia, porque el cambio desde la base se lee restándole 100.</p>
+    </div>
+
+    <p>Esta misma maquinaria —índice y variación de la mano— es la que vas a usar en los dos ejercicios: el IPC y el IMS son índices, y todo lo que hacemos con ellos (inflación, salario real) son variaciones leídas sobre esos índices. Arrancamos por el que le da sentido a todo el módulo.</p>
+  </section>
+
+  <!-- ====================== PARTE 1 — SALARIO REAL ====================== -->
+  <section class="part">
+    <div class="part-head">
+      <span class="num">Parte 1 · Ejercicio 3 del repartido</span>
+      <h2>El salario real: ¿el aumento me alcanza?</h2>
+    </div>
+
+    <div class="ficha">
+      <span class="lab">La consigna, en limpio</span>
+      <dl>
+        <dt>Marzo año 0</dt><dd>La persona entra a la empresa ganando <strong>$1000</strong>.</dd>
+        <dt>Marzo año 1</dt><dd>Le aumentan el sueldo un <strong>10 %</strong>.</dd>
+        <dt>Marzo año 2</dt><dd>Le suben <strong>$200</strong> sobre el sueldo anterior.</dd>
+        <dt>Inflación 0→1</dt><dd><strong>10,5 %</strong> (variación del IPC en esos 12 meses).</dd>
+        <dt>Inflación 1→2</dt><dd><strong>8 %</strong> (variación del IPC en los 12 meses hasta marzo del año 2).</dd>
+        <dt>Se pide</dt><dd>¿Cómo evolucionó su <strong>salario real</strong>? ¿Cuál es hoy su poder de compra respecto a cuando entró?</dd>
+      </dl>
+    </div>
+
+    <h3>Primero los conceptos nuevos</h3>
+
+    <h4>Salario nominal (precio corriente)</h4>
+    <div class="def">
+      <span class="lab">Definición</span>
+      <p>El <strong>salario nominal</strong> es la plata que figura en el recibo: el número de pesos de ese momento. También se llama <strong>precio corriente</strong>, porque está medido en la moneda "corriente" de su fecha.</p>
+    </div>
+    <div class="ej">
+      <span class="lab">Ejemplo</span>
+      <p>En marzo del año 1 esta persona cobra $1100 nominales. Es lo que dice el recibo, ni más ni menos. Pero el recibo no te dice si con esos $1100 podés comprar más o menos que antes.</p>
+    </div>
+
+    <h4>Inflación</h4>
+    <div class="def">
+      <span class="lab">Definición</span>
+      <p>La <strong>inflación</strong> es el aumento del nivel general de precios de una economía. En Uruguay se mide con la variación del <strong>IPC</strong> (Índice de Precios del Consumo). Si la inflación de un año fue 8 %, en promedio las cosas que comprás están 8 % más caras.</p>
+    </div>
+    <div class="ej">
+      <span class="lab">Ejemplo · por qué importa</span>
+      <p>Si tu sueldo sube 10 % pero los precios suben 10 %, cobrás más pesos pero comprás exactamente lo mismo. El aumento fue "de mentira" en términos de poder de compra. La inflación es la que te roba el aumento.</p>
+    </div>
+
+    <h4>Salario real (precio constante)</h4>
+    <div class="def">
+      <span class="lab">Definición</span>
+      <p>El <strong>salario real</strong> mide el sueldo por lo que <em>puede comprar</em>, no por su número de pesos. Para eso se expresa en pesos de un período fijo de referencia, sacándole el efecto de la inflación. A esos valores comparables se les llama <strong>precios constantes</strong>.</p>
+    </div>
+    <div class="ej">
+      <span class="lab">Ejemplo · la intuición</span>
+      <p>Pensalo en "kilos de pan" en vez de pesos. Si el pan vale $40 y ganás $1000, tu sueldo son 25 panes. Si te suben a $1100 pero el pan pasó a $44, seguís comprando 25 panes: tu salario real no cambió, aunque el nominal subió 10 %. Deflactar es justamente convertir pesos en "panes" (o en pesos de un año fijo) para poder comparar.</p>
+    </div>
+
+    <h4>Deflactar y deflactor</h4>
+    <div class="def">
+      <span class="lab">Definición</span>
+      <p><strong>Deflactar</strong> es pasar un precio corriente a precios constantes, dividiéndolo por un índice de precios que se usa como <strong>deflactor</strong> (acá, el IPC). El resultado queda expresado en el poder de compra del período base del deflactor.</p>
+    </div>
+    <div class="formula boxed">
+      \[ \overline{P^{\,t}_{j}}=\frac{P^{\,t}}{\,IPC^{\,t}_{j}\,}\times 100 \]
+    </div>
+    <p class="small">\(\overline{P^{\,t}_{j}}\): precio del momento \(t\) a precios constantes del período \(j\). \(P^{\,t}\): precio corriente. \(IPC^{\,t}_{j}\): IPC del momento \(t\) con base en \(j\). Se multiplica por 100 porque el IPC está en base 100.</p>
+
+    <h3>Ahora sí, la resolución paso a paso</h3>
+
+    <p>La estrategia es la misma que usa el módulo en §8.5 con el salario real de 2007: vamos a llevar todos los sueldos a <strong>precios constantes del año 0</strong> (el momento en que entró), porque la pregunta es justamente "respecto a cuando entró". Para eso necesitamos un IPC con base en el año 0 (= 100).</p>
+
+    <ol class="pasos">
+      <li>
+        <span class="steptitle">Escribir los sueldos nominales</span>
+        <p>El número del recibo en cada marzo. El del año 1 es 1000 aumentado 10 %; el del año 2 es el anterior más $200.</p>
+        <div class="formula">\[ S_0=1000 \qquad S_1=1000\times 1{,}10=1100 \qquad S_2=1100+200=1300 \]</div>
+        <p class="small">Hasta acá, todo "de mentira": son pesos de años distintos, no se pueden comparar todavía.</p>
+      </li>
+
+      <li>
+        <span class="steptitle">Construir el IPC con base en el año 0</span>
+        <p>Nos dan las inflaciones, que son variaciones del IPC. Arrancamos el IPC en 100 (año 0) y lo vamos agrandando con cada inflación. Recordá: los porcentajes se <em>encadenan multiplicando</em>.</p>
+        <div class="formula">\[ IPC_0 = 100 \]</div>
+        <div class="formula">\[ IPC_1 = 100\times(1+0{,}105)=110{,}5 \]</div>
+        <div class="formula">\[ IPC_2 = 110{,}5\times(1+0{,}08)=119{,}34 \]</div>
+        <p class="small">El IPC del año 2 (119,34) ya trae adentro la inflación acumulada de los dos años: 119,34 − 100 = 19,34 %, justo lo que calculamos en los Cimientos.</p>
+      </li>
+
+      <li>
+        <span class="steptitle">Deflactar cada sueldo (pasarlo a pesos del año 0)</span>
+        <p>Aplicamos la fórmula del deflactor a cada año. Esto convierte cada sueldo nominal en "pesos del año 0", o sea en poder de compra comparable.</p>
+        <div class="formula">\[ \overline{S_0}=\frac{1000}{100}\times 100 = 1000 \]</div>
+        <div class="formula">\[ \overline{S_1}=\frac{1100}{110{,}5}\times 100 = 995{,}48 \]</div>
+        <div class="formula">\[ \overline{S_2}=\frac{1300}{119{,}34}\times 100 = 1089{,}32 \]</div>
+        <div class="tablewrap">
+          <table>
+            <caption>Resumen — todo en pesos del año 0</caption>
+            <thead>
+              <tr><th>Momento</th><th class="num">Sueldo nominal ($)</th><th class="num">IPC (año 0 = 100)</th><th class="num">Sueldo real ($ del año 0)</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="rowlabel">Marzo año 0</td><td class="num">1000</td><td class="num">100,00</td><td class="num">1000,00</td></tr>
+              <tr><td class="rowlabel">Marzo año 1</td><td class="num">1100</td><td class="num">110,50</td><td class="num">995,48</td></tr>
+              <tr><td class="rowlabel">Marzo año 2</td><td class="num">1300</td><td class="num">119,34</td><td class="num">1089,32</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </li>
+
+      <li>
+        <span class="steptitle">Leer la evolución del salario real</span>
+        <p>Ahora que están todos en la misma moneda (pesos del año 0), <em>recién ahora</em> tiene sentido compararlos. Calculamos las variaciones del salario real con la fórmula de siempre.</p>
+        <p><strong>Primer año (0 → 1):</strong></p>
+        <div class="formula">\[ \left(\frac{995{,}48}{1000}-1\right)\times 100 = -0{,}45\% \]</div>
+        <p>El poder de compra <strong>cayó</strong> un 0,45 %. Tiene sentido: el aumento fue de 10 % pero la inflación fue 10,5 %, un poquito más. El recibo decía "te aumentaron", pero comprabas un pelín menos.</p>
+        <p><strong>Segundo año (1 → 2):</strong></p>
+        <div class="formula">\[ \left(\frac{1089{,}32}{995{,}48}-1\right)\times 100 = +9{,}43\% \]</div>
+        <p>Acá sí hubo mejora real: el salario real <strong>subió</strong> 9,43 %. El aumento nominal fue $200 sobre $1100, o sea 18,18 %, contra una inflación de solo 8 %.</p>
+      </li>
+
+      <li>
+        <span class="steptitle">Responder la pregunta final</span>
+        <p>"¿Cuál es hoy su poder de compra respecto a cuando entró?" Es la variación del salario real entre el año 0 y el año 2:</p>
+        <div class="formula">\[ \left(\frac{1089{,}32}{1000}-1\right)\times 100 = +8{,}93\% \]</div>
+      </li>
+    </ol>
+
+    <div class="result">
+      <span class="lab">Resultado</span>
+      <p>En el <strong>primer año</strong> el salario real cayó <strong>0,45 %</strong> (el aumento del 10 % no le ganó a la inflación de 10,5 %). En el <strong>segundo año</strong> subió <strong>9,43 %</strong>. En total, después de dos años, su poder de compra es <strong>8,93 % mayor</strong> que cuando entró: con su sueldo de hoy compra casi un 9 % más de bienes que con el de entrada, medido a precios iguales.</p>
+    </div>
+
+    <div class="idea">
+      <span class="lab">Truco de control (Índice de Salario Real)</span>
+      <p>Hay un atajo para chequear: la variación del salario real sale de combinar la del nominal con la inflación.</p>
+      <div class="formula">\[ 1+\text{var. real}=\frac{1+\text{var. nominal}}{1+\text{inflación}} \]</div>
+      <p>Año 0→2 todo junto: nominal +30 % ($1000→$1300), inflación acumulada +19,34 %. Entonces \( \frac{1{,}30}{1{,}1934}-1 = 0{,}0893 = 8{,}93\% \). Mismo resultado. Esa fracción, llevada a base 100, es el <strong>Índice de Salario Real (ISR)</strong>: vale 100 al entrar, 99,55 en el año 1 y <strong>108,93</strong> en el año 2.</p>
+    </div>
+
+    <div class="ojo">
+      <span class="lab">El error que casi todos cometen acá</span>
+      <p>La tentación es restar: "subió 30 % nominal, hubo 19,34 % de inflación, entonces ganó 30 − 19,34 = 10,66 %". <strong>Está mal.</strong> Los porcentajes no se restan, se dividen \((1+i)\). La diferencia (10,66 % vs 8,93 % real) crece cuanto más altas son las cifras. Siempre deflactá dividiendo.</p>
+    </div>
+  </section>
+
+  <!-- ====================== PARTE 2 — LASPEYRES / PAASCHE ====================== -->
+  <section class="part">
+    <div class="part-head">
+      <span class="num">Parte 2 · Ejercicio 6 del repartido</span>
+      <h2>Cómo se arma un índice con muchos productos</h2>
+    </div>
+
+    <p>En el ejercicio anterior usamos el IPC como un dato que nos daban. Pero, ¿de dónde sale el IPC? ¿Cómo se resume en <em>un solo número</em> el precio de cientos de productos distintos? Esa es la pregunta de este ejercicio, y la respuesta son los índices <strong>ponderados</strong>: Laspeyres y Paasche.</p>
+
+    <div class="ficha">
+      <span class="lab">La consigna, en limpio</span>
+      <p>Una empresa vende tres productos. Tenemos precio (\(p\)) y cantidad (\(q\)) de cada uno en tres años:</p>
+      <div class="tablewrap">
+        <table>
+          <thead>
+            <tr><th rowspan="2">Producto</th><th class="num" colspan="2">Año 0</th><th class="num" colspan="2">Año 1</th><th class="num" colspan="2">Año 2</th></tr>
+            <tr><th class="num">p</th><th class="num">q</th><th class="num">p</th><th class="num">q</th><th class="num">p</th><th class="num">q</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="rowlabel">A</td><td class="num">80</td><td class="num">300</td><td class="num">100</td><td class="num">400</td><td class="num">150</td><td class="num">350</td></tr>
+            <tr><td class="rowlabel">B</td><td class="num">150</td><td class="num">30</td><td class="num">160</td><td class="num">50</td><td class="num">200</td><td class="num">60</td></tr>
+            <tr><td class="rowlabel">C</td><td class="num">300</td><td class="num">120</td><td class="num">320</td><td class="num">100</td><td class="num">400</td><td class="num">120</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Se pide, con base año 0 = 100: <strong>(1)</strong> índices de precios de Laspeyres, <strong>(2)</strong> índices de cantidades de Paasche, <strong>(3)</strong> índices de valor.</p>
+    </div>
+
+    <h3>Primero los conceptos nuevos</h3>
+
+    <h4>Índice simple vs. índice complejo</h4>
+    <div class="def">
+      <span class="lab">Definición</span>
+      <p>Un <strong>índice simple</strong> resume <em>una</em> variable (el del pan, el de los empleados). Un <strong>índice complejo</strong> resume <em>un conjunto</em> de items —una canasta— en un solo número. El IPC es complejo: junta 310 artículos en un valor.</p>
+    </div>
+
+    <h4>Por qué hay que ponderar</h4>
+    <div class="def">
+      <span class="lab">Definición</span>
+      <p><strong>Ponderar</strong> es darle a cada producto un <strong>peso</strong> según su importancia, para que un cambio de precio en algo que se compra mucho pese más que en algo que casi no se compra.</p>
+    </div>
+    <div class="ej">
+      <span class="lab">Ejemplo · por qué un promedio simple engaña</span>
+      <p>Si la sal sube 100 % y el alquiler 2 %, el promedio simple diría "subieron 51 %". Pero vos gastás muchísimo más en alquiler que en sal: tu bolsillo casi no nota la sal. El índice debe darle a cada cosa un peso acorde a cuánto se gasta en ella. En el IPC real, "Alimentos y Bebidas" pesa 28,47 % y "Enseñanza" 4,28 %.</p>
+    </div>
+
+    <h4>La canasta y el gasto</h4>
+    <div class="def">
+      <span class="lab">Definición</span>
+      <p>La <strong>canasta</strong> es el conjunto de productos con sus cantidades. El gasto de un período es la suma, producto por producto, de <strong>precio × cantidad</strong>:</p>
+    </div>
+    <div class="formula boxed">\[ \text{gasto}=\sum_i p_i\, q_i \]</div>
+    <p class="small">El símbolo \(\sum\) (sigma) significa "sumá todos los productos": \(p_A q_A + p_B q_B + p_C q_C\). El subíndice \(i\) recorre los productos.</p>
+
+    <h4>Laspeyres y Paasche: la diferencia clave</h4>
+    <p>Las dos miden lo mismo (cómo cambió el conjunto), pero difieren en <strong>qué canasta usan como peso</strong>:</p>
+    <div class="def">
+      <span class="lab">Definición · Laspeyres</span>
+      <p><strong>Laspeyres</strong> usa las cantidades del <strong>período base</strong> (canasta fija). Supone que siempre comprás lo mismo que en el año base y solo actualiza los precios. Pregunta: <em>"¿cuánto costaría hoy la canasta del año base?"</em>. Es más barato de calcular porque la canasta no se toca. <strong>El IPC y el IMS son índices de Laspeyres.</strong></p>
+    </div>
+    <div class="def">
+      <span class="lab">Definición · Paasche</span>
+      <p><strong>Paasche</strong> usa las cantidades del <strong>período actual</strong> (canasta que se actualiza cada período). Pregunta: <em>"la canasta que realmente compro hoy, ¿cuánto más cuesta que a precios del año base?"</em>. Es más preciso pero más caro: hay que recalcular la canasta cada vez.</p>
+    </div>
+
+    <h4>Índice de precios vs. índice de cantidades</h4>
+    <div class="idea">
+      <span class="lab">La idea que ordena todo</span>
+      <p>En un <strong>índice de precios</strong>, las cantidades son el <em>peso</em> y los precios son lo que se mueve. En un <strong>índice de cantidades</strong> se invierten los roles: los precios son el peso y las cantidades son lo que se mueve. Es la misma maquinaria con los papeles cambiados.</p>
+    </div>
+
+    <p>Las fórmulas que vamos a usar (todas con base año 0):</p>
+    <div class="formula boxed">
+      \[ \underbrace{L_{p}^{\,t/0}=\frac{\sum_i p_i^{\,t}\,q_i^{\,0}}{\sum_i p_i^{\,0}\,q_i^{\,0}}\times 100}_{\text{Laspeyres de precios}} \qquad \underbrace{P_{q}^{\,t/0}=\frac{\sum_i q_i^{\,t}\,p_i^{\,t}}{\sum_i q_i^{\,0}\,p_i^{\,t}}\times 100}_{\text{Paasche de cantidades}} \]
+    </div>
+    <div class="formula boxed">
+      \[ \underbrace{V^{\,t/0}=\frac{\sum_i p_i^{\,t}\,q_i^{\,t}}{\sum_i p_i^{\,0}\,q_i^{\,0}}\times 100}_{\text{Índice de valor (gasto total)}} \]
+    </div>
+    <p class="small">Mirá el patrón: en Laspeyres-precios se mueve el precio (\(p^t\) arriba, \(p^0\) abajo) y la cantidad queda fija en el año base (\(q^0\) en ambos). En Paasche-cantidades se mueve la cantidad (\(q^t\) arriba, \(q^0\) abajo) y el precio queda fijo en el año actual (\(p^t\) en ambos).</p>
+
+    <h3>Resolución — Parte (1): Laspeyres de precios</h3>
+    <p>Como la cantidad queda fija en el año 0, el <strong>denominador es siempre el mismo</strong>: el gasto del año base. Lo calculamos una vez.</p>
+
+    <div class="tablewrap">
+      <table>
+        <caption>Denominador fijo — gasto del año 0 \(\;\sum p^0 q^0\)</caption>
+        <thead><tr><th>Producto</th><th class="num">\(p^0\)</th><th class="num">\(q^0\)</th><th class="num">\(p^0 q^0\)</th></tr></thead>
+        <tbody>
+          <tr><td class="rowlabel">A</td><td class="num">80</td><td class="num">300</td><td class="num">24 000</td></tr>
+          <tr><td class="rowlabel">B</td><td class="num">150</td><td class="num">30</td><td class="num">4 500</td></tr>
+          <tr><td class="rowlabel">C</td><td class="num">300</td><td class="num">120</td><td class="num">36 000</td></tr>
+          <tr class="total"><td>Suma</td><td class="num"></td><td class="num"></td><td class="num">64 500</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>Ahora el numerador de cada año: los <strong>precios de ese año</strong> con las cantidades del año 0.</p>
+    <div class="tablewrap">
+      <table>
+        <caption>Numeradores de Laspeyres — precios del año, cantidades del año 0</caption>
+        <thead>
+          <tr><th>Producto</th><th class="num">\(p^1 q^0\)</th><th class="num">\(p^2 q^0\)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="rowlabel">A</td><td class="num">100·300 = 30 000</td><td class="num">150·300 = 45 000</td></tr>
+          <tr><td class="rowlabel">B</td><td class="num">160·30 = 4 800</td><td class="num">200·30 = 6 000</td></tr>
+          <tr><td class="rowlabel">C</td><td class="num">320·120 = 38 400</td><td class="num">400·120 = 48 000</td></tr>
+          <tr class="total"><td>Suma</td><td class="num">73 200</td><td class="num">99 000</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="formula">\[ L_{p}^{\,1/0}=\frac{73\,200}{64\,500}\times 100 = 113{,}49 \qquad L_{p}^{\,2/0}=\frac{99\,000}{64\,500}\times 100 = 153{,}49 \]</div>
+    <p><strong>Lectura:</strong> manteniendo fija la canasta del año 0, los precios subieron 13,49 % al año 1 y 53,49 % al año 2.</p>
+
+    <h3>Resolución — Parte (2): Paasche de cantidades</h3>
+    <p>Ahora medimos cómo cambió el <strong>volumen físico</strong> de productos, usando los precios de cada año como peso. Para cada año necesitamos dos sumas: el gasto efectivo del año (\(\sum q^t p^t\)) y lo que habrían costado las cantidades del año base a precios de ese año (\(\sum q^0 p^t\)).</p>
+
+    <div class="tablewrap">
+      <table>
+        <caption>Paasche de cantidades — Año 1</caption>
+        <thead><tr><th>Producto</th><th class="num">\(q^1 p^1\) (numerador)</th><th class="num">\(q^0 p^1\) (denominador)</th></tr></thead>
+        <tbody>
+          <tr><td class="rowlabel">A</td><td class="num">400·100 = 40 000</td><td class="num">300·100 = 30 000</td></tr>
+          <tr><td class="rowlabel">B</td><td class="num">50·160 = 8 000</td><td class="num">30·160 = 4 800</td></tr>
+          <tr><td class="rowlabel">C</td><td class="num">100·320 = 32 000</td><td class="num">120·320 = 38 400</td></tr>
+          <tr class="total"><td>Suma</td><td class="num">80 000</td><td class="num">73 200</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="formula">\[ P_{q}^{\,1/0}=\frac{80\,000}{73\,200}\times 100 = 109{,}29 \]</div>
+
+    <div class="tablewrap">
+      <table>
+        <caption>Paasche de cantidades — Año 2</caption>
+        <thead><tr><th>Producto</th><th class="num">\(q^2 p^2\) (numerador)</th><th class="num">\(q^0 p^2\) (denominador)</th></tr></thead>
+        <tbody>
+          <tr><td class="rowlabel">A</td><td class="num">350·150 = 52 500</td><td class="num">300·150 = 45 000</td></tr>
+          <tr><td class="rowlabel">B</td><td class="num">60·200 = 12 000</td><td class="num">30·200 = 6 000</td></tr>
+          <tr><td class="rowlabel">C</td><td class="num">120·400 = 48 000</td><td class="num">120·400 = 48 000</td></tr>
+          <tr class="total"><td>Suma</td><td class="num">112 500</td><td class="num">99 000</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="formula">\[ P_{q}^{\,2/0}=\frac{112\,500}{99\,000}\times 100 = 113{,}64 \]</div>
+    <p><strong>Lectura:</strong> el volumen físico vendido creció 9,29 % al año 1 y 13,64 % al año 2 (valuando todo a precios de cada año).</p>
+
+    <h3>Resolución — Parte (3): índice de valor</h3>
+    <div class="def">
+      <span class="lab">Definición</span>
+      <p>El <strong>índice de valor</strong> compara el <strong>gasto total</strong> (precio × cantidad) de cada año contra el del año base. No hay que elegir canasta: usa las cantidades y precios reales de cada momento. Mezcla el efecto de los precios y el de las cantidades juntos.</p>
+    </div>
+    <p>El denominador es de nuevo el gasto del año 0 (64 500). Los numeradores ya los tenemos: son los gastos efectivos \(\sum p^t q^t\), que aparecieron como numeradores de Paasche (80 000 y 112 500).</p>
+    <div class="formula">\[ V^{\,1/0}=\frac{80\,000}{64\,500}\times 100 = 124{,}03 \qquad V^{\,2/0}=\frac{112\,500}{64\,500}\times 100 = 174{,}42 \]</div>
+    <p><strong>Lectura:</strong> el gasto total de la empresa creció 24,03 % al año 1 y 74,42 % al año 2.</p>
+
+    <div class="tablewrap">
+      <table>
+        <caption>Los tres índices, juntos (base año 0 = 100)</caption>
+        <thead>
+          <tr><th>Índice</th><th class="num">Año 0</th><th class="num">Año 1</th><th class="num">Año 2</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="rowlabel">Laspeyres de precios \((L_p)\)</td><td class="num">100</td><td class="num">113,49</td><td class="num">153,49</td></tr>
+          <tr><td class="rowlabel">Paasche de cantidades \((P_q)\)</td><td class="num">100</td><td class="num">109,29</td><td class="num">113,64</td></tr>
+          <tr><td class="rowlabel">Valor \((V)\)</td><td class="num">100</td><td class="num">124,03</td><td class="num">174,42</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="idea">
+      <span class="lab">El cierre lindo · por qué este ejercicio pone justo estos tres</span>
+      <p>No es casualidad que pidan Laspeyres-precios, Paasche-cantidades y valor. El índice de valor se <strong>descompone</strong> exactamente en los otros dos:</p>
+      <div class="formula">\[ V=\frac{L_{p}\times P_{q}}{100} \]</div>
+      <p>El cambio del gasto total = <strong>efecto precio</strong> (Laspeyres) × <strong>efecto cantidad</strong> (Paasche). Verificá: año 2 → \( \frac{153{,}49\times 113{,}64}{100}=174{,}4 \approx 174{,}42 \). El gasto creció 74 % porque los precios empujaron ~53 % y las cantidades ~14 %, y los dos efectos se multiplican.</p>
+    </div>
+
+    <div class="result">
+      <span class="lab">Resultado</span>
+      <p><strong>Laspeyres de precios:</strong> 113,49 (año 1) y 153,49 (año 2) → precios +13,5 % y +53,5 %.<br>
+      <strong>Paasche de cantidades:</strong> 109,29 (año 1) y 113,64 (año 2) → volumen +9,3 % y +13,6 %.<br>
+      <strong>Valor:</strong> 124,03 (año 1) y 174,42 (año 2) → gasto total +24 % y +74,4 %, que es precio × cantidad.</p>
+    </div>
+
+    <div class="ojo">
+      <span class="lab">Dos errores frecuentes</span>
+      <p><strong>(a) Confundir qué queda fijo.</strong> En Laspeyres la cantidad es la del año base en numerador <em>y</em> denominador. En Paasche de cantidades, el precio es el del año actual en ambos. Si mezclás los superíndices, el índice no significa nada.<br>
+      <strong>(b) Olvidar el ×100.</strong> Sin el ×100 te queda 1,1349 en vez de 113,49: es el mismo número, pero la base deja de valer 100 y perdés la lectura directa de la variación.</p>
+    </div>
+  </section>
+
+  <!-- ====================== CIERRE ====================== -->
+  <section class="part">
+    <div class="part-head">
+      <span class="num">Cierre</span>
+      <h2>Cómo se conecta todo</h2>
+    </div>
+
+    <p>Si juntás los dos ejercicios, tenés el módulo entero en la cabeza:</p>
+    <ul class="checklist">
+      <li><strong>El Ejercicio 6</strong> te mostró cómo se <em>construye</em> un índice de precios ponderado: exactamente lo que hace el INE para fabricar el IPC y el IMS (ambos Laspeyres).</li>
+      <li><strong>El Ejercicio 3</strong> te mostró cómo se <em>usa</em> ese IPC: como deflactor, para sacarle la inflación a un sueldo y ver su poder de compra real.</li>
+      <li>Y los dos descansan sobre las tres piezas de los Cimientos: número índice, variación porcentual y el hecho de que los porcentajes en el tiempo se multiplican.</li>
+    </ul>
+
+    <p>Volvé ahora al titular con el que abre el módulo —"Salario real aumentó 4,10 % en 2007"— y vas a ver que es el Ejercicio 3 con datos reales: el IMS subió 12,94 % (nominal), la inflación (IPC) fue 8,5 %, y al deflactar queda \( \frac{1{,}1294}{1{,}085}-1 \approx 4{,}1\% \) de salario real. Es la misma cuenta que hiciste recién, con los números del país.</p>
+
+    <hr class="soft">
+
+    <div class="ej">
+      <span class="lab">Para chequear que entendiste (sin mirar)</span>
+      <p><strong>1.</strong> Tu sueldo sube 6 % y la inflación del año fue 9 %. ¿Tu salario real subió o bajó, y cuánto, aproximadamente?<br>
+      <strong>2.</strong> En el Ejercicio 6, si quisieras un índice de <em>precios</em> de Paasche (en vez de cantidades), ¿qué quedaría fijo y qué se movería?</p>
+      <p class="small" style="margin-top:.8rem;">Respuestas: <strong>1.</strong> Bajó: \( \frac{1{,}06}{1{,}09}-1 \approx -2{,}75\% \). &nbsp; <strong>2.</strong> Se mueven los precios; el peso son las cantidades del año <em>actual</em> (\(q^t\) en numerador y denominador): \( P_p^{\,t/0}=\frac{\sum p^t q^t}{\sum p^0 q^t}\times 100 \).</p>
+    </div>
+  </section>
+
+  <footer>
+    <p class="mono">ESTADÍSTICA LABORAL · MÓDULO 8 · NÚMEROS ÍNDICES, DEFLACTACIÓN Y PRECIOS CONSTANTES · VERSIÓN 3</p>
+    <p>Material de apoyo construido sobre el repartido y el teórico del Módulo 8 (Prof. Adj. Mariela Quiñones — Asist. Mariana Cabrera), Relaciones Laborales, Facultad de Derecho. Pensado para leerse de cero, definiendo cada término antes de usarlo.</p>
+  </footer>
+
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    if (window.renderMathInElement) {
+      renderMathInElement(document.body, {
+        delimiters: [
+          {left: "\\[", right: "\\]", display: true},
+          {left: "\\(", right: "\\)", display: false}
+        ],
+        throwOnError: false,
+        trust: true
+      });
+    }
+  });
+</script>
+</body>
+</html>
