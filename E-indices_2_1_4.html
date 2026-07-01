@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Estadística Laboral · Módulo 8 — Ejercicios 2, 1 y 4 resueltos</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+
+<style>
+  :root{
+    --paper:#faf7f0; --paper-2:#f3eee3; --ink:#23211c; --ink-soft:#5c574c;
+    --green:#1f6f47; --green-deep:#164e33; --green-tint:#e7f1ea;
+    --gold:#9a7320; --gold-tint:#f6efdd; --clay:#a8462f; --clay-tint:#f6e6e0;
+    --line:#ddd6c7; --line-strong:#c8c0ad;
+    --serif:'Lora', Georgia, serif; --sans:'DM Sans', system-ui, sans-serif; --mono:'Space Mono', ui-monospace, monospace;
+  }
+  *{box-sizing:border-box;}
+  html{ -webkit-text-size-adjust:100%; }
+  body{ margin:0; background:var(--paper); color:var(--ink); font-family:var(--serif);
+    font-size:clamp(16.5px, 1.05rem + 0.15vw, 19px); line-height:1.72; -webkit-font-smoothing:antialiased; }
+
+  .topbar{ position:sticky; top:0; z-index:50; display:flex; align-items:center; justify-content:space-between;
+    gap:1rem; padding:.55rem clamp(1rem,4vw,2.4rem); background:rgba(250,247,240,.86);
+    backdrop-filter:saturate(140%) blur(8px); border-bottom:1px solid var(--line); }
+  .topbar .tag{ font-family:var(--mono); font-size:.7rem; letter-spacing:.13em; text-transform:uppercase; color:var(--green-deep); }
+  .topbar .tag b{ color:var(--ink); }
+  .printbtn{ font-family:var(--mono); font-size:.7rem; letter-spacing:.08em; text-transform:uppercase;
+    border:1px solid var(--green); color:var(--green-deep); background:transparent; border-radius:999px;
+    padding:.4rem .85rem; cursor:pointer; transition:background .15s ease, color .15s ease; }
+  .printbtn:hover{ background:var(--green); color:#fff; }
+  .printbtn:focus-visible{ outline:3px solid var(--gold); outline-offset:2px; }
+
+  .wrap{ max-width:830px; margin:0 auto; padding:0 clamp(1.1rem,4vw,2rem); }
+
+  .hero{ padding:3.2rem 0 2.2rem; border-bottom:1px solid var(--line); }
+  .hero .eyebrow{ font-family:var(--mono); font-size:.74rem; letter-spacing:.16em; text-transform:uppercase; color:var(--green);
+    display:flex; align-items:center; gap:.7rem; margin-bottom:1.1rem; }
+  .hero .eyebrow::after{ content:""; height:1px; flex:1; background:var(--line-strong); }
+  .hero h1{ font-family:var(--sans); font-weight:700; line-height:1.08; font-size:clamp(2rem, 1.5rem + 2.4vw, 3.1rem);
+    letter-spacing:-.015em; margin:.2rem 0 .9rem; }
+  .hero h1 .accent{ color:var(--green); }
+  .hero .lede{ font-size:clamp(1.05rem,1rem + .5vw,1.3rem); color:var(--ink-soft); font-style:italic; max-width:60ch; margin:.4rem 0 1.6rem; }
+  .hero .question{ font-family:var(--serif); font-weight:600; font-size:1.06rem; background:var(--green-tint); border-left:4px solid var(--green);
+    padding:.9rem 1.1rem; border-radius:0 8px 8px 0; color:var(--green-deep); }
+  .hero .meta{ margin-top:1.5rem; font-family:var(--mono); font-size:.72rem; letter-spacing:.04em; color:var(--ink-soft); line-height:1.9; }
+
+  .part{ padding:2.8rem 0 .5rem; }
+  .part-head{ margin-bottom:1.4rem; }
+  .part-head .num{ font-family:var(--mono); font-size:.76rem; letter-spacing:.14em; text-transform:uppercase; color:var(--green); display:block; margin-bottom:.45rem; }
+  .part-head h2{ font-family:var(--sans); font-weight:700; font-size:clamp(1.5rem,1.2rem+1.4vw,2.1rem); line-height:1.12; letter-spacing:-.01em; margin:0;
+    padding-bottom:.7rem; border-bottom:3px solid var(--green); display:inline-block; }
+
+  h3{ font-family:var(--sans); font-weight:700; font-size:1.18rem; margin:2rem 0 .55rem; letter-spacing:-.005em; }
+  h3 .mini{ font-family:var(--mono); font-weight:400; font-size:.66rem; letter-spacing:.12em; text-transform:uppercase; color:var(--green); display:block; margin-bottom:.15rem; }
+  h4{ font-family:var(--sans); font-weight:500; font-size:1.02rem; margin:1.4rem 0 .35rem; color:var(--green-deep); }
+
+  p{ margin:.7rem 0; }
+  strong{ font-weight:600; }
+  em.term{ font-style:normal; font-weight:600; color:var(--green-deep); }
+  .small{ font-size:.9rem; color:var(--ink-soft); }
+  a{ color:var(--green-deep); }
+
+  .box{ border-radius:0 10px 10px 0; padding:1rem 1.2rem; margin:1.3rem 0; }
+  .box .lab{ font-family:var(--mono); font-size:.68rem; letter-spacing:.12em; text-transform:uppercase; display:block; margin-bottom:.5rem; font-weight:700; }
+  .box p:first-of-type{ margin-top:0; }
+  .box p:last-child{ margin-bottom:0; }
+  .def{ background:var(--green-tint); border-left:4px solid var(--green); }
+  .def .lab{ color:var(--green-deep); }
+  .ej{ background:#fff; border:1px solid var(--line); border-left:4px solid var(--gold); }
+  .ej .lab{ color:var(--gold); }
+  .idea{ background:var(--gold-tint); border-left:4px solid var(--gold); }
+  .idea .lab{ color:var(--gold); }
+  .ojo{ background:var(--clay-tint); border-left:4px solid var(--clay); }
+  .ojo .lab{ color:var(--clay); }
+  .result{ background:var(--green-deep); color:#f3efe2; border-left:4px solid #2f9c63; }
+  .result .lab{ color:#9fe0bd; }
+  .result strong{ color:#fff; }
+
+  .ficha{ border:1px solid var(--line-strong); border-top:4px solid var(--green); border-radius:4px; padding:1rem 1.2rem; margin:1.3rem 0; background:#fff; }
+  .ficha .lab{ font-family:var(--mono); font-size:.68rem; letter-spacing:.1em; text-transform:uppercase; color:var(--green); font-weight:700; display:block; margin-bottom:.5rem; }
+
+  .pasos{ counter-reset:paso; margin:1.4rem 0; padding:0; list-style:none; }
+  .pasos > li{ position:relative; counter-increment:paso; padding:.2rem 0 1.1rem 3rem; margin:0; border-left:2px solid var(--line-strong); margin-left:1.15rem; }
+  .pasos > li:last-child{ border-left-color:transparent; padding-bottom:.2rem; }
+  .pasos > li::before{ content:counter(paso); position:absolute; left:-1.15rem; top:-.15rem; width:2.3rem; height:2.3rem; border-radius:50%;
+    background:var(--green); color:#fff; font-family:var(--mono); font-weight:700; font-size:.95rem; display:flex; align-items:center; justify-content:center; }
+  .pasos > li .steptitle{ font-family:var(--sans); font-weight:700; font-size:1.04rem; display:block; margin-bottom:.25rem; }
+
+  .formula{ margin:1.1rem 0; padding:.4rem .2rem; text-align:center; overflow-x:auto; }
+  .formula.boxed{ border:1px dashed var(--line-strong); border-radius:8px; background:#fff; padding:1rem .6rem; }
+  .katex{ font-size:1.06em; }
+
+  .tablewrap{ overflow-x:auto; margin:1.3rem 0; }
+  table{ border-collapse:collapse; width:100%; font-size:.92rem; }
+  caption{ font-family:var(--mono); font-size:.68rem; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-soft); text-align:left; margin-bottom:.5rem; }
+  th,td{ padding:.5rem .65rem; border-bottom:1px solid var(--line); text-align:left; }
+  thead th{ font-family:var(--sans); font-weight:700; font-size:.82rem; background:var(--green-tint); color:var(--green-deep); border-bottom:2px solid var(--green); }
+  td.num,th.num{ text-align:right; font-family:var(--mono); font-size:.86rem; white-space:nowrap; }
+  tbody tr:nth-child(even){ background:rgba(243,238,227,.45); }
+  tr.total td{ font-weight:700; border-top:2px solid var(--line-strong); background:var(--green-tint); }
+  .rowlabel{ font-weight:600; }
+  td.fill{ color:var(--green-deep); font-weight:700; background:var(--green-tint); }
+
+  hr.soft{ border:none; border-top:1px solid var(--line); margin:2.4rem 0; }
+  .checklist{ list-style:none; padding:0; margin:1rem 0; }
+  .checklist li{ padding:.35rem 0 .35rem 1.7rem; position:relative; }
+  .checklist li::before{ content:"›"; position:absolute; left:.2rem; top:.3rem; color:var(--green); font-weight:700; font-family:var(--sans); }
+
+  .paragraph-fill{ background:#fff; border:1px solid var(--line); border-radius:8px; padding:1.1rem 1.3rem; margin:1.3rem 0; font-style:italic; }
+  .paragraph-fill b{ font-style:normal; color:var(--green-deep); background:var(--green-tint); padding:0 .25rem; border-radius:3px; }
+
+  footer{ margin-top:3.5rem; padding:2rem 0 3rem; border-top:1px solid var(--line); font-size:.85rem; color:var(--ink-soft); }
+  footer .mono{ font-family:var(--mono); font-size:.72rem; letter-spacing:.04em; }
+
+  @media print{
+    .topbar{ display:none; }
+    body{ background:#fff; font-size:11.2pt; line-height:1.5; }
+    .wrap{ max-width:100%; }
+    .hero{ padding-top:.4rem; }
+    .box, .ficha, .formula.boxed, .pasos > li, .paragraph-fill, table{ break-inside:avoid; }
+    .result, thead th, .def, .idea, .ojo, .ej, tr.total td, td.fill, .paragraph-fill b{ -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    a{ color:var(--ink); text-decoration:none; }
+  }
+  @media (prefers-reduced-motion:reduce){ *{ transition:none !important; } }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <span class="tag"><b>Estadística Laboral</b> · Módulo 8 · Ejercicios 2 · 1 · 4</span>
+  <button class="printbtn" onclick="window.print()">Imprimir / PDF</button>
+</div>
+
+<div class="wrap">
+
+  <header class="hero">
+    <div class="eyebrow">Relaciones Laborales · Facultad de Derecho</div>
+    <h1>Tres ejercicios de<br><span class="accent">números índices</span>, paso a paso.</h1>
+    <p class="lede">Ejercicios 2, 1 y 4 del repartido del Módulo 8, resueltos desde cero y en orden de menor a mayor dificultad.</p>
+    <p class="question">Los tres se hacen con dos herramientas y media: el <strong>número índice</strong>, la <strong>variación porcentual</strong> y el <strong>cambio de base</strong>. Las repasamos en dos minutos y después no frenamos.</p>
+    <div class="meta">
+      EJERCICIO 2 — variaciones (mensual · acumulada · interanual)<br>
+      EJERCICIO 1 — cambio de base y ubicar una base desconocida<br>
+      EJERCICIO 4 — armar índices, variaciones y leer la tabla<br>
+      REQUISITO — univariada, bivariada y dispersión. Nada más.
+    </div>
+  </header>
+
+  <!-- ============ KIT MÍNIMO ============ -->
+  <section class="part">
+    <div class="part-head">
+      <span class="num">Antes de empezar</span>
+      <h2>El kit mínimo</h2>
+    </div>
+
+    <p>Dos fórmulas alcanzan para arrancar. La tercera herramienta (el cambio de base) la presentamos cuando llegue, en el Ejercicio 1.</p>
+
+    <div class="def">
+      <span class="lab">Herramienta 1 · Número índice</span>
+      <p>Compara el valor de una variable contra un momento de referencia (la <strong>base</strong>), al que se le pone <strong>100</strong>.</p>
+      <div class="formula">\[ I_{0}^{\,t}=\frac{X_{t}}{X_{0}}\times 100 \]</div>
+      <p class="small">Ejemplo: si algo valía 80 en la base y hoy vale 100, el índice es \( \frac{100}{80}\times100=125 \): subió 25 % desde la base.</p>
+    </div>
+
+    <div class="def">
+      <span class="lab">Herramienta 2 · Variación porcentual</span>
+      <p>Dice en qué porcentaje cambió algo entre dos momentos: "nuevo sobre viejo, menos 1, por cien". Abajo (el divisor) va siempre el valor de <strong>partida</strong>.</p>
+      <div class="formula">\[ \operatorname{Var}_{t_1\rightarrow t_2}=\left(\frac{\text{valor en }t_2}{\text{valor en }t_1}-1\right)\times 100 \]</div>
+      <p class="small">Atajo: si comparás contra un momento donde el índice vale 100, la cuenta se reduce a una resta: \( \operatorname{Var}=I^{\,t}-100 \).</p>
+    </div>
+  </section>
+
+  <!-- ============ EJERCICIO 2 ============ -->
+  <section class="part">
+    <div class="part-head">
+      <span class="num">Ejercicio 2 · el más sencillo</span>
+      <h2>Variaciones del IPC: mensual, del año e interanual</h2>
+    </div>
+
+    <div class="ficha">
+      <span class="lab">La consigna</span>
+      <p>Completar la tabla del IPC (base marzo 1997 = 100) con las variaciones <strong>mensual</strong>, <strong>acumulada en el año</strong> y <strong>de los últimos 12 meses</strong>. Además: ¿cuál es la variación entre el 1º de abril y el 31 de julio de 1997? ¿Y la inflación entre el 1º de agosto y el 31 de diciembre de 1997?</p>
+    </div>
+
+    <h3><span class="mini">Primero</span>Tres formas de medir lo mismo</h3>
+    <p>Las tres son la misma fórmula de variación; lo único que cambia es <strong>contra qué mes</strong> comparamos. Esa es toda la dificultad del ejercicio.</p>
+
+    <h4>Variación mensual</h4>
+    <div class="def">
+      <span class="lab">Definición</span>
+      <p>Cambio del índice respecto al <strong>mes anterior</strong>. Mide cuánto subieron los precios <em>en ese mes</em>.</p>
+      <div class="formula">\[ \text{Mensual}_{t}=\left(\frac{I_{t}}{I_{t-1}}-1\right)\times 100 \]</div>
+      <p class="small">Ejemplo (enero 97): \( \frac{97{,}15}{95{,}26}-1 = 1{,}98\% \). En enero los precios subieron 1,98 %.</p>
+    </div>
+
+    <h4>Variación acumulada en el año</h4>
+    <div class="def">
+      <span class="lab">Definición</span>
+      <p>Cambio respecto a <strong>diciembre del año anterior</strong>. Mide cuánto se acumuló desde que arrancó el año.</p>
+      <div class="formula">\[ \text{Acum. año}_{t}=\left(\frac{I_{t}}{I_{\text{dic. año anterior}}}-1\right)\times 100 \]</div>
+      <p class="small">Ejemplo (marzo 97, contra dic 96 = 95,26): \( \frac{100{,}00}{95{,}26}-1 = 4{,}98\% \). En el primer trimestre se acumuló 4,98 %.</p>
+    </div>
+
+    <h4>Variación de los últimos 12 meses (interanual)</h4>
+    <div class="def">
+      <span class="lab">Definición</span>
+      <p>Cambio respecto al <strong>mismo mes del año anterior</strong>. Es la inflación de un año completo que termina en ese mes.</p>
+      <div class="formula">\[ \text{12 meses}_{t}=\left(\frac{I_{t}}{I_{\text{mismo mes, año anterior}}}-1\right)\times 100 \]</div>
+      <p class="small">Ejemplo (enero 98, contra enero 97 = 97,15): \( \frac{111{,}24}{97{,}15}-1 = 14{,}50\% \).</p>
+    </div>
+
+    <div class="ojo">
+      <span class="lab">Ojo · qué se puede calcular y qué no</span>
+      <p>Para la columna de <strong>12 meses de 1997</strong> haría falta el índice mes a mes de <strong>1996</strong>, que no tenemos: por eso esos valores vienen <strong>dados</strong>. Nosotros sí podemos calcular la de diciembre 97 (contra dic 96) y la de enero 98 (contra ene 97), porque esos meses anteriores sí están en la tabla.</p>
+    </div>
+
+    <h3><span class="mini">Resolución</span>La tabla completa</h3>
+    <p>Aplicamos cada fórmula fila por fila. En <span style="color:var(--green-deep); font-weight:700;">verde</span>, lo que calculamos nosotros; el resto venía en el enunciado.</p>
+
+    <div class="tablewrap">
+      <table>
+        <caption>IPC nivel general · base marzo 1997 = 100</caption>
+        <thead>
+          <tr><th>Período</th><th class="num">Índice</th><th class="num">Mensual</th><th class="num">Acum. año</th><th class="num">12 meses</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="rowlabel">1996 DIC</td><td class="num">95,26</td><td class="num">1,23</td><td class="num">24,34</td><td class="num">24,34</td></tr>
+          <tr><td class="rowlabel">1997 ENE</td><td class="num">97,15</td><td class="num fill">1,98</td><td class="num fill">1,98</td><td class="num">24,28</td></tr>
+          <tr><td class="rowlabel">FEB</td><td class="num">98,74</td><td class="num fill">1,64</td><td class="num fill">3,65</td><td class="num">24,45</td></tr>
+          <tr><td class="rowlabel">MAR</td><td class="num">100,00</td><td class="num fill">1,28</td><td class="num fill">4,98</td><td class="num">23,67</td></tr>
+          <tr><td class="rowlabel">ABR</td><td class="num">101,42</td><td class="num fill">1,42</td><td class="num fill">6,47</td><td class="num">21,95</td></tr>
+          <tr><td class="rowlabel">MAY</td><td class="num">102,78</td><td class="num fill">1,34</td><td class="num fill">7,89</td><td class="num">21,05</td></tr>
+          <tr><td class="rowlabel">JUN</td><td class="num">104,12</td><td class="num fill">1,30</td><td class="num fill">9,30</td><td class="num">21,07</td></tr>
+          <tr><td class="rowlabel">JUL</td><td class="num">105,51</td><td class="num fill">1,33</td><td class="num fill">10,76</td><td class="num">20,67</td></tr>
+          <tr><td class="rowlabel">AGO</td><td class="num">106,32</td><td class="num fill">0,77</td><td class="num fill">11,61</td><td class="num">19,04</td></tr>
+          <tr><td class="rowlabel">SET</td><td class="num">107,17</td><td class="num fill">0,80</td><td class="num fill">12,50</td><td class="num">17,07</td></tr>
+          <tr><td class="rowlabel">OCT</td><td class="num">108,00</td><td class="num fill">0,77</td><td class="num fill">13,37</td><td class="num">16,14</td></tr>
+          <tr><td class="rowlabel">NOV</td><td class="num">108,91</td><td class="num fill">0,84</td><td class="num fill">14,33</td><td class="num">15,73</td></tr>
+          <tr><td class="rowlabel">DIC</td><td class="num">109,71</td><td class="num fill">0,73</td><td class="num fill">15,17</td><td class="num fill">15,17</td></tr>
+          <tr><td class="rowlabel">1998 ENE</td><td class="num">111,24</td><td class="num fill">1,39</td><td class="num fill">1,39</td><td class="num fill">14,50</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="idea">
+      <span class="lab">Dos chequeos que confirman que está bien</span>
+      <p><strong>Enero</strong> tiene mensual = acumulada del año (1,98 % = 1,98 %): lógico, es el primer mes, todavía no se acumuló nada más. Y en <strong>diciembre</strong>, la acumulada del año coincide con la de 12 meses (15,17 %): de diciembre a diciembre, "todo el año" y "los últimos 12 meses" son el mismo tramo.</p>
+    </div>
+
+    <h3><span class="mini">Las dos preguntas</span>Variación entre dos fechas</h3>
+    <p>Acá está el truco más útil de todo el tema: <strong>la variación entre dos fechas es, simplemente, el cociente entre los dos valores del índice en esas fechas</strong>. No hace falta encadenar mes a mes.</p>
+    <div class="ojo">
+      <span class="lab">Ojo · cómo leer las fechas</span>
+      <p>El índice de un mes refleja el nivel de precios al <strong>cierre</strong> de ese mes. Por eso "1º de abril" coincide con el cierre de marzo (índice de marzo), y "31 de julio" es el cierre de julio (índice de julio).</p>
+    </div>
+
+    <h4>¿Variación entre el 1º de abril y el 31 de julio de 1997?</h4>
+    <p>Del cierre de marzo (100,00) al cierre de julio (105,51):</p>
+    <div class="formula boxed">\[ \left(\frac{I_{\text{jul}}}{I_{\text{mar}}}-1\right)\times100=\left(\frac{105{,}51}{100{,}00}-1\right)\times100 = 5{,}51\% \]</div>
+    <p class="small">Es lo mismo que encadenar las variaciones mensuales de abril, mayo, junio y julio —pero en un solo paso—, porque el índice ya las trae acumuladas.</p>
+
+    <h4>¿Inflación entre el 1º de agosto y el 31 de diciembre de 1997?</h4>
+    <p>Del cierre de julio (105,51) al cierre de diciembre (109,71):</p>
+    <div class="formula boxed">\[ \left(\frac{I_{\text{dic}}}{I_{\text{jul}}}-1\right)\times100=\left(\frac{109{,}71}{105{,}51}-1\right)\times100 = 3{,}98\% \]</div>
+
+    <div class="result">
+      <span class="lab">Resultado</span>
+      <p>Entre el 1º de abril y el 31 de julio de 1997 los precios subieron <strong>5,51 %</strong>. Entre el 1º de agosto y el 31 de diciembre, la inflación fue <strong>3,98 %</strong>. En ambos casos alcanzó con dividir los dos valores del índice en las fechas de los extremos.</p>
+    </div>
+  </section>
+
+  <!-- ============ EJERCICIO 1 ============ -->
+  <section class="part">
+    <div class="part-head">
+      <span class="num">Ejercicio 1 · dificultad media</span>
+      <h2>Cambio de base y una base escondida</h2>
+    </div>
+
+    <div class="ficha">
+      <span class="lab">La consigna</span>
+      <p>Tenemos una variable X de 1990 a 1999 y su índice con <strong>base 1990</strong>. <strong>(a)</strong> Construir la serie con base en <strong>1999</strong>. <strong>(b)</strong> Otra vez se trabajó la serie con <em>otra</em> base (tenemos sus valores para algunos años): sabiendo que está entre 1990 y 1999, ¿podés ubicar cuál es? ¿Es un "buen año" para usar de base?</p>
+    </div>
+
+    <h3><span class="mini">La herramienta nueva</span>Cambio de base</h3>
+    <div class="def">
+      <span class="lab">Definición</span>
+      <p><strong>Cambiar la base</strong> es recalcular el índice para que el 100 caiga en otro año. Es de nuevo una regla de tres: aprovechamos que en el año de la <strong>nueva base</strong> el índice tiene que valer 100, y reescalamos todo en proporción.</p>
+    </div>
+    <div class="formula boxed">\[ I_{\text{nueva}}^{\,t}=\frac{I_{\text{vieja}}^{\,t}}{\,I_{\text{vieja}}^{\,\text{año nueva base}}\,}\times 100 \]</div>
+    <p class="small">En palabras: dividís cada valor del índice viejo entre el valor que el índice viejo tiene en el año que querés como base nueva, y multiplicás por 100. (Lo bueno: no necesitás volver a los datos originales; alcanza con el índice.)</p>
+
+    <h3><span class="mini">Parte (a)</span>Pasar la base a 1999</h3>
+    <p>La nueva base es 1999. En la serie vieja (base 90), el índice de 1999 vale <strong>118,06</strong>. Ese es el número por el que dividimos todo:</p>
+    <div class="formula">\[ I_{99}^{\,t}=\frac{I_{90}^{\,t}}{118{,}06}\times 100 \]</div>
+    <p>Por ejemplo, para 1990: \( \frac{100{,}00}{118{,}06}\times100 = 84{,}70 \). Para 1997: \( \frac{116{,}13}{118{,}06}\times100 = 98{,}37 \). Y así con todos:</p>
+
+    <div class="tablewrap">
+      <table>
+        <caption>Evolución de X · cambio de base a 1999</caption>
+        <thead>
+          <tr><th>Año</th><th class="num">X</th><th class="num">Base 90 = 100</th><th class="num">Base 99 = 100</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="rowlabel">1990</td><td class="num">155</td><td class="num">100,00</td><td class="num fill">84,70</td></tr>
+          <tr><td class="rowlabel">1991</td><td class="num">102</td><td class="num">65,81</td><td class="num fill">55,74</td></tr>
+          <tr><td class="rowlabel">1992</td><td class="num">155</td><td class="num">100,00</td><td class="num fill">84,70</td></tr>
+          <tr><td class="rowlabel">1993</td><td class="num">170</td><td class="num">109,68</td><td class="num fill">92,90</td></tr>
+          <tr><td class="rowlabel">1994</td><td class="num">215</td><td class="num">138,71</td><td class="num fill">117,49</td></tr>
+          <tr><td class="rowlabel">1995</td><td class="num">170</td><td class="num">109,68</td><td class="num fill">92,90</td></tr>
+          <tr><td class="rowlabel">1996</td><td class="num">172</td><td class="num">110,97</td><td class="num fill">93,99</td></tr>
+          <tr><td class="rowlabel">1997</td><td class="num">180</td><td class="num">116,13</td><td class="num fill">98,37</td></tr>
+          <tr><td class="rowlabel">1998</td><td class="num">185</td><td class="num">119,35</td><td class="num fill">101,09</td></tr>
+          <tr><td class="rowlabel">1999</td><td class="num">183</td><td class="num">118,06</td><td class="num fill">100,00</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="small">Chequeo: en 1999 el nuevo índice da 100,00, como tiene que ser. Y como 1994 (el año de X más alto) supera a 1999, su índice con base 99 queda por encima de 100 (117,49); todos los años más "flojos" quedan por debajo.</p>
+
+    <h3><span class="mini">Parte (b)</span>Detectar la base escondida</h3>
+    <p>Ahora tenemos un tercer índice con una base desconocida, y solo algunos años:</p>
+    <div class="tablewrap">
+      <table>
+        <caption>Índice con base desconocida (datos dados)</caption>
+        <thead><tr><th>Año</th><th class="num">1990</th><th class="num">1991</th><th class="num">1996</th><th class="num">1997</th><th class="num">1998</th><th class="num">1999</th></tr></thead>
+        <tbody>
+          <tr><td class="rowlabel">Índice</td><td class="num">72,09</td><td class="num">47,44</td><td class="num">80,00</td><td class="num">83,72</td><td class="num">86,05</td><td class="num">85,12</td></tr>
+          <tr><td class="rowlabel">X</td><td class="num">155</td><td class="num">102</td><td class="num">172</td><td class="num">180</td><td class="num">185</td><td class="num">183</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>El año base es aquel donde el índice vale 100. Pero <strong>ninguno de los valores dados es 100</strong> (todos son menores): la base es un año <em>no listado</em> (1992, 93, 94 o 95). ¿Cómo lo encontramos?</p>
+
+    <div class="idea">
+      <span class="lab">La idea clave</span>
+      <p>Un índice es siempre proporcional a la variable: \( I^{t}=\frac{X_t}{X_{\text{base}}}\times100 \). Entonces el cociente \( \dfrac{I^{t}}{X_t}=\dfrac{100}{X_{\text{base}}} \) tiene que dar <strong>el mismo número en todos los años</strong>. Ese número nos delata la base.</p>
+    </div>
+
+    <ol class="pasos">
+      <li>
+        <span class="steptitle">Calcular el cociente índice ÷ X en los años dados</span>
+        <div class="formula">\[ \frac{72{,}09}{155}=0{,}4651 \quad \frac{47{,}44}{102}=0{,}4651 \quad \frac{80{,}00}{172}=0{,}4651 \quad \frac{83{,}72}{180}=0{,}4651 \;\cdots \]</div>
+        <p>Da <strong>0,4651</strong> en todos. (Si diera distinto, habría un error en los datos.)</p>
+      </li>
+      <li>
+        <span class="steptitle">Despejar el X de la base</span>
+        <p>Ese cociente es \( \frac{100}{X_{\text{base}}} \), así que:</p>
+        <div class="formula">\[ X_{\text{base}}=\frac{100}{0{,}4651}=215 \]</div>
+      </li>
+      <li>
+        <span class="steptitle">Identificar el año</span>
+        <p>¿Qué año tuvo X = 215? Mirando la serie original, es <strong>1994</strong>. Verificación: \( \frac{155}{215}\times100=72{,}09 \), \( \frac{172}{215}\times100=80{,}00 \)… todo cierra.</p>
+      </li>
+    </ol>
+
+    <div class="ojo">
+      <span class="lab">¿Es un buen año base? No.</span>
+      <p>1994 tiene el valor de X <strong>más alto</strong> de toda la serie (215): es un año <em>atípico</em>, un pico. Como vimos en la teoría, una base no debería ser un momento extraordinario, porque deja a todos los demás años artificialmente "por debajo de 100" y distorsiona la lectura. Un buen año base es uno <strong>típico</strong>, ni pico ni pozo.</p>
+    </div>
+
+    <div class="result">
+      <span class="lab">Resultado</span>
+      <p><strong>(a)</strong> La serie con base 1999 va de 84,70 (en 1990) a 100,00 (en 1999), pasando por su máximo 117,49 en 1994. <strong>(b)</strong> La base escondida es <strong>1994</strong> (porque X = 215), y es una <strong>mala</strong> elección de base por ser el año pico de la serie.</p>
+    </div>
+  </section>
+
+  <!-- ============ EJERCICIO 4 ============ -->
+  <section class="part">
+    <div class="part-head">
+      <span class="num">Ejercicio 4 · arma, calcula y lee</span>
+      <h2>PBI per cápita: índices, variaciones y lectura</h2>
+    </div>
+
+    <div class="ficha">
+      <span class="lab">La consigna</span>
+      <p>Tenemos el PBI per cápita promedio 2000–2004 para tres grupos: el total de <strong>América Latina (AL)</strong>, los países de <strong>nivel bajo y medio bajo (NBYMB)</strong> y los de <strong>nivel medio alto (NMA)</strong>. <strong>(a)</strong> Completar el cuadro (los índices base 2000 = 100 y las variaciones anuales). <strong>(b)</strong> Completar un párrafo de interpretación con esos números.</p>
+    </div>
+
+    <h3><span class="mini">Parte (a) · primero</span>Armar los índices (base 2000 = 100)</h3>
+    <p>Para cada grupo, dividimos cada año entre su valor de 2000 y multiplicamos por 100: \( I^{t}=\frac{\text{PBI}_t}{\text{PBI}_{2000}}\times100 \). Por ejemplo, AL en 2004: \( \frac{6986{,}6}{6171{,}5}\times100 = 113{,}21 \).</p>
+
+    <div class="tablewrap">
+      <table>
+        <caption>Índice del PBI per cápita · base 2000 = 100</caption>
+        <thead>
+          <tr><th>Grupo</th><th class="num">2000</th><th class="num">2001</th><th class="num">2002</th><th class="num">2003</th><th class="num">2004</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="rowlabel">América Latina</td><td class="num">100,00</td><td class="num fill">101,36</td><td class="num fill">102,26</td><td class="num fill">106,45</td><td class="num fill">113,21</td></tr>
+          <tr><td class="rowlabel">NBYMB (nivel bajo/medio bajo)</td><td class="num">100,00</td><td class="num fill">103,46</td><td class="num fill">106,19</td><td class="num fill">108,78</td><td class="num fill">118,60</td></tr>
+          <tr><td class="rowlabel">NMA (nivel medio alto)</td><td class="num">100,00</td><td class="num fill">100,23</td><td class="num fill">100,14</td><td class="num fill">105,19</td><td class="num fill">110,43</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3><span class="mini">Parte (a) · después</span>Las variaciones anuales</h3>
+    <p>Cada variación compara un año con el anterior: \( \left(\frac{\text{PBI}_{t}}{\text{PBI}_{t-1}}-1\right)\times100 \). Por ejemplo, AL entre 2003 y 2002: \( \frac{6569{,}6}{6311{,}1}-1 = 4{,}10\% \).</p>
+
+    <div class="tablewrap">
+      <table>
+        <caption>Variación porcentual anual</caption>
+        <thead>
+          <tr><th>Grupo</th><th class="num">2001→2002</th><th class="num">2002→2003</th><th class="num">2003→2004</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="rowlabel">América Latina</td><td class="num fill">0,89 %</td><td class="num fill">4,10 %</td><td class="num fill">6,35 %</td></tr>
+          <tr><td class="rowlabel">NBYMB</td><td class="num fill">2,64 %</td><td class="num fill">2,44 %</td><td class="num fill">9,02 %</td></tr>
+          <tr><td class="rowlabel">NMA</td><td class="num fill">−0,09 %</td><td class="num fill">5,05 %</td><td class="num fill">4,98 %</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="small">Detalle interesante: NMA <em>cayó</em> levemente entre 2001 y 2002 (−0,09 %). Y como el índice viene en base 100, el crecimiento de toda la década (2000→2004) se lee directo restándole 100 al índice de 2004: AL <strong>+13,21 %</strong>, NBYMB <strong>+18,60 %</strong>, NMA <strong>+10,43 %</strong>.</p>
+
+    <h3><span class="mini">Parte (b)</span>Completar el párrafo</h3>
+    <p>Con los números de arriba, las casillas del párrafo quedan así (en <span style="color:var(--green-deep); font-weight:700;">verde</span> lo que completamos):</p>
+
+    <div class="paragraph-fill">
+      América Latina presenta realidades muy diversas entre sus países… se han agrupado en países de nivel bajo y medio bajo (NBYMB) y de nivel medio alto (NMA).
+      En el correr de esta década (2000-2004) el PBI per cápita ha tenido un <b>CRECIMIENTO</b> en el promedio de los países de América Latina, con una variación porcentual del <b>13,21 %</b>.
+      Esta evolución se ha dado tanto en los países de NBYMB como en los de NMA. Sin embargo, ha sido más pronunciada en los de <b>NBYMB</b>, con una variación del <b>18,60 %</b>.
+      El cambio anual más importante se dio entre los años <b>2003</b> y <b>2004</b>, siendo la variación para el conjunto de América Latina de <b>6,35 %</b>, mientras para los países de NBYMB fue de <b>9,02 %</b> y para los de NMA de <b>4,98 %</b>.
+    </div>
+
+    <h4>Cómo se decide cada casilla</h4>
+    <ul class="checklist">
+      <li><strong>Crecimiento o descenso:</strong> el índice de AL sube de 100 a 113,21, así que es crecimiento; la variación de la década es \(113{,}21-100=13{,}21\%\).</li>
+      <li><strong>¿Quién creció más?</strong> NBYMB (+18,60 %) le gana a NMA (+10,43 %): el crecimiento fue más fuerte en los países más pobres.</li>
+      <li><strong>El año del salto más grande:</strong> mirando la fila de AL, la mayor variación anual es 2003→2004 (6,35 %). Para ese mismo tramo, NBYMB hizo 9,02 % y NMA 4,98 %.</li>
+    </ul>
+
+    <div class="idea">
+      <span class="lab">Lectura de fondo</span>
+      <p>Que los países de menor ingreso (NBYMB, +18,60 %) crecieran más que los de mayor ingreso (NMA, +10,43 %) sugiere una leve <strong>convergencia</strong> en el período: los de abajo se acercaron un poco a los de arriba. Es justo el tipo de conclusión que un índice bien leído te permite afirmar con números, no con impresiones.</p>
+    </div>
+  </section>
+
+  <!-- ============ CIERRE ============ -->
+  <section class="part">
+    <div class="part-head">
+      <span class="num">Cierre</span>
+      <h2>Lo que practicaste</h2>
+    </div>
+    <ul class="checklist">
+      <li><strong>Ejercicio 2:</strong> las tres variaciones son la misma fórmula cambiando contra qué mes comparás; y la variación entre dos fechas es el cociente de los dos índices.</li>
+      <li><strong>Ejercicio 1:</strong> cambiar de base es dividir todo el índice por su valor en el nuevo año base; y la proporcionalidad índice–variable te deja descubrir una base escondida.</li>
+      <li><strong>Ejercicio 4:</strong> armar índices para comparar grupos distintos en una misma escala, y leer crecimiento, quién crece más y en qué año.</li>
+    </ul>
+    <p>Las mismas dos herramientas (índice y variación) sostienen todo el módulo: cuando lleguen el IPC, el IMS y el salario real, vas a estar haciendo exactamente esto, con otros nombres.</p>
+  </section>
+
+  <footer>
+    <p class="mono">ESTADÍSTICA LABORAL · MÓDULO 8 · EJERCICIOS 2, 1 Y 4 DEL REPARTIDO</p>
+    <p>Material de apoyo construido sobre el repartido de números índices, Relaciones Laborales, Facultad de Derecho. Pensado para leerse de cero, definiendo cada herramienta antes de usarla.</p>
+  </footer>
+
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    if (window.renderMathInElement) {
+      renderMathInElement(document.body, {
+        delimiters: [
+          {left: "\\[", right: "\\]", display: true},
+          {left: "\\(", right: "\\)", display: false}
+        ],
+        throwOnError: false,
+        trust: true
+      });
+    }
+  });
+</script>
+</body>
+</html>
