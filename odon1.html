@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tablas de contingencia — teórico y ejercicios resueltos</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+
+<style>
+  :root{
+    --paper:#faf7f0; --paper-2:#f3eee3; --ink:#23211c; --ink-soft:#5c574c;
+    --green:#1f6f47; --green-deep:#164e33; --green-tint:#e7f1ea;
+    --gold:#9a7320; --gold-tint:#f6efdd; --clay:#a8462f; --clay-tint:#f6e6e0;
+    --blue:#2e6b8f; --blue-tint:#dce8f0;
+    --line:#ddd6c7; --line-strong:#c8c0ad;
+    --serif:'Lora', Georgia, serif; --sans:'DM Sans', system-ui, sans-serif; --mono:'Space Mono', ui-monospace, monospace;
+  }
+  *{box-sizing:border-box;}
+  html{ -webkit-text-size-adjust:100%; }
+  body{ margin:0; background:var(--paper); color:var(--ink); font-family:var(--serif);
+    font-size:clamp(16.5px, 1.05rem + 0.15vw, 19px); line-height:1.72; -webkit-font-smoothing:antialiased; }
+
+  .topbar{ position:sticky; top:0; z-index:50; display:flex; align-items:center; justify-content:space-between;
+    gap:1rem; padding:.55rem clamp(1rem,4vw,2.4rem); background:rgba(250,247,240,.86);
+    backdrop-filter:saturate(140%) blur(8px); border-bottom:1px solid var(--line); }
+  .topbar .tag{ font-family:var(--mono); font-size:.7rem; letter-spacing:.13em; text-transform:uppercase; color:var(--green-deep); }
+  .topbar .tag b{ color:var(--ink); }
+  .printbtn{ font-family:var(--mono); font-size:.7rem; letter-spacing:.08em; text-transform:uppercase;
+    border:1px solid var(--green); color:var(--green-deep); background:transparent; border-radius:999px;
+    padding:.4rem .85rem; cursor:pointer; transition:background .15s ease, color .15s ease; }
+  .printbtn:hover{ background:var(--green); color:#fff; }
+  .printbtn:focus-visible{ outline:3px solid var(--gold); outline-offset:2px; }
+
+  .wrap{ max-width:830px; margin:0 auto; padding:0 clamp(1.1rem,4vw,2rem); }
+
+  .hero{ padding:3.2rem 0 2.2rem; border-bottom:1px solid var(--line); }
+  .hero .eyebrow{ font-family:var(--mono); font-size:.74rem; letter-spacing:.16em; text-transform:uppercase; color:var(--green);
+    display:flex; align-items:center; gap:.7rem; margin-bottom:1.1rem; }
+  .hero .eyebrow::after{ content:""; height:1px; flex:1; background:var(--line-strong); }
+  .hero h1{ font-family:var(--sans); font-weight:700; line-height:1.08; font-size:clamp(2rem, 1.5rem + 2.4vw, 3.1rem);
+    letter-spacing:-.015em; margin:.2rem 0 .9rem; }
+  .hero h1 .accent{ color:var(--green); }
+  .hero .lede{ font-size:clamp(1.05rem,1rem + .5vw,1.3rem); color:var(--ink-soft); font-style:italic; max-width:60ch; margin:.4rem 0 1.6rem; }
+  .hero .question{ font-family:var(--serif); font-weight:600; font-size:1.06rem; background:var(--green-tint); border-left:4px solid var(--green);
+    padding:.9rem 1.1rem; border-radius:0 8px 8px 0; color:var(--green-deep); }
+  .hero .meta{ margin-top:1.5rem; font-family:var(--mono); font-size:.72rem; letter-spacing:.04em; color:var(--ink-soft); line-height:1.9; }
+
+  .part{ padding:2.8rem 0 .5rem; }
+  .part-head{ margin-bottom:1.4rem; }
+  .part-head .num{ font-family:var(--mono); font-size:.76rem; letter-spacing:.14em; text-transform:uppercase; color:var(--green); display:block; margin-bottom:.45rem; }
+  .part-head h2{ font-family:var(--sans); font-weight:700; font-size:clamp(1.5rem,1.2rem+1.4vw,2.1rem); line-height:1.12; letter-spacing:-.01em; margin:0;
+    padding-bottom:.7rem; border-bottom:3px solid var(--green); display:inline-block; }
+
+  h3{ font-family:var(--sans); font-weight:700; font-size:1.18rem; margin:2rem 0 .55rem; letter-spacing:-.005em; }
+  h3 .mini{ font-family:var(--mono); font-weight:400; font-size:.66rem; letter-spacing:.12em; text-transform:uppercase; color:var(--green); display:block; margin-bottom:.15rem; }
+  h4{ font-family:var(--sans); font-weight:500; font-size:1.02rem; margin:1.4rem 0 .35rem; color:var(--green-deep); }
+
+  p{ margin:.7rem 0; }
+  strong{ font-weight:600; }
+  em.term{ font-style:normal; font-weight:600; color:var(--green-deep); }
+  .small{ font-size:.9rem; color:var(--ink-soft); }
+  a{ color:var(--green-deep); }
+
+  .box{ border-radius:0 10px 10px 0; padding:1rem 1.2rem; margin:1.3rem 0; }
+  .box .lab{ font-family:var(--mono); font-size:.68rem; letter-spacing:.12em; text-transform:uppercase; display:block; margin-bottom:.5rem; font-weight:700; }
+  .box p:first-of-type{ margin-top:0; }
+  .box p:last-child{ margin-bottom:0; }
+  .def{ background:var(--green-tint); border-left:4px solid var(--green); }
+  .def .lab{ color:var(--green-deep); }
+  .ej{ background:#fff; border:1px solid var(--line); border-left:4px solid var(--gold); }
+  .ej .lab{ color:var(--gold); }
+  .idea{ background:var(--gold-tint); border-left:4px solid var(--gold); }
+  .idea .lab{ color:var(--gold); }
+  .ojo{ background:var(--clay-tint); border-left:4px solid var(--clay); }
+  .ojo .lab{ color:var(--clay); }
+  .result{ background:var(--green-deep); color:#f3efe2; border-left:4px solid #2f9c63; }
+  .result .lab{ color:#9fe0bd; }
+  .result strong{ color:#fff; }
+
+  .ficha{ border:1px solid var(--line-strong); border-top:4px solid var(--green); border-radius:4px; padding:1rem 1.2rem; margin:1.3rem 0; background:#fff; }
+  .ficha .lab{ font-family:var(--mono); font-size:.68rem; letter-spacing:.1em; text-transform:uppercase; color:var(--green); font-weight:700; display:block; margin-bottom:.5rem; }
+
+  .pasos{ counter-reset:paso; margin:1.4rem 0; padding:0; list-style:none; }
+  .pasos > li{ position:relative; counter-increment:paso; padding:.2rem 0 1.1rem 3rem; margin:0; border-left:2px solid var(--line-strong); margin-left:1.15rem; }
+  .pasos > li:last-child{ border-left-color:transparent; padding-bottom:.2rem; }
+  .pasos > li::before{ content:counter(paso); position:absolute; left:-1.15rem; top:-.15rem; width:2.3rem; height:2.3rem; border-radius:50%;
+    background:var(--green); color:#fff; font-family:var(--mono); font-weight:700; font-size:.95rem; display:flex; align-items:center; justify-content:center; }
+  .pasos > li .steptitle{ font-family:var(--sans); font-weight:700; font-size:1.04rem; display:block; margin-bottom:.25rem; }
+
+  .formula{ margin:1.1rem 0; padding:.4rem .2rem; text-align:center; overflow-x:auto; }
+  .formula.boxed{ border:1px dashed var(--line-strong); border-radius:8px; background:#fff; padding:1rem .6rem; }
+  .katex{ font-size:1.05em; }
+
+  .tablewrap{ overflow-x:auto; margin:1.3rem 0; }
+  table{ border-collapse:collapse; width:100%; font-size:.92rem; }
+  caption{ font-family:var(--mono); font-size:.68rem; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-soft); text-align:left; margin-bottom:.5rem; }
+  th,td{ padding:.5rem .6rem; border:1px solid var(--line); text-align:left; }
+  thead th{ font-family:var(--sans); font-weight:700; font-size:.8rem; background:var(--green-tint); color:var(--green-deep); border-bottom:2px solid var(--green); }
+  td.num,th.num{ text-align:right; font-family:var(--mono); font-size:.85rem; white-space:nowrap; }
+  tbody tr:nth-child(even){ background:rgba(243,238,227,.35); }
+  tr.total td, td.tot{ font-weight:700; background:var(--green-tint); }
+  .rowlabel{ font-weight:600; }
+  td.hl{ color:var(--green-deep); font-weight:700; background:var(--green-tint); }
+  td.given{ color:var(--clay); font-weight:700; }
+  /* estructura coloreada */
+  .cj{ background:var(--clay-tint); text-align:center; }
+  .mg{ background:var(--green-tint); text-align:center; }
+  .tt{ background:var(--blue-tint); text-align:center; font-weight:700; }
+  .legend{ display:flex; flex-wrap:wrap; gap:1rem; font-size:.82rem; margin:.4rem 0 0; font-family:var(--sans); }
+  .legend span{ display:inline-flex; align-items:center; gap:.4rem; }
+  .legend i{ width:14px; height:14px; border-radius:3px; display:inline-block; border:1px solid rgba(0,0,0,.12); }
+
+  figure{ margin:1.6rem auto; text-align:center; }
+  figure svg{ width:100%; height:auto; max-width:460px; }
+  figcaption{ font-size:.85rem; color:var(--ink-soft); font-style:italic; margin-top:.5rem; }
+
+  hr.soft{ border:none; border-top:1px solid var(--line); margin:2.4rem 0; }
+  .checklist{ list-style:none; padding:0; margin:1rem 0; }
+  .checklist li{ padding:.35rem 0 .35rem 1.7rem; position:relative; }
+  .checklist li::before{ content:"›"; position:absolute; left:.2rem; top:.3rem; color:var(--green); font-weight:700; font-family:var(--sans); }
+
+  .vf{ margin:1.2rem 0; }
+  .vf .item{ border:1px solid var(--line); border-radius:8px; padding:.85rem 1rem; margin:.7rem 0; background:#fff; }
+  .vf .badge{ font-family:var(--mono); font-size:.68rem; font-weight:700; letter-spacing:.08em; padding:.15rem .55rem; border-radius:999px; margin-right:.5rem; }
+  .vf .v{ background:var(--green-tint); color:var(--green-deep); }
+  .vf .f{ background:var(--clay-tint); color:var(--clay); }
+  .fillans{ color:var(--green-deep); font-weight:700; background:var(--green-tint); padding:0 .3rem; border-radius:3px; }
+
+  footer{ margin-top:3.5rem; padding:2rem 0 3rem; border-top:1px solid var(--line); font-size:.85rem; color:var(--ink-soft); }
+  footer .mono{ font-family:var(--mono); font-size:.72rem; letter-spacing:.04em; }
+
+  @media print{
+    .topbar{ display:none; }
+    body{ background:#fff; font-size:11pt; line-height:1.5; }
+    .wrap{ max-width:100%; }
+    .hero{ padding-top:.4rem; }
+    .box, .ficha, .formula.boxed, .pasos > li, table, figure, .vf .item{ break-inside:avoid; }
+    .result, thead th, .def, .idea, .ojo, .ej, tr.total td, td.hl, .cj, .mg, .tt{ -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    a{ color:var(--ink); text-decoration:none; }
+  }
+  @media (prefers-reduced-motion:reduce){ *{ transition:none !important; } }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <span class="tag"><b>Iniciación a la Investigación</b> · Tablas de contingencia</span>
+  <button class="printbtn" onclick="window.print()">Imprimir / PDF</button>
+</div>
+
+<div class="wrap">
+
+  <header class="hero">
+    <div class="eyebrow">Facultad de Odontología · UdelaR</div>
+    <h1>Tablas de <span class="accent">contingencia</span></h1>
+    <p class="lede">El teórico desde cero y los nueve ejercicios (los del teórico y los del Práctico 5) resueltos uno por uno, explicando cada concepto antes de usarlo.</p>
+    <p class="question">La pregunta que atraviesa todo el tema: cuando cruzamos <strong>dos variables cualitativas</strong> —fumar y una enfermedad, un tratamiento y su resultado—, ¿están <strong>asociadas</strong>? ¿El valor de una tiende a aparecer con cierto valor de la otra? La tabla de contingencia y los <strong>perfiles</strong> nos dejan responderlo con números.</p>
+    <div class="meta">
+      TEÓRICO — variables, asociación, estructura, perfiles, gráficos<br>
+      EJERCICIOS DEL TEÓRICO — 1, 2, 3 y 4<br>
+      PRÁCTICO 5 — ejercicios 1, 2, 3, 4 y 5<br>
+      NIVEL — desde cero. Cada concepto se explica antes del cálculo.
+    </div>
+  </header>
+
+  <!-- ==================== TEÓRICO ==================== -->
+  <section class="part">
+    <div class="part-head">
+      <span class="num">El teórico</span>
+      <h2>Todo lo que hay que saber, desde cero</h2>
+    </div>
+
+    <h3><span class="mini">Punto de partida</span>Análisis bivariado de dos variables cualitativas</h3>
+    <p>Antes describíamos <strong>una</strong> variable (con su media, su dispersión, o comparándola entre grupos con un gráfico de caja). Cuando queremos estudiar la <strong>relación entre dos variables cualitativas</strong> (categóricas, como "fuma / no fuma" o "sano / enfermo"), el análisis es <em class="term">bivariado</em> y la herramienta se llama <strong>tabla de contingencia</strong> (o tabla de doble entrada). En este curso trabajamos el caso en que ambas variables tienen <strong>dos categorías</strong>.</p>
+
+    <h3><span class="mini">Concepto 1</span>Las dos variables: dependiente e independiente</h3>
+    <div class="def">
+      <span class="lab">Definición</span>
+      <p>Al cruzar dos variables, una describe el <strong>fenómeno de interés</strong> y la otra marca los <strong>grupos a comparar</strong>.</p>
+      <ul class="checklist" style="margin-top:.5rem;">
+        <li>La <strong>variable dependiente</strong> (o de <em>respuesta</em>) es el fenómeno que queremos estudiar.</li>
+        <li>La <strong>variable independiente</strong> (o <em>explicativa</em>) genera los grupos entre los que comparamos.</li>
+      </ul>
+    </div>
+    <p>Ejemplo: si estudiamos si <strong>fumar</strong> repercute sobre una <strong>enfermedad periodontal</strong>, la independiente es <em>fumar</em> (define los grupos: fumadores y no fumadores) y la dependiente es la <em>enfermedad</em> (lo que observamos en cada grupo). La pregunta es cuál de los grupos es más proclive a la enfermedad.</p>
+
+    <h3><span class="mini">Concepto 2</span>Asociación</h3>
+    <div class="def">
+      <span class="lab">Definición</span>
+      <p>Dos variables están <strong>asociadas</strong> cuando los valores de una tienden a registrarse junto a ciertos valores de la otra. Por ejemplo, si los diabéticos son más propensos (o menos) a la enfermedad periodontal que los no diabéticos, entonces diabetes y enfermedad periodontal están asociadas.</p>
+    </div>
+    <p>Como las variables son cualitativas, la forma natural de indagar la asociación es <strong>contar</strong>: cuántas personas tienen la enfermedad siendo diabéticas, cuántas sin serlo, etc. La matriz que reúne esos conteos es la tabla de contingencia.</p>
+
+    <h3><span class="mini">Concepto 3</span>La estructura de la tabla</h3>
+    <p>Por convención, las categorías de la <strong>independiente van en las filas</strong> y las de la <strong>dependiente en las columnas</strong>. La tabla tiene tres tipos de frecuencias:</p>
+
+    <div class="tablewrap">
+      <table>
+        <thead>
+          <tr><th rowspan="2" colspan="2" style="background:#fff;border:none;"></th><th colspan="2" style="text-align:center;">Variable dependiente</th><th class="num">Total</th></tr>
+          <tr><th class="num">categoría 1</th><th class="num">categoría 2</th><th style="background:#fff;border:none;"></th></tr>
+        </thead>
+        <tbody>
+          <tr><td rowspan="2" class="rowlabel" style="vertical-align:middle;">Variable<br>independiente</td><td class="rowlabel">categoría 1</td><td class="cj">n₁₁</td><td class="cj">n₁₂</td><td class="mg">n₁·</td></tr>
+          <tr><td class="rowlabel">categoría 2</td><td class="cj">n₂₁</td><td class="cj">n₂₂</td><td class="mg">n₂·</td></tr>
+          <tr><td colspan="2" class="rowlabel">Total</td><td class="mg">n·₁</td><td class="mg">n·₂</td><td class="tt">n</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="legend">
+      <span><i style="background:var(--clay-tint)"></i> frecuencias <strong>conjuntas</strong></span>
+      <span><i style="background:var(--green-tint)"></i> frecuencias <strong>marginales</strong></span>
+      <span><i style="background:var(--blue-tint)"></i> <strong>total</strong> (n)</span>
+    </div>
+    <ul class="checklist">
+      <li>Las <strong>conjuntas</strong> (centro) cuentan la ocurrencia <em>simultánea</em> de una categoría de cada variable. Su suma es \(n\).</li>
+      <li>Las <strong>marginales</strong> son los totales: la última columna suma cada fila (totales de la independiente); la última fila suma cada columna (totales de la dependiente).</li>
+      <li>El <strong>total</strong> \(n\) del vértice debe coincidir con tres sumas: la de las conjuntas, la de las marginales de filas y la de las marginales de columnas. Si no coinciden, la tabla está mal.</li>
+    </ul>
+    <div class="idea">
+      <span class="lab">Truco de completado</span>
+      <p>Casi todos los ejercicios dan algunos valores y piden el resto. La regla es simple: en cada fila y en cada columna, <strong>las celdas suman su total</strong>. Con eso, si conocés todos menos uno de una fila (o columna), el que falta sale restando.</p>
+    </div>
+
+    <h3><span class="mini">Concepto 4</span>Por qué las frecuencias absolutas engañan</h3>
+    <p>Veamos un ejemplo real. Se estudia si aprobar un curso se relaciona con estudiar más de 20 horas (encuesta a 80 alumnos):</p>
+    <div class="tablewrap">
+      <table>
+        <caption>Aprobación según horas de estudio · frecuencias absolutas</caption>
+        <thead><tr><th>Estudio</th><th class="num">Aprobó (Sí)</th><th class="num">No aprobó</th><th class="num">Total</th></tr></thead>
+        <tbody>
+          <tr><td class="rowlabel">menos de 20 hs</td><td class="num">38</td><td class="num">30</td><td class="num tot">68</td></tr>
+          <tr><td class="rowlabel">más de 20 hs</td><td class="num">9</td><td class="num">3</td><td class="num tot">12</td></tr>
+          <tr class="total"><td>Total</td><td class="num">47</td><td class="num">33</td><td class="num">80</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="ojo">
+      <span class="lab">Ojo · la trampa</span>
+      <p>A primera vista, <strong>38</strong> aprobaron estudiando poco y solo <strong>9</strong> estudiando mucho. ¿Conviene estudiar menos? <strong>No.</strong> Lo que pasa es que el grupo de "menos de 20 hs" es mucho más grande (68) que el de "más de 20 hs" (12). Comparar los conteos crudos de grupos de distinto tamaño no tiene sentido.</p>
+    </div>
+
+    <h3><span class="mini">Concepto 5</span>Perfiles: emparejar los grupos con porcentajes</h3>
+    <div class="def">
+      <span class="lab">Definición</span>
+      <p>Un <strong>perfil</strong> convierte las frecuencias a porcentajes <em>dentro de cada grupo</em>, para que los grupos queden comparables (cada uno suma 100 %). Si los grupos están en las <strong>filas</strong>, se calcula el <strong>perfil fila</strong>; si están en las columnas, el <strong>perfil columna</strong>.</p>
+      <div class="formula">\[ \text{perfil fila}=\frac{\text{frecuencia de la celda}}{\text{total de su fila}}\times 100 \]</div>
+    </div>
+    <p>En el ejemplo, los grupos (horas de estudio) están en las filas, así que va el perfil fila. Dividimos cada celda entre el total de su fila:</p>
+    <div class="tablewrap">
+      <table>
+        <caption>Aprobación según horas de estudio · perfil fila</caption>
+        <thead><tr><th>Estudio</th><th class="num">Aprobó</th><th class="num">No aprobó</th><th class="num">Total</th></tr></thead>
+        <tbody>
+          <tr><td class="rowlabel">menos de 20 hs</td><td class="num">55,9 %</td><td class="num">44,1 %</td><td class="num tot">100 %</td></tr>
+          <tr><td class="rowlabel">más de 20 hs</td><td class="num">75,0 %</td><td class="num">25,0 %</td><td class="num tot">100 %</td></tr>
+          <tr class="total"><td>Total</td><td class="num">58,8 %</td><td class="num">41,3 %</td><td class="num">100 %</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Ahora sí se puede comparar: entre los que estudiaron mucho aprobó el <strong>75 %</strong>, y entre los que estudiaron poco, el <strong>55,9 %</strong>. La lectura correcta es la opuesta a la que sugerían los conteos crudos.</p>
+
+    <h3><span class="mini">Concepto 6</span>De los perfiles a la asociación</h3>
+    <p>Para decidir si hay asociación, comparamos el porcentaje del <strong>mismo</strong> valor de la dependiente (por ejemplo, "aprobó") entre los grupos. Cuanto más difieran, más fuerte la asociación. Como guía del curso:</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Diferencia entre los porcentajes</th><th>Asociación</th></tr></thead>
+        <tbody>
+          <tr><td>Son iguales</td><td>no hay asociación</td></tr>
+          <tr><td>Difieren menos de 30 %</td><td>leve</td></tr>
+          <tr><td>Difieren entre 30 % y 70 %</td><td>moderada</td></tr>
+          <tr><td>Difieren más de 70 %</td><td>fuerte</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>En el ejemplo, los porcentajes de aprobación fueron 75 % y 55,9 %: la diferencia es <strong>19,1 %</strong>, así que la asociación entre estudio y aprobación es <strong>leve</strong>.</p>
+
+    <h3><span class="mini">Concepto 7</span>Cómo se grafica</h3>
+    <p>Una tabla de contingencia (o su perfil) se representa con dos tipos de gráfico, equivalentes entre sí:</p>
+    <ul class="checklist">
+      <li><strong>Barras agrupadas:</strong> por cada grupo de la independiente, un racimo de barras (una por categoría de la dependiente), todas apoyadas en cero. Cómodas para comparar alturas.</li>
+      <li><strong>Barras estratificadas</strong> (o apiladas): una barra por grupo, cada una del <strong>100 %</strong>, dividida según la dependiente. Rápidas de leer cuando la dependiente tiene dos categorías.</li>
+    </ul>
+    <p class="small">Veremos los dos, con datos reales, en el Ejercicio 4 del teórico.</p>
+  </section>
+
+  <!-- ==================== EJERCICIOS DEL TEÓRICO ==================== -->
+  <section class="part">
+    <div class="part-head">
+      <span class="num">Parte 1 · ejercicios del teórico</span>
+      <h2>Los cuatro ejercicios de la clase</h2>
+    </div>
+
+    <h3><span class="mini">Ejercicio 1</span>Diabetes y enfermedad periodontal</h3>
+    <div class="ficha">
+      <span class="lab">Enunciado</span>
+      <p>En un estudio sobre 600 personas se quiere ver si el diagnóstico de <strong>diabetes</strong> se relaciona con la <strong>enfermedad periodontal</strong>. ¿Cuál es la variable dependiente y cuál la independiente?</p>
+    </div>
+    <p>La pregunta es si tener diabetes <em>influye</em> sobre el estado periodontal. Entonces los grupos se forman según la diabetes, y lo que observamos en ellos es la enfermedad.</p>
+    <div class="result">
+      <span class="lab">Respuesta</span>
+      <p><strong>Independiente:</strong> diagnóstico de diabetes (Sí / No) — genera los grupos a comparar. <strong>Dependiente:</strong> presencia de enfermedad periodontal (Sí / No) — es el fenómeno de interés.</p>
+    </div>
+
+    <h3><span class="mini">Ejercicio 2</span>Dos tratamientos contra el sarro</h3>
+    <div class="ficha">
+      <span class="lab">Enunciado</span>
+      <p>Se prueban dos tratamientos para prevenir el sarro. De 100 participantes, 50 en cada grupo. El tratamiento A previno el sarro en 35 casos; el B, en 18. (1) Identificar las variables y su rol. (2) Armar y titular la tabla. (3) Completar con las relaciones entre frecuencias. (4) ¿Qué tratamiento fue mejor?</p>
+    </div>
+    <p><strong>(1) Variables.</strong> Independiente: tipo de tratamiento (A / B), que genera los grupos. Dependiente: prevención del sarro (Sí se previno / No), el fenómeno.</p>
+    <p><strong>(2) y (3) Tabla.</strong> Cada grupo tiene 50. Si en A se previnieron 35, no se previnieron \(50-35=15\); en B, \(50-18=32\). Los totales de columna se obtienen sumando: \(35+18=53\) y \(15+32=47\).</p>
+    <div class="tablewrap">
+      <table>
+        <caption>Efecto de los tratamientos A y B en la prevención del sarro</caption>
+        <thead><tr><th>Tratamiento</th><th class="num">Sí se previno</th><th class="num">No se previno</th><th class="num">Total</th></tr></thead>
+        <tbody>
+          <tr><td class="rowlabel">A</td><td class="num given">35</td><td class="num hl">15</td><td class="num tot">50</td></tr>
+          <tr><td class="rowlabel">B</td><td class="num given">18</td><td class="num hl">32</td><td class="num tot">50</td></tr>
+          <tr class="total"><td>Total</td><td class="num">53</td><td class="num">47</td><td class="num">100</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="small">En <span style="color:var(--clay);font-weight:700;">arcilla</span>, los datos del enunciado; en <span style="color:var(--green-deep);font-weight:700;">verde</span>, lo deducido.</p>
+    <div class="result">
+      <span class="lab">(4) Resultado</span>
+      <p>Como los dos grupos tienen el <strong>mismo tamaño</strong> (50 y 50), acá sí se pueden comparar los conteos directamente. <strong>El tratamiento A fue mejor</strong>: previno 35 casos frente a 18. En porcentaje, A tuvo una eficacia del <strong>70 %</strong> (35/50) y B del <strong>36 %</strong> (18/50).</p>
+    </div>
+
+    <h3><span class="mini">Ejercicio 3</span>Fumar y manchas dentales</h3>
+    <div class="ficha">
+      <span class="lab">Enunciado</span>
+      <p>Encuesta a 202 pacientes para evaluar la asociación entre <strong>fumar</strong> y la presencia de <strong>manchas dentales</strong>. De los 84 fumadores, 62 presentaron manchas. Se encuestó a 124 pacientes sin manchas, de los cuales 102 eran no fumadores. (1) Variables. (2) y (3) Tabla completa. (4) ¿Hace falta un perfil? (5) ¿Están asociadas?</p>
+    </div>
+    <p><strong>(1) Variables.</strong> Independiente: hábito de fumar (Fumador / No fumador). Dependiente: manchas dentales (Sí / No).</p>
+    <p><strong>(2) y (3) Tabla.</strong> Partimos de los datos y completamos: fumadores sin manchas \(=84-62=22\); total con manchas \(=202-124=78\); total no fumadores \(=202-84=118\); no fumadores con manchas \(=118-102=16\). (Chequeo: \(22+102=124\), el total sin manchas. ✓)</p>
+    <div class="tablewrap">
+      <table>
+        <caption>Presencia de manchas según hábito de fumar · frecuencias absolutas</caption>
+        <thead><tr><th>Hábito</th><th class="num">Sí manchas</th><th class="num">No manchas</th><th class="num">Total</th></tr></thead>
+        <tbody>
+          <tr><td class="rowlabel">Fumador</td><td class="num given">62</td><td class="num hl">22</td><td class="num given">84</td></tr>
+          <tr><td class="rowlabel">No fumador</td><td class="num hl">16</td><td class="num given">102</td><td class="num hl">118</td></tr>
+          <tr class="total"><td>Total</td><td class="num">78</td><td class="num given">124</td><td class="num">202</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p><strong>(4) ¿Perfil?</strong> Sí, es necesario: los grupos son de tamaños muy distintos (84 fumadores vs. 118 no fumadores). Como los grupos están en las filas, calculamos el <strong>perfil fila</strong>.</p>
+    <div class="tablewrap">
+      <table>
+        <caption>Perfil fila</caption>
+        <thead><tr><th>Hábito</th><th class="num">Sí manchas</th><th class="num">No manchas</th><th class="num">Total</th></tr></thead>
+        <tbody>
+          <tr><td class="rowlabel">Fumador</td><td class="num hl">73,8 %</td><td class="num">26,2 %</td><td class="num tot">100 %</td></tr>
+          <tr><td class="rowlabel">No fumador</td><td class="num hl">13,6 %</td><td class="num">86,4 %</td><td class="num tot">100 %</td></tr>
+          <tr class="total"><td>Total</td><td class="num">38,6 %</td><td class="num">61,4 %</td><td class="num">100 %</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="small">Ejemplo de celda: \( \frac{62}{84}\times100 = 73{,}8\% \) de los fumadores presentan manchas.</p>
+    <div class="result">
+      <span class="lab">(5) Conclusión</span>
+      <p>Comparamos el porcentaje de "Sí manchas" entre los grupos: \(73{,}8\% - 13{,}6\% = 60{,}2\%\). Según la guía, una diferencia entre 30 % y 70 % indica asociación <strong>moderada</strong>. Es decir: <strong>fumar está moderadamente asociado a las manchas dentales</strong>, y los fumadores son bastante más propensos a presentarlas.</p>
+    </div>
+
+    <h3><span class="mini">Ejercicio 4</span>Graficar el Ejercicio 3</h3>
+    <div class="ficha">
+      <span class="lab">Enunciado</span>
+      <p>Representar gráficamente la tabla del Ejercicio 3 con el perfil fila. Mostramos las dos alternativas.</p>
+    </div>
+
+    <h4>Barras estratificadas (apiladas)</h4>
+    <p>Una barra por grupo, ambas del 100 %, divididas en "Sí manchas" y "No manchas":</p>
+    <figure>
+      <svg viewBox="0 0 440 320" role="img" aria-label="Gráfico de barras apiladas del perfil fila: la barra de fumadores tiene un segmento de manchas mucho mayor (73,8%) que la de no fumadores (13,6%).">
+        <line x1="65" y1="30" x2="65" y2="280" stroke="var(--ink-soft)" stroke-width="1.2"/>
+        <line x1="65" y1="280" x2="410" y2="280" stroke="var(--ink-soft)" stroke-width="1.2"/>
+        <g font-family="var(--mono)" font-size="10" fill="var(--ink-soft)" text-anchor="end">
+          <text x="58" y="284">0%</text><text x="58" y="221.5">25%</text><text x="58" y="159">50%</text><text x="58" y="96.5">75%</text><text x="58" y="34">100%</text>
+        </g>
+        <line x1="62" y1="217.5" x2="65" y2="217.5" stroke="var(--ink-soft)"/><line x1="62" y1="155" x2="65" y2="155" stroke="var(--ink-soft)"/><line x1="62" y1="92.5" x2="65" y2="92.5" stroke="var(--ink-soft)"/>
+        <!-- Fumador -->
+        <rect x="125" y="95.5" width="70" height="184.5" fill="var(--clay)"/>
+        <rect x="125" y="30" width="70" height="65.5" fill="var(--green)"/>
+        <text x="160" y="192" text-anchor="middle" font-family="var(--sans)" font-size="12" font-weight="700" fill="#fff">73,8%</text>
+        <text x="160" y="67" text-anchor="middle" font-family="var(--sans)" font-size="11" font-weight="700" fill="#fff">26,2%</text>
+        <!-- No fumador -->
+        <rect x="275" y="246" width="70" height="34" fill="var(--clay)"/>
+        <rect x="275" y="30" width="70" height="216" fill="var(--green)"/>
+        <text x="310" y="267" text-anchor="middle" font-family="var(--sans)" font-size="11" font-weight="700" fill="#fff">13,6%</text>
+        <text x="310" y="142" text-anchor="middle" font-family="var(--sans)" font-size="12" font-weight="700" fill="#fff">86,4%</text>
+        <text x="160" y="298" text-anchor="middle" font-family="var(--sans)" font-size="11.5" font-weight="700" fill="var(--ink)">Fumador</text>
+        <text x="310" y="298" text-anchor="middle" font-family="var(--sans)" font-size="11.5" font-weight="700" fill="var(--ink)">No fumador</text>
+        <!-- leyenda -->
+        <rect x="150" y="308" width="12" height="12" fill="var(--clay)"/><text x="167" y="318" font-family="var(--sans)" font-size="10.5" fill="var(--ink-soft)">Sí manchas</text>
+        <rect x="255" y="308" width="12" height="12" fill="var(--green)"/><text x="272" y="318" font-family="var(--sans)" font-size="10.5" fill="var(--ink-soft)">No manchas</text>
+      </svg>
+      <figcaption>El segmento de "manchas" (arcilla) es enorme en fumadores y diminuto en no fumadores: se ve la asociación de un vistazo.</figcaption>
+    </figure>
+
+    <h4>Barras agrupadas</h4>
+    <p>Por cada grupo, dos barras (Sí y No) apoyadas en cero:</p>
+    <figure>
+      <svg viewBox="0 0 440 320" role="img" aria-label="Gráfico de barras agrupadas del perfil fila del Ejercicio 3.">
+        <line x1="65" y1="30" x2="65" y2="280" stroke="var(--ink-soft)" stroke-width="1.2"/>
+        <line x1="65" y1="280" x2="410" y2="280" stroke="var(--ink-soft)" stroke-width="1.2"/>
+        <g font-family="var(--mono)" font-size="10" fill="var(--ink-soft)" text-anchor="end">
+          <text x="58" y="284">0%</text><text x="58" y="221.5">25%</text><text x="58" y="159">50%</text><text x="58" y="96.5">75%</text><text x="58" y="34">100%</text>
+        </g>
+        <line x1="62" y1="217.5" x2="65" y2="217.5" stroke="var(--ink-soft)"/><line x1="62" y1="155" x2="65" y2="155" stroke="var(--ink-soft)"/><line x1="62" y1="92.5" x2="65" y2="92.5" stroke="var(--ink-soft)"/>
+        <!-- Fumador group -->
+        <rect x="115" y="95.5" width="40" height="184.5" fill="var(--clay)"/>
+        <rect x="159" y="214.5" width="40" height="65.5" fill="var(--green)"/>
+        <text x="135" y="88" text-anchor="middle" font-family="var(--mono)" font-size="10" fill="var(--clay)">73,8%</text>
+        <text x="179" y="207" text-anchor="middle" font-family="var(--mono)" font-size="10" fill="var(--green-deep)">26,2%</text>
+        <!-- No fumador group -->
+        <rect x="270" y="246" width="40" height="34" fill="var(--clay)"/>
+        <rect x="314" y="64" width="40" height="216" fill="var(--green)"/>
+        <text x="290" y="238" text-anchor="middle" font-family="var(--mono)" font-size="10" fill="var(--clay)">13,6%</text>
+        <text x="334" y="56" text-anchor="middle" font-family="var(--mono)" font-size="10" fill="var(--green-deep)">86,4%</text>
+        <text x="157" y="298" text-anchor="middle" font-family="var(--sans)" font-size="11.5" font-weight="700" fill="var(--ink)">Fumador</text>
+        <text x="312" y="298" text-anchor="middle" font-family="var(--sans)" font-size="11.5" font-weight="700" fill="var(--ink)">No fumador</text>
+        <rect x="150" y="308" width="12" height="12" fill="var(--clay)"/><text x="167" y="318" font-family="var(--sans)" font-size="10.5" fill="var(--ink-soft)">Sí manchas</text>
+        <rect x="255" y="308" width="12" height="12" fill="var(--green)"/><text x="272" y="318" font-family="var(--sans)" font-size="10.5" fill="var(--ink-soft)">No manchas</text>
+      </svg>
+      <figcaption>La misma información: las barras de "Sí manchas" (arcilla) muestran 73,8 % en fumadores contra 13,6 % en no fumadores.</figcaption>
+    </figure>
+  </section>
+
+  <!-- ==================== PRÁCTICO 5 ==================== -->
+  <section class="part">
+    <div class="part-head">
+      <span class="num">Parte 2 · Práctico 5</span>
+      <h2>Los cinco ejercicios del práctico</h2>
+    </div>
+
+    <h3><span class="mini">Ejercicio 1</span>Cepillado y halitosis</h3>
+    <div class="ficha">
+      <span class="lab">Enunciado</span>
+      <p>Se evalúa el impacto de un correcto <strong>cepillado</strong> sobre la <strong>halitosis</strong>. De 124 pacientes, 84 tienen cepillado correcto, y de esos 12 presentan halitosis. En total, 102 no presentan halitosis. Identificar variables, armar y completar la tabla, y comentar la asociación.</p>
+    </div>
+    <p><strong>Variables.</strong> Independiente: hábito de cepillado (Correcto / Incorrecto). Dependiente: halitosis (Sí / No). <strong>Completado:</strong> correcto sin halitosis \(=84-12=72\); total con halitosis \(=124-102=22\); total incorrecto \(=124-84=40\); incorrecto con halitosis \(=22-12=10\); incorrecto sin halitosis \(=40-10=30\).</p>
+    <div class="tablewrap">
+      <table>
+        <caption>Distribución conjunta de halitosis y hábito de cepillado</caption>
+        <thead><tr><th>Cepillado</th><th class="num">Sí halitosis</th><th class="num">No halitosis</th><th class="num">Total</th></tr></thead>
+        <tbody>
+          <tr><td class="rowlabel">Correcto</td><td class="num given">12</td><td class="num hl">72</td><td class="num given">84</td></tr>
+          <tr><td class="rowlabel">Incorrecto</td><td class="num hl">10</td><td class="num hl">30</td><td class="num hl">40</td></tr>
+          <tr class="total"><td>Total</td><td class="num">22</td><td class="num given">102</td><td class="num">124</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Los grupos (cepillado) están en las filas y son de distinto tamaño (84 vs. 40): calculamos el <strong>perfil fila</strong>.</p>
+    <div class="tablewrap">
+      <table>
+        <caption>Perfil fila</caption>
+        <thead><tr><th>Cepillado</th><th class="num">Sí halitosis</th><th class="num">No halitosis</th><th class="num">Total</th></tr></thead>
+        <tbody>
+          <tr><td class="rowlabel">Correcto</td><td class="num hl">14,3 %</td><td class="num">85,7 %</td><td class="num tot">100 %</td></tr>
+          <tr><td class="rowlabel">Incorrecto</td><td class="num hl">25,0 %</td><td class="num">75,0 %</td><td class="num tot">100 %</td></tr>
+          <tr class="total"><td>Total</td><td class="num">17,7 %</td><td class="num">82,3 %</td><td class="num">100 %</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="result">
+      <span class="lab">Conclusión</span>
+      <p>La diferencia en halitosis entre grupos es \(25{,}0\% - 14{,}3\% = 10{,}7\%\). Al ser menor que 30 %, la asociación es <strong>leve</strong>. El cepillado correcto disminuye la halitosis, pero la fuerza de la relación en esta muestra es baja.</p>
+    </div>
+
+    <h3><span class="mini">Ejercicio 2</span>Fumar y pérdida de inserción periodontal (PIP)</h3>
+    <div class="ficha">
+      <span class="lab">Enunciado</span>
+      <p>Encuesta a 508 personas sobre <strong>fumar</strong> y <strong>PIP</strong>. La tabla viene parcial: Fuma–sin PIP = 72, total No fuma = 334, total sin PIP = 346. Completar, analizar si fumar repercute sobre la PIP, y graficar.</p>
+    </div>
+    <p><strong>Completado:</strong> No fuma sin PIP \(=346-72=274\); No fuma con PIP \(=334-274=60\); total Fuma \(=508-334=174\); Fuma con PIP \(=174-72=102\); total con PIP \(=102+60=162\).</p>
+    <div class="tablewrap">
+      <table>
+        <caption>Hábito de fumar y presencia de PIP</caption>
+        <thead><tr><th>Hábito</th><th class="num">Sin PIP</th><th class="num">Con PIP</th><th class="num">Total</th></tr></thead>
+        <tbody>
+          <tr><td class="rowlabel">Fuma</td><td class="num given">72</td><td class="num hl">102</td><td class="num hl">174</td></tr>
+          <tr><td class="rowlabel">No fuma</td><td class="num hl">274</td><td class="num hl">60</td><td class="num given">334</td></tr>
+          <tr class="total"><td>Total</td><td class="num given">346</td><td class="num hl">162</td><td class="num">508</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Los grupos son dispares (174 vs. 334): perfil fila.</p>
+    <div class="tablewrap">
+      <table>
+        <caption>Perfil fila</caption>
+        <thead><tr><th>Hábito</th><th class="num">Sin PIP</th><th class="num">Con PIP</th><th class="num">Total</th></tr></thead>
+        <tbody>
+          <tr><td class="rowlabel">Fuma</td><td class="num">41,4 %</td><td class="num hl">58,6 %</td><td class="num tot">100 %</td></tr>
+          <tr><td class="rowlabel">No fuma</td><td class="num">82,0 %</td><td class="num hl">18,0 %</td><td class="num tot">100 %</td></tr>
+          <tr class="total"><td>Total</td><td class="num">68,1 %</td><td class="num">31,9 %</td><td class="num">100 %</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <figure>
+      <svg viewBox="0 0 440 320" role="img" aria-label="Barras apiladas: la PIP (con PIP) es mucho más frecuente entre fumadores (58,6%) que entre no fumadores (18%).">
+        <line x1="65" y1="30" x2="65" y2="280" stroke="var(--ink-soft)" stroke-width="1.2"/>
+        <line x1="65" y1="280" x2="410" y2="280" stroke="var(--ink-soft)" stroke-width="1.2"/>
+        <g font-family="var(--mono)" font-size="10" fill="var(--ink-soft)" text-anchor="end">
+          <text x="58" y="284">0%</text><text x="58" y="221.5">25%</text><text x="58" y="159">50%</text><text x="58" y="96.5">75%</text><text x="58" y="34">100%</text>
+        </g>
+        <line x1="62" y1="217.5" x2="65" y2="217.5" stroke="var(--ink-soft)"/><line x1="62" y1="155" x2="65" y2="155" stroke="var(--ink-soft)"/><line x1="62" y1="92.5" x2="65" y2="92.5" stroke="var(--ink-soft)"/>
+        <!-- Fuma -->
+        <rect x="125" y="133.5" width="70" height="146.5" fill="var(--clay)"/>
+        <rect x="125" y="30" width="70" height="103.5" fill="var(--green)"/>
+        <text x="160" y="211" text-anchor="middle" font-family="var(--sans)" font-size="12" font-weight="700" fill="#fff">58,6%</text>
+        <text x="160" y="86" text-anchor="middle" font-family="var(--sans)" font-size="12" font-weight="700" fill="#fff">41,4%</text>
+        <!-- No fuma -->
+        <rect x="275" y="235" width="70" height="45" fill="var(--clay)"/>
+        <rect x="275" y="30" width="70" height="205" fill="var(--green)"/>
+        <text x="310" y="261" text-anchor="middle" font-family="var(--sans)" font-size="11" font-weight="700" fill="#fff">18,0%</text>
+        <text x="310" y="137" text-anchor="middle" font-family="var(--sans)" font-size="12" font-weight="700" fill="#fff">82,0%</text>
+        <text x="160" y="298" text-anchor="middle" font-family="var(--sans)" font-size="11.5" font-weight="700" fill="var(--ink)">Fuma</text>
+        <text x="310" y="298" text-anchor="middle" font-family="var(--sans)" font-size="11.5" font-weight="700" fill="var(--ink)">No fuma</text>
+        <rect x="160" y="308" width="12" height="12" fill="var(--clay)"/><text x="177" y="318" font-family="var(--sans)" font-size="10.5" fill="var(--ink-soft)">Con PIP</text>
+        <rect x="255" y="308" width="12" height="12" fill="var(--green)"/><text x="272" y="318" font-family="var(--sans)" font-size="10.5" fill="var(--ink-soft)">Sin PIP</text>
+      </svg>
+      <figcaption>La PIP (arcilla) ocupa el 58,6 % de la barra de fumadores y solo el 18 % de la de no fumadores.</figcaption>
+    </figure>
+    <div class="result">
+      <span class="lab">Interpretación</span>
+      <p>La PIP se presenta con frecuencia mucho mayor entre fumadores (58,6 %) que entre no fumadores (18,0 %). La diferencia es \(58{,}6\% - 18{,}0\% = 40{,}6\%\): asociación <strong>moderada</strong> y un claro impacto del tabaquismo sobre la PIP.</p>
+    </div>
+
+    <h3><span class="mini">Ejercicio 3</span>Procedencia y residencia</h3>
+    <div class="ficha">
+      <span class="lab">Enunciado</span>
+      <p>De 477 alumnos, 197 son de <strong>Montevideo</strong> y de esos 76 viven <strong>cerca</strong> de la facultad. Del total del <strong>interior</strong>, el 41,786 % vive <strong>lejos</strong>. Indicar variables, construir la tabla y decidir cuál gráfico corresponde.</p>
+    </div>
+    <p><strong>Variables.</strong> Procedencia (Interior / Montevideo) y Lugar de residencia (Cerca / Lejos). <strong>Completado:</strong> total Interior \(=477-197=280\); Interior lejos \(=280\times0{,}41786 = 117\); Interior cerca \(=280-117=163\); Montevideo lejos \(=197-76=121\); totales de columna \(117+121=238\) (lejos) y \(163+76=239\) (cerca).</p>
+    <div class="tablewrap">
+      <table>
+        <caption>Procedencia y lugar de residencia</caption>
+        <thead><tr><th>Procedencia</th><th class="num">Lejos</th><th class="num">Cerca</th><th class="num">Total</th></tr></thead>
+        <tbody>
+          <tr><td class="rowlabel">Interior</td><td class="num hl">117</td><td class="num hl">163</td><td class="num hl">280</td></tr>
+          <tr><td class="rowlabel">Montevideo</td><td class="num hl">121</td><td class="num given">76</td><td class="num given">197</td></tr>
+          <tr class="total"><td>Total</td><td class="num">238</td><td class="num">239</td><td class="num given">477</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Para identificar el gráfico correcto conviene el perfil fila:</p>
+    <div class="tablewrap">
+      <table>
+        <caption>Perfil fila</caption>
+        <thead><tr><th>Procedencia</th><th class="num">Lejos</th><th class="num">Cerca</th><th class="num">Total</th></tr></thead>
+        <tbody>
+          <tr><td class="rowlabel">Interior</td><td class="num">41,8 %</td><td class="num hl">58,2 %</td><td class="num tot">100 %</td></tr>
+          <tr><td class="rowlabel">Montevideo</td><td class="num">61,4 %</td><td class="num hl">38,6 %</td><td class="num tot">100 %</td></tr>
+          <tr class="total"><td>Total</td><td class="num">49,9 %</td><td class="num">50,1 %</td><td class="num">100 %</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <figure>
+      <svg viewBox="0 0 440 320" role="img" aria-label="Barras apiladas: los del interior viven más cerca (58,2%) que los de Montevideo (38,6%).">
+        <line x1="65" y1="30" x2="65" y2="280" stroke="var(--ink-soft)" stroke-width="1.2"/>
+        <line x1="65" y1="280" x2="410" y2="280" stroke="var(--ink-soft)" stroke-width="1.2"/>
+        <g font-family="var(--mono)" font-size="10" fill="var(--ink-soft)" text-anchor="end">
+          <text x="58" y="284">0%</text><text x="58" y="221.5">25%</text><text x="58" y="159">50%</text><text x="58" y="96.5">75%</text><text x="58" y="34">100%</text>
+        </g>
+        <line x1="62" y1="217.5" x2="65" y2="217.5" stroke="var(--ink-soft)"/><line x1="62" y1="155" x2="65" y2="155" stroke="var(--ink-soft)"/><line x1="62" y1="92.5" x2="65" y2="92.5" stroke="var(--ink-soft)"/>
+        <!-- Interior -->
+        <rect x="125" y="134.5" width="70" height="145.5" fill="var(--green)"/>
+        <rect x="125" y="30" width="70" height="104.5" fill="var(--clay)"/>
+        <text x="160" y="211" text-anchor="middle" font-family="var(--sans)" font-size="12" font-weight="700" fill="#fff">58,2%</text>
+        <text x="160" y="87" text-anchor="middle" font-family="var(--sans)" font-size="12" font-weight="700" fill="#fff">41,8%</text>
+        <!-- Montevideo -->
+        <rect x="275" y="183.5" width="70" height="96.5" fill="var(--green)"/>
+        <rect x="275" y="30" width="70" height="153.5" fill="var(--clay)"/>
+        <text x="310" y="236" text-anchor="middle" font-family="var(--sans)" font-size="12" font-weight="700" fill="#fff">38,6%</text>
+        <text x="310" y="111" text-anchor="middle" font-family="var(--sans)" font-size="12" font-weight="700" fill="#fff">61,4%</text>
+        <text x="160" y="298" text-anchor="middle" font-family="var(--sans)" font-size="11.5" font-weight="700" fill="var(--ink)">Interior</text>
+        <text x="310" y="298" text-anchor="middle" font-family="var(--sans)" font-size="11.5" font-weight="700" fill="var(--ink)">Montevideo</text>
+        <rect x="165" y="308" width="12" height="12" fill="var(--green)"/><text x="182" y="318" font-family="var(--sans)" font-size="10.5" fill="var(--ink-soft)">Cerca</text>
+        <rect x="255" y="308" width="12" height="12" fill="var(--clay)"/><text x="272" y="318" font-family="var(--sans)" font-size="10.5" fill="var(--ink-soft)">Lejos</text>
+      </svg>
+      <figcaption>Este es el gráfico correcto: en la barra del interior, el segmento "Cerca" (58,2 %) es mayor que en la de Montevideo (38,6 %).</figcaption>
+    </figure>
+    <div class="result">
+      <span class="lab">Respuesta</span>
+      <p>Los estudiantes del <strong>interior viven en mayor proporción cerca</strong> de la facultad (58,2 %) que los de Montevideo (38,6 %). Por eso el gráfico correcto es aquel donde la barra del interior tiene el segmento "Cerca" más alto (el de la izquierda en la letra del ejercicio).</p>
+    </div>
+
+    <h3><span class="mini">Ejercicio 4</span>Verdadero o falso (justificado)</h3>
+    <div class="vf">
+      <div class="item"><span class="badge f">Falso</span><strong>a.</strong> Las tablas de contingencia sirven para estudiar la relación entre dos variables <em>cuantitativas</em>. — Se usan para dos variables <strong>cualitativas</strong> (categóricas).</div>
+      <div class="item"><span class="badge v">Verdadero</span><strong>b.</strong> La variable independiente "genera" los grupos entre los que se compara la distribución de la dependiente. — Es exactamente su rol: subdivide la muestra en los grupos de estudio.</div>
+      <div class="item"><span class="badge v">Verdadero</span><strong>c.</strong> La suma de las marginales de la independiente es igual a la suma de las marginales de la dependiente. — Ambas convergen en el mismo valor: el total \(n\).</div>
+      <div class="item"><span class="badge f">Falso</span><strong>d.</strong> El análisis por perfiles se usa cuando los grupos tienen la <em>misma</em> cantidad de individuos. — Al revés: se usa por el <strong>desbalance</strong> de tamaños, para poder comparar con porcentajes.</div>
+      <div class="item"><span class="badge f">Falso</span><strong>e.</strong> Con el perfil fila, la asociación es mayor cuanto más <em>parecidos</em> sean los porcentajes entre filas. — Es mayor cuanto más <strong>distintos</strong>; si fueran iguales, no habría asociación.</div>
+      <div class="item"><span class="badge f">Falso</span><strong>f.</strong> La altura de las barras en un gráfico de barras <em>agrupadas</em> es siempre 100 %. — Eso ocurre en el gráfico <strong>estratificado</strong> (apilado); en el agrupado cada barra tiene su propia altura.</div>
+    </div>
+
+    <h3><span class="mini">Ejercicio 5</span>Completar las afirmaciones</h3>
+    <ul class="checklist">
+      <li>A diferencia de las distribuciones de frecuencias, el análisis mediante tablas de contingencia es un tipo de análisis <span class="fillans">bivariado</span>.</li>
+      <li>De las dos variables, la que describe el fenómeno de interés es la variable <span class="fillans">dependiente</span>.</li>
+      <li>Las frecuencias <span class="fillans">conjuntas</span> indican la ocurrencia simultánea de las dos variables.</li>
+      <li>Es adecuado usar el perfil <span class="fillans">columna</span> cuando los grupos a comparar están en las columnas de la tabla.</li>
+      <li>En el gráfico de barras <span class="fillans">agrupadas</span> se representan tantos grupos de barras como categorías tenga la variable independiente.</li>
+    </ul>
+  </section>
+
+  <!-- ==================== CIERRE ==================== -->
+  <section class="part">
+    <div class="part-head">
+      <span class="num">Cierre</span>
+      <h2>El método, en cuatro pasos</h2>
+    </div>
+    <ul class="checklist">
+      <li><strong>Identificar</strong> quién es la dependiente (el fenómeno) y quién la independiente (los grupos).</li>
+      <li><strong>Armar y completar</strong> la tabla con las relaciones entre frecuencias (cada fila y cada columna suman su total).</li>
+      <li><strong>Calcular el perfil</strong> (fila si los grupos están en filas) para comparar con porcentajes, ya que los grupos casi nunca tienen el mismo tamaño.</li>
+      <li><strong>Concluir</strong> sobre la asociación mirando la diferencia de porcentajes (leve &lt; 30 % &lt; moderada &lt; 70 % &lt; fuerte), y representarla con barras agrupadas o estratificadas.</li>
+    </ul>
+    <p>Ese mismo recorrido resolvió los nueve ejercicios: cambian los datos (dientes, sarro, humo, ciudades), pero el procedimiento es siempre el mismo.</p>
+  </section>
+
+  <footer>
+    <p class="mono">ESTADÍSTICA DESCRIPTIVA · TABLAS DE CONTINGENCIA · CURSO DE INICIACIÓN A LA INVESTIGACIÓN</p>
+    <p>Material de apoyo construido sobre el teórico de tablas de contingencia y el Práctico 5, Facultad de Odontología — UdelaR. Pensado para leerse de cero, explicando cada concepto antes del cálculo. Resultados verificados contra la solución oficial del práctico.</p>
+  </footer>
+
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    if (window.renderMathInElement) {
+      renderMathInElement(document.body, {
+        delimiters: [
+          {left: "\\[", right: "\\]", display: true},
+          {left: "\\(", right: "\\)", display: false}
+        ],
+        throwOnError: false,
+        trust: true
+      });
+    }
+  });
+</script>
+</body>
+</html>
