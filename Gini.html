@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Estadística Laboral · Concentración — mediala y Gini (problema resuelto)</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+
+<style>
+  :root{
+    --paper:#faf7f0; --paper-2:#f3eee3; --ink:#23211c; --ink-soft:#5c574c;
+    --green:#1f6f47; --green-deep:#164e33; --green-tint:#e7f1ea;
+    --gold:#9a7320; --gold-tint:#f6efdd; --clay:#a8462f; --clay-tint:#f6e6e0;
+    --line:#ddd6c7; --line-strong:#c8c0ad;
+    --serif:'Lora', Georgia, serif; --sans:'DM Sans', system-ui, sans-serif; --mono:'Space Mono', ui-monospace, monospace;
+  }
+  *{box-sizing:border-box;}
+  html{ -webkit-text-size-adjust:100%; }
+  body{ margin:0; background:var(--paper); color:var(--ink); font-family:var(--serif);
+    font-size:clamp(16.5px, 1.05rem + 0.15vw, 19px); line-height:1.72; -webkit-font-smoothing:antialiased; }
+
+  .topbar{ position:sticky; top:0; z-index:50; display:flex; align-items:center; justify-content:space-between;
+    gap:1rem; padding:.55rem clamp(1rem,4vw,2.4rem); background:rgba(250,247,240,.86);
+    backdrop-filter:saturate(140%) blur(8px); border-bottom:1px solid var(--line); }
+  .topbar .tag{ font-family:var(--mono); font-size:.7rem; letter-spacing:.13em; text-transform:uppercase; color:var(--green-deep); }
+  .topbar .tag b{ color:var(--ink); }
+  .printbtn{ font-family:var(--mono); font-size:.7rem; letter-spacing:.08em; text-transform:uppercase;
+    border:1px solid var(--green); color:var(--green-deep); background:transparent; border-radius:999px;
+    padding:.4rem .85rem; cursor:pointer; transition:background .15s ease, color .15s ease; }
+  .printbtn:hover{ background:var(--green); color:#fff; }
+  .printbtn:focus-visible{ outline:3px solid var(--gold); outline-offset:2px; }
+
+  .wrap{ max-width:830px; margin:0 auto; padding:0 clamp(1.1rem,4vw,2rem); }
+
+  .hero{ padding:3.2rem 0 2.2rem; border-bottom:1px solid var(--line); }
+  .hero .eyebrow{ font-family:var(--mono); font-size:.74rem; letter-spacing:.16em; text-transform:uppercase; color:var(--green);
+    display:flex; align-items:center; gap:.7rem; margin-bottom:1.1rem; }
+  .hero .eyebrow::after{ content:""; height:1px; flex:1; background:var(--line-strong); }
+  .hero h1{ font-family:var(--sans); font-weight:700; line-height:1.08; font-size:clamp(2rem, 1.5rem + 2.4vw, 3.1rem);
+    letter-spacing:-.015em; margin:.2rem 0 .9rem; }
+  .hero h1 .accent{ color:var(--green); }
+  .hero .lede{ font-size:clamp(1.05rem,1rem + .5vw,1.3rem); color:var(--ink-soft); font-style:italic; max-width:60ch; margin:.4rem 0 1.6rem; }
+  .hero .question{ font-family:var(--serif); font-weight:600; font-size:1.06rem; background:var(--green-tint); border-left:4px solid var(--green);
+    padding:.9rem 1.1rem; border-radius:0 8px 8px 0; color:var(--green-deep); }
+  .hero .meta{ margin-top:1.5rem; font-family:var(--mono); font-size:.72rem; letter-spacing:.04em; color:var(--ink-soft); line-height:1.9; }
+
+  .part{ padding:2.8rem 0 .5rem; }
+  .part-head{ margin-bottom:1.4rem; }
+  .part-head .num{ font-family:var(--mono); font-size:.76rem; letter-spacing:.14em; text-transform:uppercase; color:var(--green); display:block; margin-bottom:.45rem; }
+  .part-head h2{ font-family:var(--sans); font-weight:700; font-size:clamp(1.5rem,1.2rem+1.4vw,2.1rem); line-height:1.12; letter-spacing:-.01em; margin:0;
+    padding-bottom:.7rem; border-bottom:3px solid var(--green); display:inline-block; }
+
+  h3{ font-family:var(--sans); font-weight:700; font-size:1.18rem; margin:2rem 0 .55rem; letter-spacing:-.005em; }
+  h3 .mini{ font-family:var(--mono); font-weight:400; font-size:.66rem; letter-spacing:.12em; text-transform:uppercase; color:var(--green); display:block; margin-bottom:.15rem; }
+  h4{ font-family:var(--sans); font-weight:500; font-size:1.02rem; margin:1.4rem 0 .35rem; color:var(--green-deep); }
+
+  p{ margin:.7rem 0; }
+  strong{ font-weight:600; }
+  em.term{ font-style:normal; font-weight:600; color:var(--green-deep); }
+  .small{ font-size:.9rem; color:var(--ink-soft); }
+  a{ color:var(--green-deep); }
+
+  .box{ border-radius:0 10px 10px 0; padding:1rem 1.2rem; margin:1.3rem 0; }
+  .box .lab{ font-family:var(--mono); font-size:.68rem; letter-spacing:.12em; text-transform:uppercase; display:block; margin-bottom:.5rem; font-weight:700; }
+  .box p:first-of-type{ margin-top:0; }
+  .box p:last-child{ margin-bottom:0; }
+  .def{ background:var(--green-tint); border-left:4px solid var(--green); }
+  .def .lab{ color:var(--green-deep); }
+  .ej{ background:#fff; border:1px solid var(--line); border-left:4px solid var(--gold); }
+  .ej .lab{ color:var(--gold); }
+  .idea{ background:var(--gold-tint); border-left:4px solid var(--gold); }
+  .idea .lab{ color:var(--gold); }
+  .ojo{ background:var(--clay-tint); border-left:4px solid var(--clay); }
+  .ojo .lab{ color:var(--clay); }
+  .result{ background:var(--green-deep); color:#f3efe2; border-left:4px solid #2f9c63; }
+  .result .lab{ color:#9fe0bd; }
+  .result strong{ color:#fff; }
+
+  .ficha{ border:1px solid var(--line-strong); border-top:4px solid var(--green); border-radius:4px; padding:1rem 1.2rem; margin:1.3rem 0; background:#fff; }
+  .ficha .lab{ font-family:var(--mono); font-size:.68rem; letter-spacing:.1em; text-transform:uppercase; color:var(--green); font-weight:700; display:block; margin-bottom:.5rem; }
+
+  .pasos{ counter-reset:paso; margin:1.4rem 0; padding:0; list-style:none; }
+  .pasos > li{ position:relative; counter-increment:paso; padding:.2rem 0 1.1rem 3rem; margin:0; border-left:2px solid var(--line-strong); margin-left:1.15rem; }
+  .pasos > li:last-child{ border-left-color:transparent; padding-bottom:.2rem; }
+  .pasos > li::before{ content:counter(paso); position:absolute; left:-1.15rem; top:-.15rem; width:2.3rem; height:2.3rem; border-radius:50%;
+    background:var(--green); color:#fff; font-family:var(--mono); font-weight:700; font-size:.95rem; display:flex; align-items:center; justify-content:center; }
+  .pasos > li .steptitle{ font-family:var(--sans); font-weight:700; font-size:1.04rem; display:block; margin-bottom:.25rem; }
+
+  .formula{ margin:1.1rem 0; padding:.4rem .2rem; text-align:center; overflow-x:auto; }
+  .formula.boxed{ border:1px dashed var(--line-strong); border-radius:8px; background:#fff; padding:1rem .6rem; }
+  .katex{ font-size:1.06em; }
+
+  .tablewrap{ overflow-x:auto; margin:1.3rem 0; }
+  table{ border-collapse:collapse; width:100%; font-size:.92rem; }
+  caption{ font-family:var(--mono); font-size:.68rem; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-soft); text-align:left; margin-bottom:.5rem; }
+  th,td{ padding:.5rem .6rem; border-bottom:1px solid var(--line); text-align:left; }
+  thead th{ font-family:var(--sans); font-weight:700; font-size:.8rem; background:var(--green-tint); color:var(--green-deep); border-bottom:2px solid var(--green); }
+  td.num,th.num{ text-align:right; font-family:var(--mono); font-size:.85rem; white-space:nowrap; }
+  tbody tr:nth-child(even){ background:rgba(243,238,227,.45); }
+  tr.total td{ font-weight:700; border-top:2px solid var(--line-strong); background:var(--green-tint); }
+  .rowlabel{ font-weight:600; }
+  td.hl{ color:var(--green-deep); font-weight:700; background:var(--green-tint); }
+
+  figure{ margin:1.6rem auto; text-align:center; }
+  figure svg{ width:100%; height:auto; }
+  figcaption{ font-size:.85rem; color:var(--ink-soft); font-style:italic; margin-top:.5rem; }
+
+  hr.soft{ border:none; border-top:1px solid var(--line); margin:2.4rem 0; }
+  .checklist{ list-style:none; padding:0; margin:1rem 0; }
+  .checklist li{ padding:.35rem 0 .35rem 1.7rem; position:relative; }
+  .checklist li::before{ content:"›"; position:absolute; left:.2rem; top:.3rem; color:var(--green); font-weight:700; font-family:var(--sans); }
+
+  footer{ margin-top:3.5rem; padding:2rem 0 3rem; border-top:1px solid var(--line); font-size:.85rem; color:var(--ink-soft); }
+  footer .mono{ font-family:var(--mono); font-size:.72rem; letter-spacing:.04em; }
+
+  @media print{
+    .topbar{ display:none; }
+    body{ background:#fff; font-size:11.2pt; line-height:1.5; }
+    .wrap{ max-width:100%; }
+    .hero{ padding-top:.4rem; }
+    .box, .ficha, .formula.boxed, .pasos > li, table, figure{ break-inside:avoid; }
+    .result, thead th, .def, .idea, .ojo, .ej, tr.total td, td.hl{ -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    a{ color:var(--ink); text-decoration:none; }
+  }
+  @media (prefers-reduced-motion:reduce){ *{ transition:none !important; } }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <span class="tag"><b>Estadística Laboral</b> · Concentración · Mediala &amp; Gini</span>
+  <button class="printbtn" onclick="window.print()">Imprimir / PDF</button>
+</div>
+
+<div class="wrap">
+
+  <header class="hero">
+    <div class="eyebrow">Facultad de Derecho · UdelaR</div>
+    <h1>¿Cómo se <span class="accent">reparte</span><br>el ingreso?</h1>
+    <p class="lede">Un problema diseñado y resuelto de punta a punta: del cuadro completo a la curva de Lorenz, con la mediala y el índice de Gini paso a paso.</p>
+    <p class="question">Antes mirábamos el <em>centro</em> y la <em>dispersión</em> de una variable. Ahora la pregunta es otra: cuando la variable es un ingreso, ¿está repartido parejo entre la gente, o unos pocos acumulan la mayor parte? Eso se llama <strong>concentración</strong>, y se mide con la función <strong>T</strong>, la <strong>mediala</strong> y el <strong>índice de Gini</strong>.</p>
+    <div class="meta">
+      PROBLEMA DISEÑADO — salarios de 400 trabajadores de una empresa<br>
+      SE CONSTRUYE — el cuadro completo hasta la función T(xᵢ)<br>
+      SE CALCULA — mediala e índice sintético de Gini, con interpretación<br>
+      NIVEL — desde cero. Cada concepto se explica antes de usarlo.
+    </div>
+  </header>
+
+  <!-- ============ INTRO ============ -->
+  <section class="part">
+    <div class="part-head">
+      <span class="num">La idea</span>
+      <h2>Qué es la concentración</h2>
+    </div>
+
+    <p>Hasta ahora, con una variable, calculábamos su centro (media, mediana) y su dispersión (varianza, desvío). Con eso sabíamos "cuánto gana un trabajador típico" y "qué tan parejos son los sueldos". Ahora hacemos una pregunta distinta: <strong>¿cómo se reparte el ingreso total entre las personas?</strong></p>
+
+    <div class="def">
+      <span class="lab">Definición</span>
+      <p>Hay <strong>concentración</strong> cuando un porcentaje de personas se queda con un porcentaje <em>muy distinto</em> (mayor) del total. Por ejemplo, si el 10 % de la gente gana el 50 % de todo el ingreso, hay mucha concentración: a los demás les queda poco para repartir.</p>
+    </div>
+
+    <div class="ojo">
+      <span class="lab">Ojo · cuándo tiene sentido</span>
+      <p>Todo esto se apoya en la suma \( \sum x_i n_i \). Cuando la variable es el <strong>ingreso</strong>, esa suma es el <strong>ingreso total</strong> (la plata que ganan todos juntos): un número con sentido. En cambio, si la variable fuera la <em>altura</em> de las personas, sumar las alturas no significaría nada. Las medidas de concentración sirven para variables del primer tipo (ingresos, montos de impuesto, población de ciudades, valor de producción).</p>
+    </div>
+  </section>
+
+  <!-- ============ EL PROBLEMA ============ -->
+  <section class="part">
+    <div class="part-head">
+      <span class="num">El problema</span>
+      <h2>Los salarios de una empresa</h2>
+    </div>
+
+    <div class="ficha">
+      <span class="lab">Enunciado</span>
+      <p>Una empresa tiene <strong>400 trabajadores</strong>. Se los clasifica según su <strong>salario mensual</strong> (en miles de pesos):</p>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th class="num">Salario (miles $) · xᵢ</th><th class="num">15</th><th class="num">25</th><th class="num">40</th><th class="num">70</th><th class="num">130</th></tr></thead>
+          <tbody>
+            <tr><td class="rowlabel">Nº de trabajadores · nᵢ</td><td class="num">160</td><td class="num">120</td><td class="num">80</td><td class="num">30</td><td class="num">10</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p><strong>Se pide:</strong></p>
+      <ul class="checklist">
+        <li>Construir el <strong>cuadro completo</strong>: \( n_i,\ h_i,\ F^{*}(x_i),\ x_i n_i,\ t(x_i) \) y \( T(x_i) \).</li>
+        <li>Hallar e interpretar la <strong>función T</strong>.</li>
+        <li>Calcular la <strong>mediala</strong> e interpretarla (comparándola con la mediana).</li>
+        <li>Calcular el <strong>índice de Gini</strong> e interpretarlo, con la curva de Lorenz.</li>
+      </ul>
+    </div>
+
+    <p>Lo resolvemos columna por columna. Cada una tiene su concepto; primero lo explicamos, después lo calculamos.</p>
+  </section>
+
+  <!-- ============ CONSTRUIR EL CUADRO ============ -->
+  <section class="part">
+    <div class="part-head">
+      <span class="num">Parte 1 · el cuadro</span>
+      <h2>Construir la tabla, columna por columna</h2>
+    </div>
+
+    <ol class="pasos">
+      <li>
+        <span class="steptitle">Frecuencias y función de distribución (repaso)</span>
+        <p>Estas ya las conocés de univariada. \( n_i \) es cuántos trabajadores ganan \( x_i \) (nos lo dan). La <strong>frecuencia relativa</strong> es la proporción de gente con ese salario, y la <strong>función de distribución</strong> \( F^{*} \) acumula esas proporciones:</p>
+        <div class="formula">\[ h_i=\frac{n_i}{n} \qquad\qquad F^{*}(x_i)=\sum_{j\le i} h_j \]</div>
+        <p>Por ejemplo: \( h_1=\frac{160}{400}=0{,}40 \). Y \( F^{*}(25)=0{,}40+0{,}30=0{,}70 \): el <strong>70 % de los trabajadores gana hasta 25</strong> mil.</p>
+      </li>
+
+      <li>
+        <span class="steptitle">Lo que aporta cada grupo — la columna \( x_i n_i \)</span>
+        <div class="def">
+          <span class="lab">Concepto</span>
+          <p>Los \( n_i \) trabajadores que ganan \( x_i \), <strong>juntos</strong> aportan \( x_i \times n_i \) al ingreso total. Sumando esa columna obtenemos el <strong>ingreso total</strong> de la empresa, \( \sum x_i n_i \).</p>
+        </div>
+        <p>Por ejemplo, los 160 que ganan 15 aportan \( 15\times 160 = 2400 \) (miles $). Sumando toda la columna:</p>
+        <div class="formula">\[ \sum_{i=1}^{5} x_i n_i = 2400+3000+3200+2100+1300 = 12\,000 \text{ (miles \$)} \]</div>
+        <p class="small">Es decir, los 400 trabajadores ganan en total 12.000 miles de $ = 12 millones de pesos por mes.</p>
+      </li>
+
+      <li>
+        <span class="steptitle">Cuánto del ingreso se lleva cada valor — la función \( t(x_i) \)</span>
+        <div class="def">
+          <span class="lab">Concepto</span>
+          <p>\( t(x_i) \) es la <strong>fracción del ingreso total</strong> que se queda el grupo que gana \( x_i \). Se obtiene dividiendo lo que aporta ese grupo entre el ingreso total:</p>
+          <div class="formula">\[ t(x_i)=\frac{x_i\, n_i}{\displaystyle\sum_{i=1}^{k} x_i\, n_i} \]</div>
+        </div>
+        <p>Por ejemplo, \( t(15)=\dfrac{2400}{12\,000}=0{,}20 \). Fijate en el contraste: los que ganan 15 son el <strong>40 %</strong> de la gente (\( h \)), pero se llevan solo el <strong>20 %</strong> del ingreso (\( t \)). Ahí ya se huele la concentración.</p>
+      </li>
+
+      <li>
+        <span class="steptitle">El ingreso acumulado — la función \( T(x_i) \)</span>
+        <div class="def">
+          <span class="lab">Concepto</span>
+          <p>\( T(x_i) \) es a \( t \) lo que \( F^{*} \) es a \( h \): <strong>acumula</strong> las fracciones de ingreso. Dice qué fracción del ingreso total se llevan los que ganan <strong>hasta</strong> \( x_i \):</p>
+          <div class="formula">\[ T(x_i)=\sum_{j\le i} t(x_j) \]</div>
+        </div>
+        <p>Por ejemplo: \( T(25)=0{,}20+0{,}25=0{,}45 \), y \( T(40)=0{,}45+0{,}2667=0{,}7167 \). Interpretación: los que ganan hasta 40 mil se llevan el <strong>71,67 % del ingreso total</strong>.</p>
+      </li>
+    </ol>
+
+    <p>Con las cuatro columnas nuevas, el <strong>cuadro completo</strong> queda así (en <span style="color:var(--green-deep);font-weight:700;">verde</span> lo que agregamos a las frecuencias):</p>
+
+    <div class="tablewrap">
+      <table>
+        <caption>Cuadro completo de concentración</caption>
+        <thead>
+          <tr><th class="num">xᵢ</th><th class="num">nᵢ</th><th class="num">hᵢ</th><th class="num">F*(xᵢ)</th><th class="num">xᵢ·nᵢ</th><th class="num">t(xᵢ)</th><th class="num">T(xᵢ)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="num">15</td><td class="num">160</td><td class="num">0,4000</td><td class="num">0,4000</td><td class="num hl">2400</td><td class="num hl">0,2000</td><td class="num hl">0,2000</td></tr>
+          <tr><td class="num">25</td><td class="num">120</td><td class="num">0,3000</td><td class="num">0,7000</td><td class="num hl">3000</td><td class="num hl">0,2500</td><td class="num hl">0,4500</td></tr>
+          <tr><td class="num">40</td><td class="num">80</td><td class="num">0,2000</td><td class="num">0,9000</td><td class="num hl">3200</td><td class="num hl">0,2667</td><td class="num hl">0,7167</td></tr>
+          <tr><td class="num">70</td><td class="num">30</td><td class="num">0,0750</td><td class="num">0,9750</td><td class="num hl">2100</td><td class="num hl">0,1750</td><td class="num hl">0,8917</td></tr>
+          <tr><td class="num">130</td><td class="num">10</td><td class="num">0,0250</td><td class="num">1,0000</td><td class="num hl">1300</td><td class="num hl">0,1083</td><td class="num hl">1,0000</td></tr>
+          <tr class="total"><td class="num">—</td><td class="num">400</td><td class="num">1,0000</td><td class="num">—</td><td class="num">12000</td><td class="num">1,0000</td><td class="num">—</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="idea">
+      <span class="lab">Leyendo la concentración en la tabla</span>
+      <p>Comparando \( F^{*} \) con \( T \): el <strong>90 % de los trabajadores</strong> (los que ganan hasta 40) se lleva el <strong>71,67 % del ingreso</strong>; dicho al revés, el <strong>10 % que más gana</strong> (los de 70 y 130) se queda con el <strong>28,33 %</strong> del total. Cuando un porcentaje chico acumula una tajada grande, hay concentración.</p>
+    </div>
+  </section>
+
+  <!-- ============ MEDIALA ============ -->
+  <section class="part">
+    <div class="part-head">
+      <span class="num">Parte 2 · mediala</span>
+      <h2>La mediala (y por qué no es la mediana)</h2>
+    </div>
+
+    <div class="def">
+      <span class="lab">Concepto</span>
+      <p>La <strong>mediala</strong> (\( x_{\text{med}} \)) es el <strong>menor valor de la variable para el cual \( T(x_i)\ge 0{,}5 \)</strong>. Parte el <strong>ingreso total</strong> en dos mitades: los que ganan hasta la mediala se llevan el 50 % del ingreso, y los que ganan más, el otro 50 %.</p>
+    </div>
+
+    <div class="ej">
+      <span class="lab">No confundir con la mediana</span>
+      <p>La <strong>mediana</strong> parte a las <em>personas</em> en dos (mitad gana menos, mitad gana más): es el menor \( x_i \) con \( F^{*}\ge 0{,}5 \). La <strong>mediala</strong> parte al <em>ingreso</em> en dos. Son preguntas distintas: "¿dónde está la mitad de la gente?" vs. "¿dónde está la mitad de la plata?".</p>
+    </div>
+
+    <h4>Cálculo</h4>
+    <p><strong>Mediana:</strong> buscamos el primer \( F^{*}\ge 0{,}5 \). La columna va \( 0{,}40 \rightarrow 0{,}70 \): cruza el 0,5 en \( x=25 \).</p>
+    <div class="formula">\[ \text{Mediana}=25 \quad\Rightarrow\quad \text{el 50 \% de los trabajadores gana hasta 25 mil.} \]</div>
+    <p><strong>Mediala:</strong> buscamos el primer \( T\ge 0{,}5 \). La columna \( T \) va \( 0{,}45 \rightarrow 0{,}7167 \): cruza el 0,5 en \( x=40 \).</p>
+    <div class="formula">\[ x_{\text{med}}=40 \quad\Rightarrow\quad \text{el 50 \% del ingreso total lo aportan los que ganan hasta 40 mil.} \]</div>
+
+    <div class="result">
+      <span class="lab">Interpretación</span>
+      <p>La mediana es <strong>25</strong> y la mediala es <strong>40</strong>: <strong>no coinciden</strong>. La mitad de las <em>personas</em> gana hasta 25, pero para juntar la mitad del <em>ingreso</em> hay que subir hasta 40. Eso significa que los de mayores salarios se llevan una tajada más que proporcional: <strong>hay concentración</strong>. Si el ingreso estuviera repartido en partes iguales, mediana y mediala serían iguales.</p>
+    </div>
+  </section>
+
+  <!-- ============ LORENZ + GINI ============ -->
+  <section class="part">
+    <div class="part-head">
+      <span class="num">Parte 3 · Gini</span>
+      <h2>Curva de Lorenz e índice de Gini</h2>
+    </div>
+
+    <h3><span class="mini">Primero</span>La curva de Lorenz</h3>
+    <div class="def">
+      <span class="lab">Concepto</span>
+      <p>La <strong>curva de Lorenz</strong> grafica \( T \) (ingreso acumulado) en función de \( F^{*} \) (personas acumuladas). Si el ingreso estuviera <strong>perfectamente repartido</strong>, el 20 % de la gente tendría el 20 % del ingreso, el 50 % tendría el 50 %, etc.: la curva sería la <strong>diagonal</strong>. Cuanto más se <em>hunde</em> la curva por debajo de la diagonal, mayor es la concentración.</p>
+    </div>
+
+    <figure>
+      <svg viewBox="0 0 430 380" role="img" aria-label="Curva de Lorenz del problema: la curva verde queda por debajo de la diagonal de igualdad, y el área entre ambas representa la concentración medida por el índice de Gini.">
+        <!-- grid 0.5 -->
+        <line x1="210" y1="40" x2="210" y2="340" stroke="var(--line)" stroke-width="1"/>
+        <line x1="60" y1="190" x2="360" y2="190" stroke="var(--line)" stroke-width="1"/>
+        <!-- ejes -->
+        <line x1="60" y1="40" x2="60" y2="340" stroke="var(--ink-soft)" stroke-width="1.3"/>
+        <line x1="60" y1="340" x2="360" y2="340" stroke="var(--ink-soft)" stroke-width="1.3"/>
+        <!-- área de Gini (entre diagonal y curva) -->
+        <path d="M 60,340 L 360,40 L 352.5,72.5 L 330,125 L 270,205 L 180,280 Z"
+              fill="var(--gold-tint)" stroke="none" opacity=".85"/>
+        <!-- diagonal (igualdad perfecta) -->
+        <line x1="60" y1="340" x2="360" y2="40" stroke="var(--gold)" stroke-width="1.6" stroke-dasharray="5 3"/>
+        <!-- curva de Lorenz -->
+        <polyline points="60,340 180,280 270,205 330,125 352.5,72.5 360,40"
+                  fill="none" stroke="var(--green)" stroke-width="2.4"/>
+        <g fill="var(--green)">
+          <circle cx="180" cy="280" r="3.6"/>
+          <circle cx="270" cy="205" r="3.6"/>
+          <circle cx="330" cy="125" r="3.6"/>
+          <circle cx="352.5" cy="72.5" r="3.6"/>
+          <circle cx="360" cy="40" r="3.6"/>
+        </g>
+        <!-- etiquetas -->
+        <text x="300" y="118" font-family="var(--sans)" font-size="11" font-weight="700" fill="var(--gold)" transform="rotate(-33 300 118)">igualdad perfecta</text>
+        <text x="250" y="255" font-family="var(--sans)" font-size="10.5" font-weight="700" fill="var(--gold)">área = Gini</text>
+        <text x="205" y="315" font-family="var(--sans)" font-size="11" font-weight="700" fill="var(--green)" transform="rotate(-20 205 315)">curva de Lorenz</text>
+        <!-- ticks -->
+        <g font-family="var(--mono)" font-size="10" fill="var(--ink-soft)">
+          <text x="60"  y="356" text-anchor="middle">0</text>
+          <text x="210" y="356" text-anchor="middle">0,5</text>
+          <text x="360" y="356" text-anchor="middle">1</text>
+          <text x="54" y="344" text-anchor="end">0</text>
+          <text x="54" y="194" text-anchor="end">0,5</text>
+          <text x="54" y="44"  text-anchor="end">1</text>
+        </g>
+        <text x="210" y="375" font-family="var(--sans)" font-size="11.5" font-weight="700" fill="var(--ink)" text-anchor="middle">F* — % acumulado de personas</text>
+        <text x="18" y="190" font-family="var(--sans)" font-size="11.5" font-weight="700" fill="var(--ink)" text-anchor="middle" transform="rotate(-90 18 190)">T — % acumulado del ingreso</text>
+      </svg>
+      <figcaption>La curva (verde) queda por debajo de la diagonal (igualdad). El área dorada entre ambas es lo que mide el Gini: cuanto más grande, mayor la concentración.</figcaption>
+    </figure>
+
+    <h3><span class="mini">Después</span>El índice de Gini</h3>
+    <div class="def">
+      <span class="lab">Concepto</span>
+      <p>El <strong>índice de Gini</strong> mide el <strong>área entre la diagonal y la curva de Lorenz</strong>, llevada a una escala de 0 a 1. Vale <strong>0</strong> con igualdad perfecta (curva pegada a la diagonal) y se acerca a <strong>1</strong> cuando la concentración es máxima.</p>
+    </div>
+
+    <p>¿Cómo se calcula esa área? El área bajo la diagonal es la de un triángulo: \( 0{,}5 \). El área bajo la curva de Lorenz se obtiene sumando <strong>trapecios</strong> (uno por cada tramo). Recordando que el área de un trapecio es \( \frac{(B+b)\cdot a}{2} \), cada tramo tiene bases \( T(x_i) \) y \( T(x_{i-1}) \), y ancho \( a=h_i \). Haciendo la cuenta y despejando, el Gini queda:</p>
+    <div class="formula boxed">\[ I_G = 1-\sum_{i=1}^{k}\big(T(x_i)+T(x_{i-1})\big)\,h_i \qquad (\text{con } T(x_0)=0) \]</div>
+
+    <h4>Cálculo</h4>
+    <p>Armamos una columna con \( \big(T(x_i)+T(x_{i-1})\big)\,h_i \) para cada fila y la sumamos:</p>
+    <div class="tablewrap">
+      <table>
+        <caption>Cálculo del índice de Gini</caption>
+        <thead>
+          <tr><th class="num">xᵢ</th><th class="num">hᵢ</th><th class="num">T(xᵢ)</th><th class="num">T(xᵢ₋₁)</th><th class="num">(T(xᵢ)+T(xᵢ₋₁))·hᵢ</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="num">15</td><td class="num">0,4000</td><td class="num">0,2000</td><td class="num">0,0000</td><td class="num hl">0,0800</td></tr>
+          <tr><td class="num">25</td><td class="num">0,3000</td><td class="num">0,4500</td><td class="num">0,2000</td><td class="num hl">0,1950</td></tr>
+          <tr><td class="num">40</td><td class="num">0,2000</td><td class="num">0,7167</td><td class="num">0,4500</td><td class="num hl">0,2333</td></tr>
+          <tr><td class="num">70</td><td class="num">0,0750</td><td class="num">0,8917</td><td class="num">0,7167</td><td class="num hl">0,1206</td></tr>
+          <tr><td class="num">130</td><td class="num">0,0250</td><td class="num">1,0000</td><td class="num">0,8917</td><td class="num hl">0,0473</td></tr>
+          <tr class="total"><td class="num" colspan="4">Suma</td><td class="num">0,6763</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Por ejemplo, la tercera fila: \( (0{,}7167+0{,}4500)\times 0{,}20 = 1{,}1667\times 0{,}20 = 0{,}2333 \). Con la suma total:</p>
+    <div class="formula">\[ I_G = 1 - 0{,}6763 = 0{,}3237 \]</div>
+
+    <div class="result">
+      <span class="lab">Resultado e interpretación</span>
+      <p>El índice de Gini es \( I_G \approx 0{,}32 \). Está lejos de 0 (no hay igualdad perfecta) pero también lejos de 1: la concentración es <strong>moderada</strong>. Hay cierta desigualdad —los que más ganan se llevan una tajada mayor a la que les tocaría por cabeza—, pero ningún grupo chico acapara casi todo el ingreso. Como el Gini <strong>no tiene unidades</strong>, este 0,32 se puede comparar directamente con el de otra empresa, otro país o otro año.</p>
+    </div>
+
+    <div class="ojo">
+      <span class="lab">Ojo · qué no dice el Gini</span>
+      <p>El Gini es un <em>índice sintético</em>: resume todo en un número. Te dice <strong>cuánta</strong> concentración hay, pero no <strong>quién</strong> la produce (qué porcentaje de gente acapara el ingreso). Además, dos distribuciones muy distintas pueden dar el mismo Gini si el área entre curva y diagonal coincide. Por eso conviene mirarlo junto con la tabla y la curva de Lorenz.</p>
+    </div>
+  </section>
+
+  <!-- ============ CIERRE ============ -->
+  <section class="part">
+    <div class="part-head">
+      <span class="num">Cierre</span>
+      <h2>El recorrido completo</h2>
+    </div>
+    <ul class="checklist">
+      <li>Partimos de las <strong>frecuencias</strong> y llegamos, columna por columna, a \( t(x_i) \) (cuánto ingreso se lleva cada valor) y \( T(x_i) \) (cuánto ingreso acumulan los que ganan hasta cada valor).</li>
+      <li>La <strong>mediala</strong> (40) mostró que la mitad del ingreso se concentra en salarios más altos que la mediana (25) — primera señal de concentración.</li>
+      <li>La <strong>curva de Lorenz</strong> lo dibujó, y el <strong>índice de Gini</strong> (0,32) lo resumió en un número comparable: concentración moderada.</li>
+    </ul>
+    <p>Las tres miradas —tabla, mediala y Gini— cuentan la misma historia desde ángulos distintos. Juntas dan una descripción completa de qué tan (des)igual se reparte el ingreso.</p>
+
+    <hr class="soft">
+    <p class="small">Nota: este problema usa valores <strong>puntuales</strong> de salario, así que la mediala se lee directo de la tabla. Cuando los datos vienen <strong>agrupados en intervalos</strong>, la mediala se obtiene interpolando dentro del intervalo donde \( T \) cruza el 0,5 (misma idea que la interpolación de la mediana). Si querés, armo también una versión con intervalos.</p>
+  </section>
+
+  <footer>
+    <p class="mono">ESTADÍSTICA LABORAL · MEDIDAS DE CONCENTRACIÓN · MEDIALA E ÍNDICE SINTÉTICO DE GINI</p>
+    <p>Problema de diseño propio, construido sobre el teórico de medidas de concentración y su práctico, Facultad de Derecho — UdelaR. Pensado para leerse de cero, explicando cada concepto antes del cálculo.</p>
+  </footer>
+
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    if (window.renderMathInElement) {
+      renderMathInElement(document.body, {
+        delimiters: [
+          {left: "\\[", right: "\\]", display: true},
+          {left: "\\(", right: "\\)", display: false}
+        ],
+        throwOnError: false,
+        trust: true
+      });
+    }
+  });
+</script>
+</body>
+</html>
